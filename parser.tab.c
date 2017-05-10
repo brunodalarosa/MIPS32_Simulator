@@ -1332,7 +1332,7 @@ yyreduce:
 
   case 4:
 #line 41 "parser.y" /* yacc.c:1646  */
-    {fprintf(output, "\nsem secao de dados\n"); return 0;}
+    {fprintf(log, "\nsem secao de dados\n"); return 0;}
 #line 1337 "parser.tab.c" /* yacc.c:1646  */
     break;
 
@@ -1356,7 +1356,7 @@ yyreduce:
 
   case 13:
 #line 59 "parser.y" /* yacc.c:1646  */
-    {fprintf(output,"Op tipo R: %d %d %d %d %d %d\n",
+    {fprintf(log,"Op tipo R: %d %d %d %d %d %d\n",
  						  		(yyvsp[0].op.code), (yyvsp[0].op.rs), (yyvsp[0].op.rt),
 						  		(yyvsp[0].op.rd), (yyvsp[0].op.aux), (yyvsp[0].op.func));}
 #line 1363 "parser.tab.c" /* yacc.c:1646  */
@@ -1364,7 +1364,7 @@ yyreduce:
 
   case 14:
 #line 63 "parser.y" /* yacc.c:1646  */
-    {fprintf(output,"Op tipo RD: %d %d %d %d %d\n",
+    {fprintf(log,"Op tipo RD: %d %d %d %d %d\n",
  								  (yyvsp[0].op.code), (yyvsp[0].op.rs), (yyvsp[0].op.rt),
 							  	  (yyvsp[0].op.aux), (yyvsp[0].op.func));}
 #line 1371 "parser.tab.c" /* yacc.c:1646  */
@@ -1372,14 +1372,14 @@ yyreduce:
 
   case 15:
 #line 67 "parser.y" /* yacc.c:1646  */
-    {fprintf(output,"Op tipo L: %d %d %d %d\n",
+    {fprintf(log,"Op tipo L: %d %d %d %d\n",
  								(yyvsp[0].op.code), (yyvsp[0].op.rs), (yyvsp[0].op.rt), (yyvsp[0].op.aux));}
 #line 1378 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
 #line 70 "parser.y" /* yacc.c:1646  */
-    {fprintf(output,"Op tipo I: %d %d %d %d\n",
+    {fprintf(log,"Op tipo I: %d %d %d %d\n",
   						        (yyvsp[0].op.code), (yyvsp[0].op.rs), (yyvsp[0].op.rt),
 							    (yyvsp[0].op.aux));}
 #line 1386 "parser.tab.c" /* yacc.c:1646  */
@@ -1387,7 +1387,7 @@ yyreduce:
 
   case 17:
 #line 74 "parser.y" /* yacc.c:1646  */
-    {fprintf(output,"Op tipo B: %d %d %d %d\n",
+    {fprintf(log,"Op tipo B: %d %d %d %d\n",
   						        (yyvsp[0].op.code), (yyvsp[0].op.rs), (yyvsp[0].op.func),
 							    (yyvsp[0].op.aux));}
 #line 1394 "parser.tab.c" /* yacc.c:1646  */
@@ -1395,7 +1395,7 @@ yyreduce:
 
   case 18:
 #line 78 "parser.y" /* yacc.c:1646  */
-    {fprintf(output,"Op tipo BC: %d %d %d %d %d\n",
+    {fprintf(log,"Op tipo BC: %d %d %d %d %d\n",
  								  (yyvsp[0].op.code), (yyvsp[0].op.rs), (yyvsp[0].op.rt),
 							  	  (yyvsp[0].op.func), (yyvsp[0].op.aux));}
 #line 1402 "parser.tab.c" /* yacc.c:1646  */
@@ -1403,13 +1403,13 @@ yyreduce:
 
   case 19:
 #line 82 "parser.y" /* yacc.c:1646  */
-    {fprintf(output,"Op tipo J: %d %d\n", (yyvsp[0].op.code), (yyvsp[0].op.aux));}
+    {fprintf(log,"Op tipo J: %d %d\n", (yyvsp[0].op.code), (yyvsp[0].op.aux));}
 #line 1408 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
 #line 84 "parser.y" /* yacc.c:1646  */
-    {fprintf(output,"Op tipo JR: %d %d %d %d\n",
+    {fprintf(log,"Op tipo JR: %d %d %d %d\n",
  								  (yyvsp[0].op.code), (yyvsp[0].op.rs),
 								  (yyvsp[0].op.aux), (yyvsp[0].op.func));}
 #line 1416 "parser.tab.c" /* yacc.c:1646  */
@@ -1417,14 +1417,14 @@ yyreduce:
 
   case 21:
 #line 88 "parser.y" /* yacc.c:1646  */
-    {fprintf(output, "Op tipo T: %d %d %d %d %d\n", (yyvsp[0].op.code),
+    {fprintf(log, "Op tipo T: %d %d %d %d %d\n", (yyvsp[0].op.code),
  						       (yyvsp[0].op.rs),(yyvsp[0].op.rt), (yyvsp[0].op.aux), (yyvsp[0].op.func));}
 #line 1423 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
 #line 91 "parser.y" /* yacc.c:1646  */
-    {fprintf(output, "Op tipo M: %d %d %d %d %d\n",
+    {fprintf(log, "Op tipo M: %d %d %d %d %d\n",
  								  (yyvsp[0].op.code), (yyvsp[0].op.rs), (yyvsp[0].op.rt), (yyvsp[0].op.rd),
 							      (yyvsp[0].op.func));}
 #line 1431 "parser.tab.c" /* yacc.c:1646  */
@@ -1432,7 +1432,7 @@ yyreduce:
 
   case 23:
 #line 95 "parser.y" /* yacc.c:1646  */
-    {fprintf(output, "Op tipo M: %d %d %d %d %d\n",
+    {fprintf(log, "Op tipo M: %d %d %d %d %d\n",
  						  	       (yyvsp[0].op.code), (yyvsp[0].op.rs), (yyvsp[0].op.rt),
 						           (yyvsp[0].op.rd), (yyvsp[0].op.func));}
 #line 1439 "parser.tab.c" /* yacc.c:1646  */
@@ -1440,7 +1440,7 @@ yyreduce:
 
   case 24:
 #line 99 "parser.y" /* yacc.c:1646  */
-    {fprintf(output, "Op tipo MF: %d %d %d %d %d\n",
+    {fprintf(log, "Op tipo MF: %d %d %d %d %d\n",
  						           (yyvsp[0].op.code), (yyvsp[0].op.rs), (yyvsp[0].op.rd),
 								   (yyvsp[0].op.aux), (yyvsp[0].op.func));}
 #line 1447 "parser.tab.c" /* yacc.c:1646  */
@@ -1448,7 +1448,7 @@ yyreduce:
 
   case 25:
 #line 103 "parser.y" /* yacc.c:1646  */
-    {fprintf(output, "Op tipo M Especial: %d %d %d %d %d %d %d\n",
+    {fprintf(log, "Op tipo M Especial: %d %d %d %d %d %d %d\n",
  						  (yyvsp[0].op.code), (yyvsp[0].op.rs), (yyvsp[0].op.aux), (yyvsp[0].op.func),
 					   	  (yyvsp[0].op.rd), 0, 1);}
 #line 1455 "parser.tab.c" /* yacc.c:1646  */

@@ -5,22 +5,23 @@
 #define __INSTRUCOES_H
 
 FILE* output;
+FILE* log;
 
 #define DATA_OFFSET 400
 #define INST_SIZE 32
 
-extern int lbl_count;
+int lbl_count;
 char** lbl_names;
 int* lbl_values;
-extern int lbl_tam;
+int lbl_tam;
 
-extern int var_count;
+int var_count;
 char** var_names;
 int* var_adress;
 int* var_values;
-extern int var_tam; //var_tamanho inicial do vetor de variaveis
+int var_tam; //var_tamanho inicial do vetor de variaveis
 
-extern int line;
+int line;
 typedef struct node_t* node;
 
 struct node_t{
@@ -35,7 +36,7 @@ struct node_t{
     node prox;
 };
 
-extern node arvore;
+node lista;
 
 void checkSizes(void);
 

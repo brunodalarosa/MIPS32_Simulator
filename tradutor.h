@@ -1,4 +1,4 @@
-/* Header que define a estrutura de arvore para o tradutor Assembly MIPS32*/
+/* Header do arquivo principal tradutor Assembly MIPS32*/
 /* Autor Bruno, bcesar.g6@gmail.com*/
 
 #ifndef __TRADUTOR_H
