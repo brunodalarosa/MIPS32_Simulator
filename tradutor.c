@@ -6,18 +6,25 @@
 #include <getopt.h>
 #include "tradutor.h"
 #include "parser.h"
-#include "instrucoes.h"
+#include "estrutura.h"
+
+/* Definição das declarações externas */
+int line = 0;
+int lbl_count = 0;
+int lbl_tam = 10; //lbl_tamanho inicial do vetor de labels
+int var_count = 0;
+int var_tam = 10; //lbl_tamanho inicial do vetor de labels
 
 typedef unsigned int binst;
 
 void checkSizes(){
-	if (lbl_count = lbl_tam){
+	if (lbl_count == lbl_tam){
 		lbl_tam = lbl_tam + 10;
 		lbl_names = realloc(lbl_names, sizeof(char*) * lbl_tam);
 		lbl_values = realloc(lbl_values, sizeof(int) * lbl_tam);
 	}
 
-	if (var_count = var_tam){
+	if (var_count == var_tam){
 		var_tam = var_tam + 10;
 		var_names = realloc(var_names, sizeof(char*) * var_tam);
 		var_values = realloc(var_values, sizeof(int) * var_tam);
@@ -55,6 +62,17 @@ void parseargs(int argc, char **argv){
 	}
 }
 
+void init(){
+
+	/* Inicialização dos Vetores para controle de Labels e variaveis */
+	lbl_names  = malloc(sizeof(char*) * lbl_tam);
+	lbl_values = malloc(sizeof(int) * lbl_tam);
+
+	var_names = malloc(sizeof(char*) * var_tam);
+	var_values = malloc(sizeof(int) * var_tam);
+	var_adress = malloc(sizeof(int) * var_tam);
+}
+
 int main(int argc, char **argv){
 	int i;
 
@@ -77,11 +95,7 @@ int main(int argc, char **argv){
 		printf("Debugging pesado\n");
 	}
 
-	/* Vetores para controlde Labels e variaveis */
-	lbl_names  = malloc(sizeof(char*) * lbl_tam);
-	lbl_values = malloc(sizeof(int) * lbl_tam);
-	var_names = malloc(sizeof(char*) * lbl_tam);
-	var_values = malloc(sizeof(int) * lbl_tam);
+	init();
 
 	printf("\nIniciar magias negras MIPS32:\n\n");
 
@@ -97,7 +111,8 @@ int main(int argc, char **argv){
 
 	if (var_count > 0) fprintf(output, "\nVariaveis:\n");
 	for(i = 0; i < var_count; i++){
-		fprintf(output, "%s = %d\n",var_names[i], var_values[i]);
+		fprintf(output, "%s (%d) = %d\n",var_names[i],
+		 				var_adress[i], var_values[i]);
 	}
 
 	fprintf(output, "\nFIM\n");

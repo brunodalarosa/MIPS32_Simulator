@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "instrucoes.h"
+#include "estrutura.h"
 #include "parser.h"
 %}
 
@@ -229,25 +229,28 @@ MS: opcodemf reg virg reg virg cc{ //movf & movt
 	$<op.aux>$  = $<val>6;}
 ;
 
-label: id { $<text>1[strlen($<text>1) -1] = '\0';
-			lbl_names[lbl_count] = $<text>1;
-			lbl_values[lbl_count] = DATA_OFFSET + line * INST_SIZE;
-		    lbl_count++; line++;}
+label: id colon { checkSizes();
+				  lbl_names[lbl_count] = $<text>1;
+				  lbl_values[lbl_count] = DATA_OFFSET + line * INST_SIZE;
+		    	  lbl_count++; line++;}
 
-| id EOL { $<text>1[strlen($<text>1) -1] = '\0';
-		   lbl_names[lbl_count] = $<text>1;
-		   lbl_values[lbl_count] = DATA_OFFSET + line * INST_SIZE;
-		   lbl_count++; line++;}
+| id EOL colon { checkSizes();
+				 lbl_names[lbl_count] = $<text>1;
+		   		 lbl_values[lbl_count] = DATA_OFFSET + line * INST_SIZE;
+		   		 lbl_count++; line++;}
 ;
 
-var: id number EOL var {$<text>1[strlen($<text>1) -1] = '\0';
-					var_names[var_count] = $<text>1;
-					var_values[var_count] = var_count * INST_SIZE;
-				    var_count++;}
-| id number EOL {$<text>1[strlen($<text>1) -1] = '\0';
-					var_names[var_count] = $<text>1;
-					var_values[var_count] = var_count * INST_SIZE;
-				    var_count++;}
+var: id colon number EOL var { checkSizes();
+							   var_names[var_count] = $<text>1;
+							   var_adress[var_count] = var_count * INST_SIZE;
+							   var_values[var_count] = $<val>3;
+				    		   var_count++;}
+
+| id colon number EOL { checkSizes();
+						var_names[var_count] = $<text>1;
+						var_adress[var_count] = var_count * INST_SIZE;
+						var_values[var_count] = $<val>3;
+				    	var_count++;}
 ;
 
 address: number;

@@ -3,6 +3,9 @@
 # include "parser.h"
 %}
 
+digit	[0-9]
+letter	[a-zA-Z]
+
 %%
 ".data" {return data;}
 ".text" {return text;}
@@ -141,12 +144,13 @@
 "movf" {yylval.op.code = 0;  yylval.op.func = 0;  return opcodemf;}
 "movt" {yylval.op.code = 0;  yylval.op.func = 1;  return opcodemf;}
 
-[A-z]([A-z]|[0-9]|.|_)*":" {yylval.text = strdup(yytext); return id;} /*Gambiarra, o certo é usar : como um token. Tentar corrigir */
+{letter}("_"|{letter}|{digit})* { yylval.text = strdup(yytext); return id;}
 
+":" {return colon;}
 "," {return virg;}
 "(" {return abreparents;}
 ")" {return fechaparents;}
-[0-9]+ { yylval.val = atoi(yytext); return number; }
+{digit}+ { yylval.val = atoi(yytext); return number; }
 \n { return EOL;}
 [ \t] { /* ignore whitespace */ }
 "#".* /* ignore comments */

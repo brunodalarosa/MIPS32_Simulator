@@ -9,17 +9,18 @@ FILE* output;
 #define DATA_OFFSET 400
 #define INST_SIZE 32
 
-static int lbl_count = 0;
+extern int lbl_count;
 char** lbl_names;
 int* lbl_values;
-static int lbl_tam = 10; //lbl_tamanho inicial do vetor de labels
+extern int lbl_tam;
 
-static int var_count = 0;
+extern int var_count;
 char** var_names;
+int* var_adress;
 int* var_values;
-static int var_tam = 10; //var_tamanho inicial do vetor de variaveis
+extern int var_tam; //var_tamanho inicial do vetor de variaveis
 
-static int line = 0;
+extern int line;
 typedef struct node_t* node;
 
 struct node_t{
@@ -34,6 +35,8 @@ struct node_t{
     node prox;
 };
 
-node arvore;
+extern node arvore;
+
+void checkSizes(void);
 
 #endif
