@@ -1,0 +1,97 @@
+.data
+x:5
+y:10
+
+.text
+main:
+    add $t0, $s0, $t1
+    addu $t0, $s0, $t1
+loo: addi $t1, $s0, 4
+    addiu $t1, $s0, 4
+    and $t0, $s0, $t1
+    andi $t1, $s0, 4
+    clo $t0, $s0
+    clz $t0, $s0
+    div $s0, $t1
+    divu $s0, $t1
+    mult $s0, $t1
+    multu $s0, $t1
+    mul $t0, $s0, $t1
+    madd $s0, $t1
+    maddu $s0, $t1
+    msub $s0, $t1
+    msub $s0, $t1
+    nor $t0, $s0, $t1
+    or $t0, $s0, $t1
+    ori $t1, $s0, 4
+    sll $t0, $t1, 32
+    sllv $t0, $t1, $s0
+    sra $t0, $t1, 32
+    srav $t0, $t1, $s0
+    srl $t0, $t1, 32
+    srlv $t0, $t1, $s0
+    sub $t0, $s0, $t1
+    subu $t0, $s0, $t1
+    xor $t0, $s0, $t1
+    xori $t1, $s0, 4
+    lui $t1, 4
+    slt $t0, $s0, $t1
+    sltu $t0, $s0, $t1
+    slti $t1, $s0, 4
+    sltiu $t1, $s0, 4
+    bc1f 1 100
+    bc1t 1 100
+    beq $s0, $t1, 100
+    bgez $s0, 100
+    bgezal $s0, 100
+    bgtz $s0, 100
+    blez $s0, 100
+    bltzal $s0, 100
+    bltz $s0, 100
+    bne $s0, $t1, 100
+    j 1000
+    jal 1000
+    jalr $s0, $t0
+    jr $s0
+    teq $s0, $t1
+    teqi $s0, 4
+    tne $s0, $t1
+    tnei $s0, 4
+    tge $s0, $t1
+    tgeu $s0, $t1
+    tgei $s0, 4
+    tgeiu $s0, 4
+    tlt $s0, $t1
+    tltu $s0, $t1
+    tlti $s0, 4
+    tltiu $s0, 4
+    lb $t3, 200($t1)
+    lbu $t3, 200($t1)
+    lh $t3, 200($t1)
+    lhu $t3, 200($t1)
+    lw $t3, 200($t1)
+    lwc1 $t3, 200($t1)
+    lwl $t3, 200($t1)
+    lwr $t3, 200($t1)
+    ll $t3, 200($t1)
+    sh $t3, 200($t1)
+    sb $t3, 200($t1)
+    sw $t3, 200($t1)
+teste:
+    swc1 $s3, 200($t1)
+    sdc1 $s3, 200($t1)
+    swl $t3, 200($t1)
+    swr $t3, 200($t1)
+    sc $t3, 200($t1)
+    mfhi $t0
+    mflo $t0
+    mthi $s0
+    mtlo $s0
+    mfc0 $t1, $t0
+    mfc1 $t1, $s0
+    mtc0 $t0, $t1
+    mtc1 $t0, $s0
+    movn $t0, $s0, $t1
+    movz $t0, $s0, $t1
+    movf $t0, $s0, 1
+    movt $t0, $s0, 1

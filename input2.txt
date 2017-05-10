@@ -1,0 +1,11 @@
+.text
+    add $t0, $s0, $t1
+    addu $t0, $s0, $t1
+    addiu $t1, $s0, 4
+    and $t0, $s0, $t1
+    andi $t1, $s0, 4
+    clo $t0, $s0
+    clz $t0, $s0
+    div $s0, $t1
+    movn $t0, $s0, $t1
+    movt $t0, $s0, 1

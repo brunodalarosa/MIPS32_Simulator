@@ -1,0 +1,8 @@
+Op tipo R: 0 9 10 11 0 32
+Op tipo J: 2 1000
+
+sem secao de dados
+
+numero de instrucoes = 0
+
+FIM
