@@ -89,9 +89,9 @@ Op tipo M: 0 16 9 8 10
 Op tipo M Especial: 0 16 1 0 8 0 1
 Op tipo M Especial: 0 16 1 1 8 0 1
 
-numero de instrucoes = 95
+Numero de linhas computadas = 95
 
-LABELS:
+Labels:
 main = 400
 loo = 528
 teste = 2832

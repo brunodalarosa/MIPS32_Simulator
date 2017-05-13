@@ -38,7 +38,7 @@
 %%
 saida: secao_data secao_text END_OF_FILE { return 0;}
 | secao_data EOL secao_text END_OF_FILE{ return 0;}
-| secao_text END_OF_FILE {fprintf(log, "\nsem secao de dados\n"); return 0;}
+| secao_text END_OF_FILE {fprintf(logFile, "\nsem secao de dados\n"); return 0;}
 ;
 
 secao_data: data EOL var
@@ -56,51 +56,61 @@ instrucao: linha EOL instrucao {}
 linha: operacao {line++;}
 
 operacao: /* nada */
-| R {fprintf(log,"Op tipo R: %d %d %d %d %d %d\n",
+| R {fprintf(logFile,"Op tipo R: %d %d %d %d %d %d\n",
  						  		$<op.code>1, $<op.rs>1, $<op.rt>1,
-						  		$<op.rd>1, $<op.aux>1, $<op.func>1);}
+						  		$<op.rd>1, $<op.aux>1, $<op.func>1);
 
-| RD {fprintf(log,"Op tipo RD: %d %d %d %d %d\n",
+    node n = malloc(sizeof(node_t));
+	n->tipo = 1;
+	n->op   = $<op.code>1;
+ 	n->rs   = $<op.rs>1;
+	n->rt   = $<op.rt>1;
+    n->rd   = $<op.rd>1;
+    n->aux  = $<op.aux>1;
+	n->func = $<op.func>1;
+    insereLista(n); }
+
+| RD {fprintf(logFile,"Op tipo RD: %d %d %d %d %d\n",
  								  $<op.code>1, $<op.rs>1, $<op.rt>1,
 							  	  $<op.aux>1, $<op.func>1);}
 
-| L {fprintf(log,"Op tipo L: %d %d %d %d\n",
+| L {fprintf(logFile,"Op tipo L: %d %d %d %d\n",
  								$<op.code>1, $<op.rs>1, $<op.rt>1, $<op.aux>1);}
 
-| I {fprintf(log,"Op tipo I: %d %d %d %d\n",
+| I {fprintf(logFile,"Op tipo I: %d %d %d %d\n",
   						        $<op.code>1, $<op.rs>1, $<op.rt>1,
 							    $<op.aux>1);}
 
-| B {fprintf(log,"Op tipo B: %d %d %d %d\n",
+| B {fprintf(logFile,"Op tipo B: %d %d %d %d\n",
   						        $<op.code>1, $<op.rs>1, $<op.func>1,
 							    $<op.aux>1);}
 
-| BC {fprintf(log,"Op tipo BC: %d %d %d %d %d\n",
+| BC {fprintf(logFile,"Op tipo BC: %d %d %d %d %d\n",
  								  $<op.code>1, $<op.rs>1, $<op.rt>1,
 							  	  $<op.func>1, $<op.aux>1);}
 
-| J {fprintf(log,"Op tipo J: %d %d\n", $<op.code>1, $<op.aux>1);}
+| J {fprintf(logFile,"Op tipo J: %d %d\n", $<op.code>1, $<op.aux>1);}
 
-| JR {fprintf(log,"Op tipo JR: %d %d %d %d\n",
+| JR {fprintf(logFile,"Op tipo JR: %d %d %d %d\n",
  								  $<op.code>1, $<op.rs>1,
 								  $<op.aux>1, $<op.func>1);}
 
-| T {fprintf(log, "Op tipo T: %d %d %d %d %d\n", $<op.code>1,
+| T {fprintf(logFile, "Op tipo T: %d %d %d %d %d\n", $<op.code>1,
  						       $<op.rs>1,$<op.rt>1, $<op.aux>1, $<op.func>1);}
 
-| M {fprintf(log, "Op tipo M: %d %d %d %d %d\n",
+| M {fprintf(logFile, "Op tipo M: %d %d %d %d %d\n",
  								  $<op.code>1, $<op.rs>1, $<op.rt>1, $<op.rd>1,
 							      $<op.func>1);}
 
-| MT {fprintf(log, "Op tipo M: %d %d %d %d %d\n",
+| MT {fprintf(logFile, "Op tipo M: %d %d %d %d %d\n",
  						  	       $<op.code>1, $<op.rs>1, $<op.rt>1,
 						           $<op.rd>1, $<op.func>1);}
 
-| MF {fprintf(log, "Op tipo MF: %d %d %d %d %d\n",
+| MF {fprintf(logFile, "Op tipo MF: %d %d %d %d %d\n",
  						           $<op.code>1, $<op.rs>1, $<op.rd>1,
 								   $<op.aux>1, $<op.func>1);}
 
-| MS {fprintf(log, "Op tipo M Especial: %d %d %d %d %d %d %d\n",
+| MS {fprintf(logFile, "Op tipo M Especial: %d %d %d %d %d %d %d\n",
  						  $<op.code>1, $<op.rs>1, $<op.aux>1, $<op.func>1,
 					   	  $<op.rd>1, 0, 1);}
 ;

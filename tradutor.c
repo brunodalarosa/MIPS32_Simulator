@@ -12,13 +12,13 @@ typedef unsigned int binst;
 
 void checkSizes(){
 	if (lbl_count == lbl_tam){
-		lbl_tam = lbl_tam + 10;
+		lbl_tam = lbl_tam + 5;
 		lbl_names = realloc(lbl_names, sizeof(char*) * lbl_tam);
 		lbl_values = realloc(lbl_values, sizeof(int) * lbl_tam);
 	}
 
 	if (var_count == var_tam){
-		var_tam = var_tam + 10;
+		var_tam = var_tam + 5;
 		var_names = realloc(var_names, sizeof(char*) * var_tam);
 		var_values = realloc(var_values, sizeof(int) * var_tam);
 	}
@@ -55,9 +55,10 @@ void parseargs(int argc, char **argv){
 	}
 }
 
+
 void init(){
 	/* Inicialização da lista de instruções */
-	lista = malloc(sizeof(node));
+	lista = malloc(sizeof(node_t));
 
 	/* Definição das declarações externas */
 	line = 0;
@@ -73,6 +74,46 @@ void init(){
 	var_names = malloc(sizeof(char*) * var_tam);
 	var_values = malloc(sizeof(int) * var_tam);
 	var_adress = malloc(sizeof(int) * var_tam);
+}
+
+void insereLista(node n){
+	node ultimo = lista;
+	while(ultimo->prox != NULL) ultimo = ultimo->prox;
+
+	ultimo->prox = n;
+}
+
+void printaNos(){
+	int i = 1;
+	node walker = lista->prox;
+	while(walker != NULL){
+		printf("%2d[%d]|Op = %2d|rs = %2d|rt = %2d|rd = %2d|aux = %2d|func = %2d %s\n",
+		i, walker->tipo, walker->op, walker->rs, walker->rt, walker->rd,
+		walker->aux, walker->func, walker->label);
+		walker = walker->prox;
+		i++;
+	}
+	printf("\nfim da lista\n");
+}
+
+void fechaLog(){
+	int i;
+	fprintf(logFile, "\nNumero de linhas computadas = %d\n",line);
+
+	if (lbl_count > 0) fprintf(logFile, "\nLabels:\n");
+	for(i = 0; i < lbl_count; i++){
+		fprintf(logFile, "%s = %d\n",lbl_names[i], lbl_values[i]);
+	}
+
+	if (var_count > 0) fprintf(logFile, "\nVariaveis:\n");
+	for(i = 0; i < var_count; i++){
+		fprintf(logFile, "%s (%d) = %d\n",var_names[i],
+						var_adress[i], var_values[i]);
+	}
+
+	fprintf(logFile, "\nFIM\n");
+
+	fclose(logFile);
 }
 
 int main(int argc, char **argv){
@@ -92,7 +133,7 @@ int main(int argc, char **argv){
 		exit(1);
 	}
 
-	if ((log = fopen("log.txt","w")) == NULL) {
+	if ((logFile = fopen("log.txt","w")) == NULL) {
 		printf("ERRO!\nProblema na criação do arquivo de log\n");
 		exit(1);
 	}
@@ -109,6 +150,7 @@ int main(int argc, char **argv){
 	yyparse();
 
 	/*Pós parsing*/
+	if(opt_debug) printaNos();
 
 	/* TODO escrever e preencher o segmento de dados */
 
@@ -116,24 +158,7 @@ int main(int argc, char **argv){
 
 	/* TODO finazlizar o arquivo */
 
-	/* Log de informações  TODO usar outro arquivode saida "log.txt"
-	   TODO mover para um função*/
-	fprintf(log, "\nnumero de instrucoes = %d\n",line);
-
-	if (lbl_count > 0) fprintf(log, "\nLABELS:\n");
-	for(i = 0; i < lbl_count; i++){
-		fprintf(log, "%s = %d\n",lbl_names[i], lbl_values[i]);
-	}
-
-	if (var_count > 0) fprintf(log, "\nVariaveis:\n");
-	for(i = 0; i < var_count; i++){
-		fprintf(log, "%s (%d) = %d\n",var_names[i],
-		 				var_adress[i], var_values[i]);
-	}
-
-	fprintf(log, "\nFIM\n");
-
-	fclose(log);
+	fechaLog();
 	fclose(output);
 	return 0;
 }
