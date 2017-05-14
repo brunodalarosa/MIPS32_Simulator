@@ -4,11 +4,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <getopt.h>
+#include <limits.h>
 #include "tradutor.h"
 #include "parser.h"
 #include "estrutura.h"
 
-typedef unsigned int binst;
+typedef unsigned int* binst;
 
 void checkSizes(){
 	if (lbl_count == lbl_tam){
@@ -25,9 +26,52 @@ void checkSizes(){
 
 }
 
-binst traduz(node i){
-    /*TODO recebe um nó, identifica seu tipo e constroi um objeto binst: */
+void printaBinario(binst bi){
+	unsigned int p = 2147483648;
+	int k;
+	fprintf(logFile, "Binst:");
+	while(p > 0){
+		if (p & *bi){
+			fprintf(logFile, "1");
+		} else fprintf(logFile,"0");
+		p >>= 1;
+	}
+	fprintf(logFile,"\n");
+}
+
+binst traduz(node n){
+    /*TODO recebe um nó, identifica seu tipo e constrói um objeto binst: */
     /*Uma palavra de 32 bits pronta pra ser escrita no arquivo de saida */
+
+	int shift = 26; //32 - 6(op)
+	binst bi = malloc(sizeof(int));
+	n->op <<= shift;
+	int tipo = n->tipo;
+
+	switch (tipo) {
+		case 1: //R
+			shift -= 5; //21
+			n->rs <<= shift;
+			shift -= 5; //16
+			n->rt <<= shift;
+			shift -= 5; //11
+			n->rd <<= shift;
+			shift -= 5; //6
+			n->aux <<= shift;
+
+			n->func <<= shift;
+
+			*bi = n->op | n->rs | n-> rt | n-> rd | n->aux | n->func;
+			break;
+
+		case 2:
+			break;
+
+		default:
+			break;
+	}
+
+	return bi;
 }
 
 void parseargs(int argc, char **argv){
@@ -116,6 +160,21 @@ void fechaLog(){
 	fclose(logFile);
 }
 
+void escreve(){
+	/* seção de dados */
+
+	/*seção de texto */
+	binst bi;
+	lista = lista->prox;
+	while(lista != NULL){
+		bi = traduz(lista);
+		fwrite(bi, 4, 1, output);
+		if(opt_debug) printaBinario(bi);
+		free(bi);
+		lista = lista->prox;
+	}
+}
+
 int main(int argc, char **argv){
 	int i;
 
@@ -154,7 +213,7 @@ int main(int argc, char **argv){
 
 	/* TODO escrever e preencher o segmento de dados */
 
-	/* TODO while(list != null) : escreve(traduz(*lista)[binst]); */
+	escreve(lista);
 
 	/* TODO finazlizar o arquivo */
 

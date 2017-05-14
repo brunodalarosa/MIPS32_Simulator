@@ -1,103 +1,21 @@
 Op tipo R: 0 8 16 9 0 32
 Op tipo R: 0 8 16 9 0 33
-Op tipo I: 8 9 16 4
 Op tipo I: 9 9 16 4
 Op tipo R: 0 8 16 9 0 36
 Op tipo I: 12 9 16 4
 Op tipo R: 28 16 0 8 0 32
 Op tipo R: 28 16 0 8 0 33
 Op tipo RD: 0 16 9 0 26
-Op tipo RD: 0 16 9 0 27
-Op tipo R: 0 9 0 16 0 24
-Op tipo R: 0 9 0 16 0 25
-Op tipo R: 28 8 16 9 0 2
-Op tipo RD: 28 16 9 0 0
-Op tipo RD: 28 16 9 0 1
-Op tipo RD: 28 16 9 0 4
-Op tipo RD: 28 16 9 0 4
-Op tipo R: 0 8 16 9 0 39
-Op tipo R: 0 8 16 9 0 37
-Op tipo I: 13 9 16 4
-Op tipo R: 0 0 9 8 32 0
-Op tipo R: 0 16 9 8 0 4
-Op tipo R: 0 0 9 8 32 3
-Op tipo R: 0 16 9 8 0 7
-Op tipo R: 0 0 9 8 32 2
-Op tipo R: 0 16 9 8 0 6
-Op tipo R: 0 8 16 9 0 34
-Op tipo R: 0 8 16 9 0 35
-Op tipo R: 0 8 16 9 0 38
-Op tipo I: 14 9 16 4
-Op tipo I: 15 0 9 4
-Op tipo R: 0 8 16 9 0 42
-Op tipo R: 0 8 16 9 0 43
-Op tipo I: 10 9 16 4
-Op tipo I: 11 9 16 4
-Op tipo BC: 17 8 1 0 100
-Op tipo BC: 17 8 1 1 100
-Op tipo I: 4 16 9 100
-Op tipo B: 1 16 1 100
-Op tipo B: 1 16 17 100
-Op tipo B: 7 16 0 100
-Op tipo B: 6 16 0 100
-Op tipo B: 1 16 16 100
-Op tipo B: 1 16 0 100
-Op tipo I: 5 16 9 100
-Op tipo J: 2 1000
-Op tipo J: 3 1000
-Op tipo R: 0 16 0 8 0 9
-Op tipo JR: 0 16 0 8
-Op tipo T: 0 16 9 0 52
-Op tipo I: 1 16 12 4
-Op tipo T: 0 16 9 0 54
-Op tipo I: 0 16 14 4
-Op tipo T: 0 16 9 0 48
-Op tipo T: 0 16 9 0 49
-Op tipo I: 1 16 8 4
-Op tipo I: 1 16 9 4
-Op tipo T: 0 16 9 0 50
-Op tipo T: 0 16 9 0 51
-Op tipo I: 1 16 10 4
-Op tipo I: 1 16 11 4
-Op tipo L: 32 9 11 200
-Op tipo L: 36 9 11 200
-Op tipo L: 33 9 11 200
-Op tipo L: 37 9 11 200
-Op tipo L: 35 9 11 200
-Op tipo L: 49 9 11 200
-Op tipo L: 34 9 11 200
-Op tipo L: 38 9 11 200
-Op tipo L: 48 9 11 200
-Op tipo L: 41 9 11 200
-Op tipo L: 40 9 11 200
-Op tipo L: 43 9 11 200
-Op tipo L: 49 9 19 200
-Op tipo L: 61 9 19 200
-Op tipo L: 42 9 11 200
-Op tipo L: 46 9 11 200
-Op tipo L: 56 9 11 200
-Op tipo MF: 0 0 8 0 16
-Op tipo MF: 0 0 8 0 18
-Op tipo M: 0 16 0 0 17
-Op tipo M: 0 16 0 0 19
-Op tipo M: 16 0 9 8 0
-Op tipo M: 17 0 9 16 0
-Op tipo M: 16 4 8 9 0
-Op tipo M: 17 4 8 16 0
 Op tipo M: 0 16 9 8 11
-Op tipo M: 0 16 9 8 10
-Op tipo M Especial: 0 16 1 0 8 0 1
 Op tipo M Especial: 0 16 1 1 8 0 1
 
-Numero de linhas computadas = 95
+sem secao de dados
+Binst:00000001000100000100100000000000
+Binst:00000001000100000100100001000000
+Binst:00000001000100000100100100000000
+Binst:01110010000000000100100000000000
+Binst:01110010000000000100100001000000
 
-Labels:
-main = 400
-loo = 528
-teste = 2832
-
-Variaveis:
-y (0) = 10
-x (32) = 5
+Numero de linhas computadas = 10
 
 FIM

@@ -33,13 +33,13 @@ int line;
 typedef struct node_t* node;
 
 struct node_t{
-    int tipo;
-    int op;
-    int rs;
-    int rt;
-    int rd;
-    int func;
-    int aux; //shift amount | imm | address | offset
+    unsigned int tipo;
+    unsigned int op;
+    unsigned int rs;
+    unsigned int rt;
+    unsigned int rd;
+    unsigned int func;
+    unsigned int aux; //shift amount | imm | address | offset
     char* label;
     node prox;
 } node_t;
