@@ -24,11 +24,11 @@ loo: addi $t1, $s0, 4
     nor $t0, $s0, $t1
     or $t0, $s0, $t1
     ori $t1, $s0, 4
-    sll $t0, $t1, 32
+    sll $t0, $t1, 12
     sllv $t0, $t1, $s0
     sra $t0, $t1, 32
     srav $t0, $t1, $s0
-    srl $t0, $t1, 32
+    srl $t0, $t1, 12
     srlv $t0, $t1, $s0
     sub $t0, $s0, $t1
     subu $t0, $s0, $t1

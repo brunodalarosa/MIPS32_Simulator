@@ -72,14 +72,32 @@ operacao: /* nada */
 
 | RD {fprintf(logFile,"Op tipo RD: %d %d %d %d %d\n",
  								  $<op.code>1, $<op.rs>1, $<op.rt>1,
-							  	  $<op.aux>1, $<op.func>1);}
+							  	  $<op.aux>1, $<op.func>1);
+
+				node n = malloc(sizeof(node_t));
+				n->tipo = 1;
+				n->op   = $<op.code>1;
+				n->rs   = $<op.rs>1;
+				n->rt   = $<op.rt>1;
+				n->rd   = 0;
+				n->aux  = 0;
+				n->func = $<op.func>1;
+				insereLista(n);}
 
 | L {fprintf(logFile,"Op tipo L: %d %d %d %d\n",
  								$<op.code>1, $<op.rs>1, $<op.rt>1, $<op.aux>1);}
 
 | I {fprintf(logFile,"Op tipo I: %d %d %d %d\n",
   						        $<op.code>1, $<op.rs>1, $<op.rt>1,
-							    $<op.aux>1);}
+							    $<op.aux>1);
+
+				node n = malloc(sizeof(node_t));
+				n->tipo = 2;
+				n->op   = $<op.code>1;
+				n->rs   = $<op.rs>1;
+				n->rt   = $<op.rt>1;
+				n->aux  = $<op.aux>1;
+				insereLista(n);}
 
 | B {fprintf(logFile,"Op tipo B: %d %d %d %d\n",
   						        $<op.code>1, $<op.rs>1, $<op.func>1,
@@ -87,7 +105,16 @@ operacao: /* nada */
 
 | BC {fprintf(logFile,"Op tipo BC: %d %d %d %d %d\n",
  								  $<op.code>1, $<op.rs>1, $<op.rt>1,
-							  	  $<op.func>1, $<op.aux>1);}
+							  	  $<op.func>1, $<op.aux>1);
+
+				node n = malloc(sizeof(node_t));
+  				n->tipo = 3;
+  				n->op   = $<op.code>1;
+  				n->rs   = $<op.rs>1;
+  				n->rt   = $<op.rt>1;
+				n->func = $<op.func>1;
+  				n->aux  = $<op.aux>1;
+  				insereLista(n);}
 
 | J {fprintf(logFile,"Op tipo J: %d %d\n", $<op.code>1, $<op.aux>1);}
 

@@ -59,12 +59,27 @@ binst traduz(node n){
 			shift -= 5; //6
 			n->aux <<= shift;
 
-			n->func <<= shift;
-
 			*bi = n->op | n->rs | n-> rt | n-> rd | n->aux | n->func;
 			break;
 
-		case 2:
+		case 2: //I
+			shift -= 5; //21
+			n->rs <<= shift;
+			shift -= 5; //16
+			n->rt <<= shift;
+
+			*bi = n->op | n->rs | n-> rt | n->aux;
+			break;
+
+		case 3: //B
+			shift -= 5; //21
+			n->rs <<= shift;
+			shift -= 3; //18
+			n->rt <<= shift;
+			shift -= 2; //16
+			n->func <<= shift;
+
+			*bi = n->op | n->rs | n-> rt | n->func | n->aux;
 			break;
 
 		default:
