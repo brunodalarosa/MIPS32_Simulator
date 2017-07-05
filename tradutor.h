@@ -1,28 +1,55 @@
-/* Header do arquivo principal tradutor Assembly MIPS32*/
-/* Autor Bruno, bcesar.g6@gmail.com*/
+/* Define a estrutura de arvore de instrucoes usada no tradutor */
+/* Bruno, bcesar.g6@gmail.com */
+
+/*          Tabela - Tipos de instruções          */
+/* R [1] : op(6)|rs(5)|rt(5)|rd(5)|shamt(5)|func(6)*/
+/* I [2] : op(6)|rs(5)|rt(5)|imm(16)               */
+/* D [3] : op(6)|rs(5)|rt(5)|aux(10)|func(6)       */
+/* J [4] : op(6)|target(26)                        */
+/* MF[5] : op(6)|(10)|rd(5)|(5)|(6)                */
+/* MT[6] : op(6)|(5)|(15)|(6)                      */
+/* M [7] : op(6)|rs(5)|rt(5)|rd(5)|(11)            */
+/* B [8] : op(6)|rs(5)|aux(5)|offset(16)           */
+
 
 #ifndef __TRADUTOR_H
 #define __TRADUTOR_H
 
-/* Testes */
-/* 000000 01000 10000 01001 00000 100000*/
-/* 00000001000100000100100000100000*/
+#define DATA_OFFSET 400
+#define INST_SIZE 32
 
+int lbl_count;
+char** lbl_names;
+unsigned int* lbl_values;
+int lbl_tam;
 
+int var_count;
+char** var_names;
+int* var_adress;
+unsigned int* var_values;
+int var_tam; //var_tamanho inicial do vetor de variaveis
 
+int line;
+typedef struct node_t* node;
 
+struct node_t{
+    unsigned int tipo;
+    unsigned int op;
+    unsigned int rs;
+    unsigned int rt;
+    unsigned int rd;
+    unsigned int func;
+    unsigned int aux; //shift amount | imm | address | offset
+    char* label;
+    node prox;
+} node_t;
 
-/* Tabela de tipos e tradução */
-/* 1 = R -> OP(6)|RS(x)|RT(x)|RD(x)|SHAMT(x)|FUNC(6)*/
-/* 2 = L -> */
-/**/
-/**/
-/**/
-/**/
-
-char opt_saida = 0;
-char opt_debug = 0;
+node lista;
 
 void checkSizes(void);
+void insereLista(node n);
+int labelMatch(char* label);
+void tradutor();
+void tradutorInit();
 
 #endif

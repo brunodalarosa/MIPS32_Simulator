@@ -3,13 +3,12 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <getopt.h>
 #include <limits.h>
+#include <string.h>
 #include "tradutor.h"
 #include "parser.h"
-#include "estrutura.h"
-
-typedef unsigned int* binst;
+#include "simulador.h"
+#include "utils.h"
 
 void checkSizes(){
 	if (lbl_count == lbl_tam){
@@ -19,32 +18,31 @@ void checkSizes(){
 	}
 
 	if (var_count == var_tam){
+		if (var_count >= 100) launchError(3); //limite maximo de variaveis
 		var_tam = var_tam + 5;
 		var_names = realloc(var_names, sizeof(char*) * var_tam);
 		var_values = realloc(var_values, sizeof(int) * var_tam);
 	}
-
 }
 
-void printaBinario(binst bi){
-	unsigned int p = 2147483648;
-	int k;
-	fprintf(logFile, "Binst:");
-	while(p > 0){
-		if (p & *bi){
-			fprintf(logFile, "1");
-		} else fprintf(logFile,"0");
-		p >>= 1;
+/* Identifica e retorna a posição da label na lista de labels */
+/* retorna -1 caso a label não esteja na lista				  */
+/* Args| char* label : Uma label a ser identificada 		  */
+int labelMatch(char* label){
+	int i;
+	for(i = 0; i < lbl_count; i++){
+		if(strcmp(label, lbl_names[i]) == 0){
+			return i;
+		}
 	}
-	fprintf(logFile,"\n");
+	return -1;
 }
 
-binst traduz(node n){
-    /*TODO recebe um nó, identifica seu tipo e constrói um objeto binst: */
-    /*Uma palavra de 32 bits pronta pra ser escrita no arquivo de saida */
-
+/* Identifica o tipo da instrução e constrói um objeto word */
+/* Arg| Node n : Um nó a ser traduzido						 */
+word traduz(node n){
 	int shift = 26; //32 - 6(op)
-	binst bi = malloc(sizeof(int));
+	word bi = malloc(sizeof(int));
 	n->op <<= shift;
 	int tipo = n->tipo;
 
@@ -71,7 +69,7 @@ binst traduz(node n){
 			*bi = n->op | n->rs | n-> rt | n->aux;
 			break;
 
-		case 3: //B
+		case 3: //D
 			shift -= 5; //21
 			n->rs <<= shift;
 			shift -= 3; //18
@@ -82,6 +80,64 @@ binst traduz(node n){
 			*bi = n->op | n->rs | n-> rt | n->func | n->aux;
 			break;
 
+		case 4: //J
+			if (n-> label != NULL){
+				int p = labelMatch(n->label);
+				if (p == -1) launchError(2);
+
+				*bi = n->op | lbl_values[p];
+			} else{
+
+				*bi = n->op | n->aux;
+			}
+			break;
+
+		case 5: //MF
+			shift -= 10; //16
+			n->rs <<= shift;
+			shift -= 5;  //11
+			n->rd <<= shift;
+			shift -= 5;  //6
+			n->aux <<= shift;
+
+			*bi = n->op | n->rs | n->rd | n->aux | n->func;
+			break;
+
+		case 6: //MT
+			shift -= 5; //21
+			n->rs <<= shift;
+			shift -= 15;  //6
+			n->aux <<= shift;
+
+			*bi = n->op | n->rs | n->aux | n->func;
+			break;
+
+		case 7: //M
+			shift -= 5; //21
+			n->rs <<= shift;
+			shift -= 5; //16
+			n->rt <<= shift;
+			shift -= 5; //11
+			n->rd <<= shift;
+
+			*bi = n->op | n->rs | n-> rt | n-> rd | n->func;
+			break;
+
+		case 8: //B
+			shift -= 5; //21
+			n->rs <<= shift;
+			shift -= 5; //16
+			n->rt <<= shift;
+
+			if (n-> label != NULL){
+				int p = labelMatch(n->label);
+				if (p == -1) launchError(2);
+
+				*bi = n->op | n->rs | n-> rt | lbl_values[p];
+			}
+
+			break;
+
 		default:
 			break;
 	}
@@ -89,35 +145,86 @@ binst traduz(node n){
 	return bi;
 }
 
-void parseargs(int argc, char **argv){
-	extern char *optarg;
-    char op;
+/* Insere um nó na lista de nós */
+/* Arg| O nó a ser inserido     */
+void insereLista(node n){
+	node ultimo = lista;
+	while(ultimo->prox != NULL) ultimo = ultimo->prox;
 
-	struct option longopts[] = {
-		{"saida", 0, NULL, 's'},
-	    {"debug", 0, NULL, 'd'}
-	};
+	ultimo->prox = n;
+}
 
-	while ((op = getopt_long(argc, argv, "sd", longopts, NULL)) != -1) {
-		switch (op) {
-			case 's':
-				opt_saida = 1;
-				break;
+/* Caminha pela lista de instruções printando uma a uma */
+void printaNos(){
+	int i = 1;
+	node walker = lista->prox;
 
-			case 'd':
-				opt_debug = 1;
-				break;
-			default:
+	fprintf(log_t_file, "\nLista de nós:\n");
+	while(walker != NULL){
 
-				break;
-		}
+		fprintf(log_t_file, "%2d[%d]|Op = %2d|rs = %2d|rt = %2d|rd = %2d|aux = %2d|func = %2d %s\n",
+		i, walker->tipo, walker->op, walker->rs, walker->rt, walker->rd,
+		walker->aux, walker->func, walker->label);
+
+		walker = walker->prox;
+		i++;
+	}
+	fprintf(log_t_file,"\n\t\tfim da lista\n");
+}
+
+/* Finaliza, salva e fecha o arquivo de log */
+void fechaLog(){
+	int i;
+	fprintf(log_t_file, "\nNumero de linhas computadas = %d\n",line);
+
+	if (lbl_count > 0) fprintf(log_t_file, "\nLabels:\n");
+	for(i = 0; i < lbl_count; i++){
+		fprintf(log_t_file, "%s = %d\n",lbl_names[i], lbl_values[i]);
+	}
+
+	if (var_count > 0) fprintf(log_t_file, "\nVariaveis:\n");
+	for(i = 0; i < var_count; i++){
+		fprintf(log_t_file, "%s (%d) = %d\n",var_names[i],
+						var_adress[i], var_values[i]);
+	}
+
+	fprintf(log_t_file, "\nFim do log de tradução.");
+
+	fclose(log_t_file);
+}
+
+/* Escreve a seção de dados do arquivo de saída, preenche a primeira parte */
+/* com as variaveis declaradas e o restante dos 400 Bytes com zeros		   */
+void escreveDados(){
+	unsigned int* zeros;
+	int i, size = 100 - var_count;
+
+	fwrite(var_values, sizeof(unsigned int), var_count, bin_file);
+
+	zeros = (unsigned int*) calloc(size, sizeof(unsigned int));
+	fwrite(zeros, sizeof(unsigned int), size, bin_file);
+}
+
+/* Escreve todas as instruções traduzidas	  */
+/* na lista de instruções no arquivo de saida */
+void escreveTexto(){
+	word bi;
+	lista = lista->prox;
+	while(lista != NULL){
+		bi = traduz(lista);
+		fwrite(bi, 4, 1, bin_file);
+		if(get_flag(FLAG_DEBUG)) printaBinario(bi, 1, log_t_file);
+		free(bi);
+		lista = lista->prox;
 	}
 }
 
 
-void init(){
+/* Inicialização do tradutor */
+void tradutorInit(){
 	/* Inicialização da lista de instruções */
 	lista = malloc(sizeof(node_t));
+	lista->prox = NULL;
 
 	/* Definição das declarações externas */
 	line = 0;
@@ -133,106 +240,41 @@ void init(){
 	var_names = malloc(sizeof(char*) * var_tam);
 	var_values = malloc(sizeof(int) * var_tam);
 	var_adress = malloc(sizeof(int) * var_tam);
-}
 
-void insereLista(node n){
-	node ultimo = lista;
-	while(ultimo->prox != NULL) ultimo = ultimo->prox;
+	set_input();
 
-	ultimo->prox = n;
-}
-
-void printaNos(){
-	int i = 1;
-	node walker = lista->prox;
-	while(walker != NULL){
-		printf("%2d[%d]|Op = %2d|rs = %2d|rt = %2d|rd = %2d|aux = %2d|func = %2d %s\n",
-		i, walker->tipo, walker->op, walker->rs, walker->rt, walker->rd,
-		walker->aux, walker->func, walker->label);
-		walker = walker->prox;
-		i++;
+	if (get_flag(FLAG_DEBUG)){
+		printf("\nDebugging : Etapa Tradução\n");
+		fprintf(log_t_file, "\t\tLog da tradução da entrada %s\n", nome_input);
 	}
-	printf("\nfim da lista\n");
 }
 
-void fechaLog(){
+void tradutor(){
 	int i;
-	fprintf(logFile, "\nNumero de linhas computadas = %d\n",line);
-
-	if (lbl_count > 0) fprintf(logFile, "\nLabels:\n");
-	for(i = 0; i < lbl_count; i++){
-		fprintf(logFile, "%s = %d\n",lbl_names[i], lbl_values[i]);
-	}
-
-	if (var_count > 0) fprintf(logFile, "\nVariaveis:\n");
-	for(i = 0; i < var_count; i++){
-		fprintf(logFile, "%s (%d) = %d\n",var_names[i],
-						var_adress[i], var_values[i]);
-	}
-
-	fprintf(logFile, "\nFIM\n");
-
-	fclose(logFile);
-}
-
-void escreve(){
-	/* seção de dados */
-
-	/*seção de texto */
-	binst bi;
-	lista = lista->prox;
-	while(lista != NULL){
-		bi = traduz(lista);
-		fwrite(bi, 4, 1, output);
-		if(opt_debug) printaBinario(bi);
-		free(bi);
-		lista = lista->prox;
-	}
-}
-
-int main(int argc, char **argv){
-	int i;
-
-	parseargs(argc, argv);
-	char nome[99] = "saida.txt";
-
-	if(opt_saida){
-		printf("Nome do arquivo de saida: ");
-		scanf("%99s",nome);
-		__fpurge(stdin);
-	}
-
-	if ((output = fopen(nome,"w")) == NULL) {
-		printf("ERRO!\nProblema na criação do arquivo\n");
-		exit(1);
-	}
-
-	if ((logFile = fopen("log.txt","w")) == NULL) {
-		printf("ERRO!\nProblema na criação do arquivo de log\n");
-		exit(1);
-	}
-
-	if (opt_debug) {
-		/* DEBUG */
-		printf("Debugging pesado\n");
-	}
-
-	init();
-
-	printf("\nIniciar magias negras MIPS32:\n\n");
 
 	yyparse();
 
 	/*Pós parsing*/
-	if(opt_debug) printaNos();
 
-	/* TODO escrever e preencher o segmento de dados */
+	if(get_flag(FLAG_DEBUG)) printaNos();
 
-	escreve(lista);
+	escreveDados();
+
+	/* Por que isso tá aqui? */
+	/*if(get_flag(FLAG_DEBUG)){
+		word dados = malloc(sizeof(unsigned int) * 100);
+		fseek(bin_file, 0, SEEK_SET);
+		fread((void*) dados, sizeof(unsigned int), 100, bin_file);
+		int q;
+		for(q = 0; q < 100; q++){
+			printaBinario(&dados[q],);
+		}
+	}*/
+
+	escreveTexto(lista);
 
 	/* TODO finazlizar o arquivo */
 
 	fechaLog();
-	fclose(output);
-	return 0;
+	fclose(bin_file);
 }

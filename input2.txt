@@ -1,10 +1,7 @@
 .text
-    add $t0, $s0, $t1
-    addu $t0, $s0, $t1
-    and $t0, $s0, $t1
-    clo $t0, $s0
-    clz $t0, $s0
-    div $s0, $t1
+    lb $t3, 200($t1)
+    lbu $t3, 200($t1)
+    lh $t3, 200($t1)
     movn $t0, $s0, $t1
     movt $t0, $s0, 1
     madd $s0, $t1

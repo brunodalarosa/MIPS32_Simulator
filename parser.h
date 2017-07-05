@@ -40,18 +40,19 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 19 "parser.y" /* yacc.c:1909  */
+#line 27 "parser.y" /* yacc.c:1909  */
 
 	typedef struct{
-  		int code;
-		int rs;
-		int rt;
-		int rd;
-		int aux; //shift amount | imm | address | offset
-  		int func;
+  		unsigned int code;
+		unsigned int rs;
+		unsigned int rt;
+		unsigned int rd;
+		unsigned int aux; //shift amount | imm | address | offset
+  		unsigned int func;
+		char* label;
 	} strcinst; //struct instrucao
 
-#line 55 "parser.h" /* yacc.c:1909  */
+#line 56 "parser.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -89,13 +90,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 32 "parser.y" /* yacc.c:1909  */
+#line 41 "parser.y" /* yacc.c:1909  */
 
 	int val;
 	strcinst op;
 	char* text;
 
-#line 99 "parser.h" /* yacc.c:1909  */
+#line 100 "parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

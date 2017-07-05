@@ -1,0 +1,23 @@
+.data
+x : 5
+y : 10
+.text
+    main:
+    add $t0, $s0, $t1
+    addu $t0, $s0, $t1
+    and $t0, $s0, $t1
+    clo $t0, $s0
+    clz $t0, $s0
+    div $s0, $t1
+    loop: movn $t0, $s0, $t1
+    movt $t0, $s0, 1
+    madd $s0, $t1
+    maddu $s0, $t1
+    addiu $t1, $s0, 4
+    andi $t1, $s0, 4
+    ori $t1, $s0, 4
+    mfhi $t2
+    mtlo $s0
+    j main
+    j loop
+    j 256

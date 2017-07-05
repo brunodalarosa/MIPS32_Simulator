@@ -81,10 +81,6 @@ letter	[a-zA-Z]
 "slti"   {yylval.op.code = 10; return opcodei;}
 "sltiu"  {yylval.op.code = 11; return opcodei;}
 
-
-
-"bc1f"   {yylval.op.code = 17; yylval.op.func = 0;  return opcodeb;}
-"bc1t"   {yylval.op.code = 17; yylval.op.func = 1;  return opcodeb;}
 "beq"    {yylval.op.code = 4;  return opcodeb;}
 "bgez"   {yylval.op.code = 1;  yylval.op.func = 1;  return opcodeb;}
 "bgezal" {yylval.op.code = 1;  yylval.op.func = 17; return opcodeb;}

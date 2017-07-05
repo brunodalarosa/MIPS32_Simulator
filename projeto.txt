@@ -1,0 +1,31 @@
+Arquivo de organização dos conceitos e da estrutura do simulador MIPS32
+
+Definições básicas:
+    Word : Uma palavra possui 4 Bytes (32 bits).
+
+Módulos
+
+Tradutor (tradutor.c tradutor.h parser.y parser.h parser.tab.c lexic.l lex.yy.c )
+    O tradutor é o módulo responsável por ler o input do usuário (programa em Assembly MIPS),
+    e traduzi-lo em um programa binário a ser executado no simulador.
+
+    Estado: 90% ? Bug com operações B, falta implementar a tipagem das variaveis.
+    Debugging: Semi-implementado. Revisar.
+
+
+Memoria (memoria.c memoria.h)
+    A memoria é o módulo que representa a memória fisica do simulador, mais especificamente
+    é dado como requisito que ela possua 512M de tamanho. Podendo armazenar até 131072 palavras.
+
+    Estado: 20% ?
+    Debugging: inexistente. TODO.
+
+Utilitário (utils.c utils.h)
+    O módulo utilitário agrupa diversas funções de propósito geral que promovem o bom funcio-
+    namento do programa. Por se tretar de um agrupamento cada uma será avaliada:
+
+    pause : Pausa a execução do programa até que ENTER seja presioando. Função para Debugging
+            100%
+
+    readProgram : Função que lê o arquivo binário e o coloca na memória para ser executado.
+                 0% Debugging inexistente. TODO

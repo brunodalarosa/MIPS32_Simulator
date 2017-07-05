@@ -6,7 +6,8 @@ y:10
 main:
     add $t0, $s0, $t1
     addu $t0, $s0, $t1
-loo: addi $t1, $s0, 4
+loo:
+    addi $t1, $s0, 4
     addiu $t1, $s0, 4
     and $t0, $s0, $t1
     andi $t1, $s0, 4
@@ -39,18 +40,16 @@ loo: addi $t1, $s0, 4
     sltu $t0, $s0, $t1
     slti $t1, $s0, 4
     sltiu $t1, $s0, 4
-    bc1f 1 100
-    bc1t 1 100
-    beq $s0, $t1, 100
-    bgez $s0, 100
-    bgezal $s0, 100
-    bgtz $s0, 100
-    blez $s0, 100
-    bltzal $s0, 100
-    bltz $s0, 100
-    bne $s0, $t1, 100
-    j 1000
-    jal 1000
+    beq $s0, $t1, loo
+    bgez $s0, loo
+    bgezal $s0, loo
+    bgtz $s0, loo
+    blez $s0, loo
+    bltzal $s0, loo
+    bltz $s0, loo
+    bne $s0, $t1, loo
+    j loo
+    jal loo
     jalr $s0, $t0
     jr $s0
     teq $s0, $t1
