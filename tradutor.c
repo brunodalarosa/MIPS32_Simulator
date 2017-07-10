@@ -1,14 +1,7 @@
 /* Tradutor Assembly MIPS32 */
 /* Autor Bruno, bcesar.g6@gmail.com */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <limits.h>
-#include <string.h>
 #include "tradutor.h"
-#include "parser.h"
-#include "simulador.h"
-#include "utils.h"
 
 void checkSizes(){
 	if (lbl_count == lbl_tam){
@@ -37,6 +30,20 @@ int labelMatch(char* label){
 	}
 	return -1;
 }
+
+/* Identifica e retorna o endereço de uma variavel		 */
+/* retorna -1 caso a variavel não exista				 */
+/* Args| char* id : O endereço da variavel identificada  */
+int varMatch(char* id){
+	int i;
+	for(i = 0; i < var_count; i++){
+		if(strcmp(id, var_names[i]) == 0){
+			return (i * 32);
+		}
+	}
+	return -1;
+}
+
 
 /* Identifica o tipo da instrução e constrói um objeto word */
 /* Arg| Node n : Um nó a ser traduzido						 */
@@ -69,17 +76,6 @@ word traduz(node n){
 			*bi = n->op | n->rs | n-> rt | n->aux;
 			break;
 
-		case 3: //D
-			shift -= 5; //21
-			n->rs <<= shift;
-			shift -= 3; //18
-			n->rt <<= shift;
-			shift -= 2; //16
-			n->func <<= shift;
-
-			*bi = n->op | n->rs | n-> rt | n->func | n->aux;
-			break;
-
 		case 4: //J
 			if (n-> label != NULL){
 				int p = labelMatch(n->label);
@@ -92,26 +88,6 @@ word traduz(node n){
 			}
 			break;
 
-		case 5: //MF
-			shift -= 10; //16
-			n->rs <<= shift;
-			shift -= 5;  //11
-			n->rd <<= shift;
-			shift -= 5;  //6
-			n->aux <<= shift;
-
-			*bi = n->op | n->rs | n->rd | n->aux | n->func;
-			break;
-
-		case 6: //MT
-			shift -= 5; //21
-			n->rs <<= shift;
-			shift -= 15;  //6
-			n->aux <<= shift;
-
-			*bi = n->op | n->rs | n->aux | n->func;
-			break;
-
 		case 7: //M
 			shift -= 5; //21
 			n->rs <<= shift;
@@ -119,8 +95,10 @@ word traduz(node n){
 			n->rt <<= shift;
 			shift -= 5; //11
 			n->rd <<= shift;
+			shift -= 5; //6
+			n->aux <<= shift;
 
-			*bi = n->op | n->rs | n-> rt | n-> rd | n->func;
+			*bi = n->op | n->rs | n-> rt | n-> rd | n->aux | n->func;
 			break;
 
 		case 8: //B
@@ -131,11 +109,26 @@ word traduz(node n){
 
 			if (n-> label != NULL){
 				int p = labelMatch(n->label);
-				if (p == -1) launchError(2);
+				if (p == -1) launchError(4);
 
 				*bi = n->op | n->rs | n-> rt | lbl_values[p];
 			}
+			break;
 
+		case 9: //SL
+			shift -= 5; //21
+			n->rs <<= shift;
+			shift -= 5; //16
+			n->rt <<= shift;
+
+			if (n-> label != NULL){
+				int p = varMatch(n->label);
+				if (p == -1) launchError(6);
+
+				*bi = n->op | n->rs | n-> rt | p;
+			} else{
+				*bi = n->op | n->rs | n-> rt | n->aux;
+			}
 			break;
 
 		default:
@@ -199,7 +192,12 @@ void escreveDados(){
 	unsigned int* zeros;
 	int i, size = 100 - var_count;
 
-	fwrite(var_values, sizeof(unsigned int), var_count, bin_file);
+	if(get_flag(FLAG_VERBOSE)) printf("Numero de variaveis = %d\n", var_count);
+
+	/* Escreve na ordem certa */
+	for(i = var_count-1; i >= 0; i--){
+		fwrite(&var_values[i], sizeof(unsigned int), 1, bin_file);
+	}
 
 	zeros = (unsigned int*) calloc(size, sizeof(unsigned int));
 	fwrite(zeros, sizeof(unsigned int), size, bin_file);
@@ -212,7 +210,7 @@ void escreveTexto(){
 	lista = lista->prox;
 	while(lista != NULL){
 		bi = traduz(lista);
-		fwrite(bi, 4, 1, bin_file);
+		fwrite(bi, sizeof(unsigned int), 1, bin_file);
 		if(get_flag(FLAG_DEBUG)) printaBinario(bi, 1, log_t_file);
 		free(bi);
 		lista = lista->prox;
@@ -235,11 +233,11 @@ void tradutorInit(){
 
 	/* Inicialização dos Vetores para controle de Labels e variaveis */
 	lbl_names  = malloc(sizeof(char*) * lbl_tam);
-	lbl_values = malloc(sizeof(int) * lbl_tam);
+	lbl_values = malloc(sizeof(unsigned int) * lbl_tam);
 
 	var_names = malloc(sizeof(char*) * var_tam);
-	var_values = malloc(sizeof(int) * var_tam);
-	var_adress = malloc(sizeof(int) * var_tam);
+	var_values = malloc(sizeof(unsigned int) * var_tam);
+	var_adress = malloc(sizeof(unsigned int) * var_tam);
 
 	set_input();
 

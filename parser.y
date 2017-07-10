@@ -19,10 +19,10 @@ void set_input();
 %token reg
 /* 0 a 31 respectivamente, bison gera com +258, logo $zero = 258 */
 %token number virg EOL END_OF_FILE
-%token opcoder opcoders opcoderd opcodel opcodei opcodelui
-%token opcodeb opcodej opcodejr opcodet opcodemf opcodemt
+%token opcodeb opcoder opcoders opcoderd opcodel opcodei opcodelui
+%token opcodej opcodet opcodemf opcodemt
 %token abreparents fechaparents colon
-%token data text id
+%token data text id t_int
 
 %code requires{
 	typedef struct{
@@ -79,20 +79,6 @@ operacao: /* nada */
 	n->func = $<op.func>1;
     insereLista(n); }
 
-| RD {fprintf(log_t_file,"Op tipo RD: %d %d %d %d %d\n",
- 								  $<op.code>1, $<op.rs>1, $<op.rt>1,
-							  	  $<op.aux>1, $<op.func>1);
-
-				node n = malloc(sizeof(node_t));
-				n->tipo = 1;
-				n->op   = $<op.code>1;
-				n->rs   = $<op.rs>1;
-				n->rt   = $<op.rt>1;
-				n->rd   = 0;
-				n->aux  = 0;
-				n->func = $<op.func>1;
-				insereLista(n);}
-
 | I { if ($<op.label>1 == NULL){
 		fprintf(log_t_file,"Op tipo I: %d %d %d %d\n",
 	  						        $<op.code>1, $<op.rs>1, $<op.rt>1,
@@ -106,25 +92,40 @@ operacao: /* nada */
 		n->aux  = $<op.aux>1;
 		insereLista(n);}
 	else {
-		fprintf(log_t_file, "Op de Load: %d %d %s\n", $<op.code>1, $<op.rt>1,
-		 										   $<op.label>1);
+		fprintf(log_t_file, "Op tipo B: %d %d %d %s\n", $<op.code>1, $<op.rs>1,
+													$<op.rt>1, $<op.label>1);
 		node n 	 = malloc(sizeof(node_t));
 		n->tipo  = 8;
+		n->op 	 = $<op.code>1;
 		n->label = $<op.label>1;
  		n->rt    = $<op.rt>1;
+		n->rs	 = $<op.rs>1;
 		insereLista(n);}
 }
 
-| B {fprintf(log_t_file,"Op tipo B: %d %d %d %s\n",
- 								  $<op.code>1, $<op.rs>1, $<op.rt>1, $<op.label>1);
+| SL { if ($<op.label>1 == NULL){
+		fprintf(log_t_file,"Op tipo SL reg: %d %d %d %d\n",
+									$<op.code>1, $<op.rs>1, $<op.rt>1,
+									$<op.aux>1);
 
-				node n = malloc(sizeof(node_t));
-  				n->tipo = 8;
-  				n->op   = $<op.code>1;
-  				n->rs   = $<op.rs>1;
-				n->rt  = $<op.rt>1;
-				n->label = $<op.label>1;
-  				insereLista(n);}
+		node n = malloc(sizeof(node_t));
+		n->tipo = 9;
+		n->op   = $<op.code>1;
+		n->rs   = $<op.rs>1;
+		n->rt   = $<op.rt>1;
+		n->aux  = $<op.aux>1;
+		insereLista(n);}
+	else {
+		fprintf(log_t_file, "Op tipo SL var: %d %d %d %s\n", $<op.code>1, $<op.rs>1,
+													$<op.rt>1, $<op.label>1);
+		node n 	 = malloc(sizeof(node_t));
+		n->tipo  = 9;
+		n->op 	 = $<op.code>1;
+		n->label = $<op.label>1;
+		n->rt    = $<op.rt>1;
+		n->rs	 = $<op.rs>1;
+		insereLista(n);}
+}
 
 | J { if ($<op.label>1 != NULL){
 		fprintf(log_t_file,"Op tipo J: %d %s\n", $<op.code>1, $<op.label>1);
@@ -135,7 +136,7 @@ operacao: /* nada */
 		n->label = $<op.label>1;
 		insereLista(n);}
 
-	  else {
+		 else {
 		fprintf(log_t_file,"Op tipo J: %d %d\n", $<op.code>1, $<op.aux>1);
 
 		node n = malloc(sizeof(node_t));
@@ -145,12 +146,6 @@ operacao: /* nada */
 		insereLista(n);}
 }
 
-| JR {fprintf(log_t_file,"Op tipo JR: %d %d %d %d\n",
- 								  $<op.code>1, $<op.rs>1,
-								  $<op.aux>1, $<op.func>1);}
-
-| T {fprintf(log_t_file, "Op tipo T: %d %d %d %d %d\n", $<op.code>1,
- 						       $<op.rs>1,$<op.rt>1, $<op.aux>1, $<op.func>1);}
 
 | M {fprintf(log_t_file, "Op tipo M: %d %d %d %d %d\n",
  								  $<op.code>1, $<op.rs>1, $<op.rt>1, $<op.rd>1,
@@ -162,39 +157,9 @@ operacao: /* nada */
 			  n->rs   = $<op.rs>1;
 			  n->rt   = $<op.rt>1;
 			  n->rd   = $<op.rd>1;
+			  n->aux  = 0;
 			  n->func = $<op.func>1;
 			  insereLista(n);}
-
-| MT {fprintf(log_t_file, "Op tipo MT: %d %d %d %d\n",
- 						  	       $<op.code>1, $<op.rs>1,
-						           $<op.rd>1, $<op.func>1);
-
-			    node n = malloc(sizeof(node_t));
-   				n->tipo = 6;
-   				n->op   = $<op.code>1;
-   				n->rs   = $<op.rs>1;
-   				n->aux  = $<op.aux>1;
-   				n->func = $<op.func>1;
-   				insereLista(n);}
-
-| MF {fprintf(log_t_file, "Op tipo MF: %d %d %d %d %d\n",
- 						           $<op.code>1, $<op.rs>1, $<op.rd>1,
-								   $<op.aux>1, $<op.func>1);
-
-				node n = malloc(sizeof(node_t));
-				n->tipo = 5;
-				n->op   = $<op.code>1;
-				n->rs   = $<op.rs>1;
-				n->rd   = $<op.rd>1;
-				n->aux  = $<op.aux>1;
-				n->func = $<op.func>1;
-				insereLista(n);}
-
-| MS {fprintf(log_t_file, "Op tipo M Especial: %d %d %d %d %d %d %d\n",
- 						  $<op.code>1, $<op.rs>1, $<op.aux>1, $<op.func>1,
-					   	  $<op.rd>1, 0, 1);}
-;
-
 
 R: opcoder reg virg reg virg reg {
 	$<op.rs>$  = $<val>2;
@@ -202,7 +167,7 @@ R: opcoder reg virg reg virg reg {
 	$<op.rd>$  = $<val>6;
 	$<op.aux>$ = 0;}
 
-| opcoder reg virg reg {
+| opcoder reg virg reg { //clo & clz
 	$<op.rs>$ = $<val>4;
 	$<op.rt>$ = 0;
 	$<op.rd>$ = $<val>2;
@@ -225,11 +190,17 @@ R: opcoder reg virg reg virg reg {
 	$<op.rt>$   = 0;
 	$<op.rd>$   = $<val>4;
 	$<op.aux>$  = 0;}
-;
 
-RD: opcoderd reg virg reg {
-	$<op.rs>$ = $<val>2;
-	$<op.rt>$ = $<val>4;
+|  opcodej reg {
+	$<op.rs>$   = $<val>2;
+	$<op.rt>$   = 0;
+	$<op.rd>$   = 0;
+	$<op.aux>$  = 0;}
+
+|  opcoderd reg virg reg { //div & divu & madd & maddu & msub & msubu
+	$<op.rs>$  = $<val>2;
+	$<op.rt>$  = $<val>4;
+	$<op.rd>$  = 0;
 	$<op.aux>$ = 0;}
 ;
 
@@ -243,80 +214,69 @@ I: opcodei reg virg reg virg imm{
     $<op.rt>$  = $<val>2;
 	$<op.aux>$ = $<val>4;} //imm
 
-|  opcodel reg virg offset abreparents reg fechaparents {
+|  opcodet reg virg imm{
+	$<op.rs>$  = $<val>2;
+	$<op.rt>$  = $<op.func>1;
+	$<op.aux>$ = $<val>4;}
+
+|  opcodet reg virg reg{
+	$<op.rs>$  = $<val>2;
+	$<op.rt>$  = $<val>4;
+	$<op.rd>$  = 0;
+	$<op.aux>$ = 0;}
+
+| opcodeb reg virg id{
+	$<op.rs>$ = $<val>2;
+	$<op.rt>$ = $<op.func>1;
+	$<op.label>$ = $<text>4;}
+
+| opcodeb reg virg reg virg id{
+	$<op.rs>$ = $<val>2;
+	$<op.rt>$ = $<val>4;
+	$<op.label>$ = $<text>6;}
+;
+
+SL: opcodel reg virg offset abreparents reg fechaparents {
 	$<op.rt>$  = $<val>2;
 	$<op.aux>$ = $<val>4; //offset
 	$<op.rs>$  = $<val>6;}
 
 |  opcodel reg virg id {
 	$<op.rt>$  = $<val>2;
-	$<op.label>$ = $<text>4; }
-
-|  opcodet reg virg imm{
-	$<op.rs>$  = $<val>2;
-	$<op.rt>$  = $<op.func>1;
-	$<op.aux>$ = $<val>4;
-}
-;
-
-B: opcodeb reg virg labelid{
-	$<op.rs>$ = $<val>2;
-	$<op.rt>$ = $<op.func>1;
 	$<op.label>$ = $<text>4;}
-
-| opcodeb reg virg reg virg labelid{
-	$<op.rs>$ = $<val>2;
-	$<op.rt>$ = $<val>4;
-	$<op.label>$ = $<text>6;}
 ;
 
 J: opcodej address{ $<op.aux>$ = $<val>2; }
 |  opcodej id { $<op.label>$ = $<text>2; }
 ;
 
-JR: opcodejr reg{
-	$<op.rs>$ = $<val>2;
-	$<op.aux>$ = 0;}
-;
-
-T: opcodet reg virg reg {
-	$<op.rs>$  = $<val>2;
-	$<op.rt>$  = $<val>4;
-	$<op.aux>$ = 0;}
-;
-
-M: opcodemf reg virg reg {
+M: opcodemf reg virg reg { //mfc0 & mfc1
 	$<op.rs>$ = 0;
 	$<op.rt>$ = $<val>2;
 	$<op.rd>$ = $<val>4;}
 
-| opcodemt reg virg reg {
+| opcodemt reg virg reg { //mtc0 & mtc1
 	$<op.rs>$ = 4;
 	$<op.rt>$ = $<val>2;
 	$<op.rd>$ = $<val>4;}
 
+| opcodemt reg{ //mthi & mtlo
+	$<op.rs>$ = $<val>2;
+	$<op.aux>$ = 0;}
+
+| opcodemf reg{ //mfhi & mflo
+	$<op.rs>$ = 0;
+	$<op.rt>$ = 0;
+	$<op.rd>$ = $<val>2;
+	$<op.aux>$ = 0;}
+
 | opcodemf reg virg reg virg reg{ //movn & movz
 	$<op.rd>$ = $<val>2;
 	$<op.rs>$ = $<val>4;
-	$<op.rt>$ = $<val>6;}
-;
-
-MF: opcodemf reg{
-	$<op.rs>$ = 0;
-	$<op.rd>$ = $<val>2;
+	$<op.rt>$ = $<val>6;
 	$<op.aux>$ = 0;}
 ;
 
-MT: opcodemt reg{
-	$<op.rs>$ = $<val>2;
-	$<op.aux>$ = 0;}
-;
-
-MS: opcodemf reg virg reg virg cc{ //movf & movt
-	$<op.rd>$  = $<val>2;
-	$<op.rs>$  = $<val>4;
-	$<op.aux>$  = $<val>6;}
-;
 
 labelid: id colon { checkSizes();
 			if ( labelMatch($<text>1) == -1){
@@ -335,16 +295,16 @@ labelid: id colon { checkSizes();
 			 }
 ;
 
-var: id colon number EOL var { checkSizes();
+var: id colon t_int number EOL var { checkSizes();
 							   var_names[var_count] = $<text>1;
 							   var_adress[var_count] = var_count * INST_SIZE;
-							   var_values[var_count] = $<val>3;
+							   var_values[var_count] = $<val>4;
 				    		   var_count++;}
 
-| id colon number EOL { checkSizes();
+| id colon t_int number EOL { checkSizes();
 							var_names[var_count] = $<text>1;
 							var_adress[var_count] = var_count * INST_SIZE;
-							var_values[var_count] = $<val>3;
+							var_values[var_count] = $<val>4;
 							var_count++;}
 ;
 
@@ -352,7 +312,6 @@ address: number;
 shamt: number;
 offset: number;
 imm: number;
-cc: number;
 %%
 
 void set_input(){

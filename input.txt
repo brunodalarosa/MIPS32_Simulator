@@ -1,6 +1,6 @@
 .data
-x:5
-y:10
+x : .int 5
+y : .int 10
 
 .text
 main:
@@ -21,7 +21,7 @@ loo:
     madd $s0, $t1
     maddu $s0, $t1
     msub $s0, $t1
-    msub $s0, $t1
+    msubu $s0, $t1
     nor $t0, $s0, $t1
     or $t0, $s0, $t1
     ori $t1, $s0, 4
@@ -69,16 +69,12 @@ loo:
     lh $t3, 200($t1)
     lhu $t3, 200($t1)
     lw $t3, 200($t1)
-    lwc1 $t3, 200($t1)
     lwl $t3, 200($t1)
     lwr $t3, 200($t1)
     ll $t3, 200($t1)
     sh $t3, 200($t1)
     sb $t3, 200($t1)
     sw $t3, 200($t1)
-teste:
-    swc1 $s3, 200($t1)
-    sdc1 $s3, 200($t1)
     swl $t3, 200($t1)
     swr $t3, 200($t1)
     sc $t3, 200($t1)
@@ -86,6 +82,7 @@ teste:
     mflo $t0
     mthi $s0
     mtlo $s0
+teste:
     mfc0 $t1, $t0
     mfc1 $t1, $s0
     mtc0 $t0, $t1

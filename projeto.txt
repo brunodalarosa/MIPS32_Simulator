@@ -17,7 +17,7 @@ Memoria (memoria.c memoria.h)
     A memoria é o módulo que representa a memória fisica do simulador, mais especificamente
     é dado como requisito que ela possua 512M de tamanho. Podendo armazenar até 131072 palavras.
 
-    Estado: 20% ?
+    Estado: 70% ?
     Debugging: inexistente. TODO.
 
 Utilitário (utils.c utils.h)
@@ -29,3 +29,12 @@ Utilitário (utils.c utils.h)
 
     readProgram : Função que lê o arquivo binário e o coloca na memória para ser executado.
                  0% Debugging inexistente. TODO
+
+Cache
+
+CDB (Common data bus)
+
+Processador + Tomasulo
+    Inclui as estações de reserva e nucleos, + pipeline?
+
+Clock

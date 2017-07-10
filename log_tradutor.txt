@@ -1,66 +1,31 @@
 		Log da tradução da entrada input.txt
-Op tipo R: 0 8 16 9 0 32
-Op tipo R: 0 8 16 9 0 33
-Op tipo R: 0 8 16 9 0 36
+Op tipo R: 0 8 9 18 0 32
+Op tipo R: 28 16 9 0 0 0
+Op tipo R: 28 16 9 0 0 1
+Op tipo R: 28 16 9 0 0 4
+Op tipo R: 28 16 9 0 0 5
 Op tipo R: 28 16 0 8 0 32
 Op tipo R: 28 16 0 8 0 33
-Op tipo RD: 0 16 9 0 26
-Op tipo M: 0 16 9 8 11
-Op tipo M Especial: 0 16 1 1 8 0 1
-Op tipo RD: 28 16 9 0 0
-Op tipo RD: 28 16 9 0 1
-Op tipo I: 9 9 16 4
-Op tipo I: 12 9 16 4
-Op tipo I: 13 9 16 4
-Op tipo MF: 0 0 10 0 16
-Op tipo MT: 0 16 0 19
-Op tipo J: 2 main
-Op tipo J: 2 loop
-Op tipo J: 2 256
+Op tipo R: 0 16 9 0 0 26
+Op tipo R: 0 16 9 0 0 27
 
 Lista de nós:
- 1[1]|Op =  0|rs =  8|rt = 16|rd =  9|aux =  0|func = 32 (null)
- 2[1]|Op =  0|rs =  8|rt = 16|rd =  9|aux =  0|func = 33 (null)
- 3[1]|Op =  0|rs =  8|rt = 16|rd =  9|aux =  0|func = 36 (null)
- 4[1]|Op = 28|rs = 16|rt =  0|rd =  8|aux =  0|func = 32 (null)
- 5[1]|Op = 28|rs = 16|rt =  0|rd =  8|aux =  0|func = 33 (null)
- 6[1]|Op =  0|rs = 16|rt =  9|rd =  0|aux =  0|func = 26 (null)
- 7[7]|Op =  0|rs = 16|rt =  9|rd =  8|aux =  0|func = 11 (null)
- 8[1]|Op = 28|rs = 16|rt =  9|rd =  0|aux =  0|func =  0 (null)
- 9[1]|Op = 28|rs = 16|rt =  9|rd =  0|aux =  0|func =  1 (null)
-10[2]|Op =  9|rs =  9|rt = 16|rd =  0|aux =  4|func =  0 (null)
-11[2]|Op = 12|rs =  9|rt = 16|rd =  0|aux =  4|func =  0 (null)
-12[2]|Op = 13|rs =  9|rt = 16|rd =  0|aux =  4|func =  0 (null)
-13[5]|Op =  0|rs =  0|rt =  0|rd = 10|aux =  0|func = 16 (null)
-14[6]|Op =  0|rs = 16|rt =  0|rd =  0|aux =  0|func = 19 (null)
-15[4]|Op =  2|rs =  0|rt =  0|rd =  0|aux =  0|func =  0 main
-16[4]|Op =  2|rs =  0|rt =  0|rd =  0|aux =  0|func =  0 loop
-17[4]|Op =  2|rs =  0|rt =  0|rd =  0|aux = 256|func =  0 (null)
+ 1[1]|Op =  0|rs =  8|rt =  9|rd = 18|aux =  0|func = 32 (null)
+ 2[1]|Op = 28|rs = 16|rt =  9|rd =  0|aux =  0|func =  0 (null)
+ 3[1]|Op = 28|rs = 16|rt =  9|rd =  0|aux =  0|func =  1 (null)
+ 4[1]|Op = 28|rs = 16|rt =  9|rd =  0|aux =  0|func =  4 (null)
+ 5[1]|Op = 28|rs = 16|rt =  9|rd =  0|aux =  0|func =  5 (null)
+ 6[1]|Op = 28|rs = 16|rt =  0|rd =  8|aux =  0|func = 32 (null)
+ 7[1]|Op = 28|rs = 16|rt =  0|rd =  8|aux =  0|func = 33 (null)
+ 8[1]|Op =  0|rs = 16|rt =  9|rd =  0|aux =  0|func = 26 (null)
+ 9[1]|Op =  0|rs = 16|rt =  9|rd =  0|aux =  0|func = 27 (null)
 
 		fim da lista
-00000001000100000100100000100000
-00000001000100000100100000100001
-00000001000100000100100000100100
-01110010000000000100000000100000
-01110010000000000100000000100001
-00000010000010010000000000011010
-00000010000010010100000000001011
-01110010000010010000000000000000
-01110010000010010000000000000001
-00100101001100000000000000000100
-00110001001100000000000000000100
-00110101001100000000000000000100
-00000000000000000101000000010000
-00000010000000000000000000010011
-00001000000000000000000110010000
-00001000000000000000001010010000
-00001000000000000000000100000000
-
-Numero de linhas computadas = 21
+000000010000100110010000001000000111001000001001000000000000000001110010000010010000000000000001011100100000100100000000000001000111001000001001000000000000010101110010000000000100000000100000011100100000000001000000001000010000001000001001000000000001101000000010000010010000000000011011
+Numero de linhas computadas = 11
 
 Labels:
-main = 400
-loop = 656
+loo = 32
 
 Variaveis:
 y (0) = 10

@@ -1,11 +1,14 @@
+.data
+    x : .int 5
+    y : .int 10
 .text
-    lb $t3, 200($t1)
-    lbu $t3, 200($t1)
-    lh $t3, 200($t1)
-    movn $t0, $s0, $t1
-    movt $t0, $s0, 1
+    add $t0, $t1, $s2
+loo:
     madd $s0, $t1
     maddu $s0, $t1
-    addiu $t1, $s0, 4
-    andi $t1, $s0, 4
-    ori $t1, $s0, 4
+    msub $s0, $t1
+    msubu $s0, $t1
+    clo $t0, $s0
+    clz $t0, $s0
+    div $s0, $t1
+    divu $s0, $t1

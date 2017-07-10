@@ -1,21 +1,28 @@
 /* Define a estrutura de arvore de instrucoes usada no tradutor */
 /* Bruno, bcesar.g6@gmail.com */
 
-/*          Tabela - Tipos de instruções          */
-/* R [1] : op(6)|rs(5)|rt(5)|rd(5)|shamt(5)|func(6)*/
-/* I [2] : op(6)|rs(5)|rt(5)|imm(16)               */
-/* D [3] : op(6)|rs(5)|rt(5)|aux(10)|func(6)       */
-/* J [4] : op(6)|target(26)                        */
-/* MF[5] : op(6)|(10)|rd(5)|(5)|(6)                */
-/* MT[6] : op(6)|(5)|(15)|(6)                      */
-/* M [7] : op(6)|rs(5)|rt(5)|rd(5)|(11)            */
-/* B [8] : op(6)|rs(5)|aux(5)|offset(16)           */
+/*          Tabela - Tipos de instruções             */
+/* R  [1] : op(6)|rs(5)|rt(5)|rd(5)|shamt(5)|func(6) */
+/* I  [2] : op(6)|rs(5)|rt(5)|imm(16)                */
+/* J  [4] : op(6)|target(26)                         */
+/* M  [6] : op(6)|rs(5)|rd+rt+aux(15)|func(6)        */
+/* MS [7] : op(6)|rs(5)|rt(5)|rd(5)|func(11)         */
+/* B  [8] : op(6)|rs(5)|aux(5)|offset(16)            */
 
 
 #ifndef __TRADUTOR_H
 #define __TRADUTOR_H
 
-#define DATA_OFFSET 400
+#include <stdlib.h>
+#include <stdio.h>
+#include <limits.h>
+#include <string.h>
+#include "parser.h"
+#include "simulador.h"
+#include "utils.h"
+#include "processador.h"
+
+#define DATA_OFFSET 0
 #define INST_SIZE 32
 
 int lbl_count;
@@ -25,7 +32,7 @@ int lbl_tam;
 
 int var_count;
 char** var_names;
-int* var_adress;
+unsigned int* var_adress;
 unsigned int* var_values;
 int var_tam; //var_tamanho inicial do vetor de variaveis
 

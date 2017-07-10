@@ -43,34 +43,43 @@ letter	[a-zA-Z]
 "$fp" { yylval.val = 30;  return reg;}
 "$ra" { yylval.val = 31;  return reg;}
 
-"add"   {yylval.op.code = 0;   yylval.op.func = 32;  return opcoder;}/*ops R*/
-"addu"  {yylval.op.code = 0;   yylval.op.func = 33;  return opcoder;}
-"and"   {yylval.op.code = 0;   yylval.op.func = 36;  return opcoder;}
+"sll"   {yylval.op.code = 0;  yylval.op.func = 0;   return opcoders;}/*ops RS*/
+"srl"   {yylval.op.code = 0;  yylval.op.func = 2;   return opcoders;}
+"sra"   {yylval.op.code = 0;  yylval.op.func = 3;   return opcoders;}
+"sllv"  {yylval.op.code = 0;  yylval.op.func = 4;   return opcoders;}
+"srlv"  {yylval.op.code = 0;  yylval.op.func = 6;   return opcoders;}
+"srav"  {yylval.op.code = 0;  yylval.op.func = 7;   return opcoders;}
+"movz"  {yylval.op.code = 0;  yylval.op.func = 10;  return opcodemf;}
+"movn"  {yylval.op.code = 0;  yylval.op.func = 11;  return opcodemf;}
+"mfhi"  {yylval.op.code = 0;  yylval.op.func = 16;  return opcodemf;}
+"mthi"  {yylval.op.code = 0;  yylval.op.func = 17;  return opcodemt;}
+"mflo"  {yylval.op.code = 0;  yylval.op.func = 18;  return opcodemf;}
+"mtlo"  {yylval.op.code = 0;  yylval.op.func = 19;  return opcodemt;}
+"mult"  {yylval.op.code = 0;  yylval.op.func = 24;  return opcoder;}
+"multu" {yylval.op.code = 0;  yylval.op.func = 25;  return opcoder;}
+"div"   {yylval.op.code = 0;  yylval.op.func = 26;  return opcoderd;}/*rs-rt*/
+"divu"  {yylval.op.code = 0;  yylval.op.func = 27;  return opcoderd;}/*rs-rt*/
+"add"   {yylval.op.code = 0;  yylval.op.func = 32;  return opcoder;}
+"addu"  {yylval.op.code = 0;  yylval.op.func = 33;  return opcoder;}
+"sub"   {yylval.op.code = 0;  yylval.op.func = 34;  return opcoder;}
+"subu"  {yylval.op.code = 0;  yylval.op.func = 35;  return opcoder;}
+"and"   {yylval.op.code = 0;  yylval.op.func = 36;  return opcoder;}
+"or"    {yylval.op.code = 0;  yylval.op.func = 37;  return opcoder;}
+"xor"   {yylval.op.code = 0;  yylval.op.func = 38;  return opcoder;}
+"nor"   {yylval.op.code = 0;  yylval.op.func = 39;  return opcoder;}
+"slt"   {yylval.op.code = 0;  yylval.op.func = 42;  return opcoder;}
+"sltu"  {yylval.op.code = 0;  yylval.op.func = 43;  return opcoder;}
+
+
+
+
 "clo"   {yylval.op.code = 28;  yylval.op.func = 32;  return opcoder;}/*rd-rs*/
 "clz"   {yylval.op.code = 28;  yylval.op.func = 33;  return opcoder;}/*rd-rs*/
-"div"   {yylval.op.code = 0;   yylval.op.func = 26;  return opcoderd;}/*rs-rt*/
-"divu"  {yylval.op.code = 0;   yylval.op.func = 27;  return opcoderd;}/*rs-rt*/
-"mult"  {yylval.op.code = 0;   yylval.op.func = 24;  return opcoder;}
-"multu" {yylval.op.code = 0;   yylval.op.func = 25;  return opcoder;}
 "mul"   {yylval.op.code = 28;  yylval.op.func = 2;   return opcoder;}
 "madd"  {yylval.op.code = 28;  yylval.op.func = 0;   return opcoderd;}/*rs-rt*/
 "maddu" {yylval.op.code = 28;  yylval.op.func = 1;   return opcoderd;}/*rs-rt*/
 "msub"  {yylval.op.code = 28;  yylval.op.func = 4;   return opcoderd;}/*rs-rt*/
 "msubu" {yylval.op.code = 28;  yylval.op.func = 5;   return opcoderd;}/*rs-rt*/
-"nor"   {yylval.op.code = 0;   yylval.op.func = 39;  return opcoder;}
-"or"    {yylval.op.code = 0;   yylval.op.func = 37;  return opcoder;}
-"sub"   {yylval.op.code = 0;   yylval.op.func = 34;  return opcoder;}
-"subu"  {yylval.op.code = 0;   yylval.op.func = 35;  return opcoder;}
-"xor"   {yylval.op.code = 0;   yylval.op.func = 38;  return opcoder;}
-"slt"   {yylval.op.code = 0;   yylval.op.func = 42;  return opcoder;}
-"sltu"  {yylval.op.code = 0;   yylval.op.func = 43;  return opcoder;}
-
-"sll"  {yylval.op.code = 0;   yylval.op.func = 0;  return opcoders;}/*ops RS*/
-"sllv" {yylval.op.code = 0;   yylval.op.func = 4;  return opcoders;}
-"sra"  {yylval.op.code = 0;   yylval.op.func = 3;  return opcoders;}
-"srav" {yylval.op.code = 0;   yylval.op.func = 7;  return opcoders;}
-"srl"  {yylval.op.code = 0;   yylval.op.func = 2;  return opcoders;}
-"srlv" {yylval.op.code = 0;   yylval.op.func = 6;  return opcoders;}
 
 "addi"   {yylval.op.code = 8;  return opcodei;} /*ops I*/
 "addiu"  {yylval.op.code = 9;  return opcodei;}
@@ -93,7 +102,7 @@ letter	[a-zA-Z]
 "j"    {yylval.op.code = 2; return opcodej;}
 "jal"  {yylval.op.code = 3; return opcodej;}
 "jalr" {yylval.op.code = 0; yylval.op.func = 9; return opcodej;}
-"jr"   {yylval.op.code = 0; yylval.op.func = 8; return opcodejr;}
+"jr"   {yylval.op.code = 0; yylval.op.func = 8; return opcodej;}
 
 "teq"   {yylval.op.code = 0; yylval.op.func = 52; return opcodet;}
 "teqi"  {yylval.op.code = 1; yylval.op.func = 12; return opcodet;}
@@ -109,39 +118,24 @@ letter	[a-zA-Z]
 "tltiu" {yylval.op.code = 1; yylval.op.func = 11; return opcodet;}
 
 "lb"   {yylval.op.code = 32; return opcodel;}/*ops L*/
-"lbu"  {yylval.op.code = 36; return opcodel;}
 "lh"   {yylval.op.code = 33; return opcodel;}
-"lhu"  {yylval.op.code = 37; return opcodel;}
-"lw"   {yylval.op.code = 35; return opcodel;}
-"lwc1" {yylval.op.code = 49; return opcodel;}
 "lwl"  {yylval.op.code = 34; return opcodel;}
+"lw"   {yylval.op.code = 35; return opcodel;}
+"lbu"  {yylval.op.code = 36; return opcodel;}
+"lhu"  {yylval.op.code = 37; return opcodel;}
 "lwr"  {yylval.op.code = 38; return opcodel;}
 "ll"   {yylval.op.code = 48; return opcodel;}
 
 "sb"   {yylval.op.code = 40; return opcodel;}
 "sh"   {yylval.op.code = 41; return opcodel;}
-"sw"   {yylval.op.code = 43; return opcodel;}
-"swc1" {yylval.op.code = 49; return opcodel;}
-"sdc1" {yylval.op.code = 61; return opcodel;}
 "swl"  {yylval.op.code = 42; return opcodel;}
+"sw"   {yylval.op.code = 43; return opcodel;}
 "swr"  {yylval.op.code = 46; return opcodel;}
 "sc"   {yylval.op.code = 56; return opcodel;}
 
-"mfhi" {yylval.op.code = 0;  yylval.op.func = 16; return opcodemf;}
-"mflo" {yylval.op.code = 0;  yylval.op.func = 18; return opcodemf;}
-"mthi" {yylval.op.code = 0;  yylval.op.func = 17; return opcodemt;}
-"mtlo" {yylval.op.code = 0;  yylval.op.func = 19; return opcodemt;}
-"mfc0" {yylval.op.code = 16; yylval.op.func = 0;  return opcodemf;}
-"mfc1" {yylval.op.code = 17; yylval.op.func = 0;  return opcodemf;}
-"mtc0" {yylval.op.code = 16; yylval.op.func = 0;  return opcodemt;}
-"mtc1" {yylval.op.code = 17; yylval.op.func = 0;  return opcodemt;}
-"movn" {yylval.op.code = 0;  yylval.op.func = 11; return opcodemf;}
-"movz" {yylval.op.code = 0;  yylval.op.func = 10; return opcodemf;}
-"movf" {yylval.op.code = 0;  yylval.op.func = 0;  return opcodemf;}
-"movt" {yylval.op.code = 0;  yylval.op.func = 1;  return opcodemf;}
-
 {letter}("_"|{letter}|{digit})* { yylval.text = strdup(yytext); return id;}
 
+".int" {return t_int;}
 ":" {return colon;}
 "," {return virg;}
 "(" {return abreparents;}

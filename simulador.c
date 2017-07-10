@@ -1,15 +1,8 @@
 /* Arquivo Main do simulador Assembly MIPS32 */
 /* Autor Bruno, bcesar.g6@gmail.com */
 
-#include <getopt.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+
 #include "simulador.h"
-#include "utils.h"
-#include "parser.h"
-#include "tradutor.h"
-#include "memoria.h"
 
 int flag = 0;
 FILE *input_file  = NULL;
@@ -122,9 +115,17 @@ int main(int argc, char **argv){
 
 	tradutor();
 
+	if(get_flag(FLAG_VERBOSE)) printf("Tradução realizada com sucesso\n");
+
 	readProgram();
 
 	if(get_flag(FLAG_DEBUG)) printMem();
+
+	if(get_flag(FLAG_VERBOSE)) printf("Iniciando a simulação do programa\n");
+
+	if(get_flag(FLAG_DEBUG)) pause();
+
+	pipeline();
 
 	fclose(log_file);
 

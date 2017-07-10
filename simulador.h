@@ -4,7 +4,18 @@
 #ifndef __SIMULADOR_H
 #define __SIMULADOR_H
 
+/* Uma palavra de 32 bits | 4 bytes*/
+typedef unsigned int* word;
+
+#include <getopt.h>
+#include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include "utils.h"
+#include "parser.h"
+#include "tradutor.h"
+#include "memoria.h"
+#include "processador.h"
 
 /* Testes */
 /* 000000 01000 10000 01001 00000 100000*/
@@ -33,7 +44,5 @@ extern FILE *bin_file;
 extern FILE *log_file;
 extern FILE *log_t_file;
 
-/* Uma palavra de 32 bits | 4 bytes*/
-typedef unsigned int* word;
 
 #endif

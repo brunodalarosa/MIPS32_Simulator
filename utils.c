@@ -2,10 +2,6 @@
 /* Autor: Bruno Cesar, bcesar.g6@gmail.com */
 
 #include "utils.h"
-#include "memoria.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 /* Printa a seção de ajuda */
 void ajuda(){
@@ -30,8 +26,8 @@ void ajuda(){
 /* Args| word w : Instrução a ser impressa */
 void printaBinario(word w, char isFile, FILE* dest){
 	unsigned int p = 2147483648;
-	int k;
 	if(isFile){ //Printa no arquivo
+
 		while(p > 0){
 			if (p & *w){
 
@@ -39,37 +35,90 @@ void printaBinario(word w, char isFile, FILE* dest){
 			} else fprintf(dest,"0");
 			p >>= 1;
 		}
-		fprintf(dest,"\n"); //TODO mudar para /t e arrumar os usos
-	} else { //Printa na tela
+	}
+	else {  //Printa na tela
+
 		while(p > 0){
 			if (p & *w){
-
 				printf("1");
 			} else printf("0");
 			p >>= 1;
 		}
-		printf("\n");
 	}
 }
+
+void printaInstrucao(inst instruction){
+	unsigned int opcode = 0;
+	opcode = instruction.R.op;
+
+	switch(opcode){
+		case 0:
+		case 28:
+			printf("\ninst R: op = %d | rs = %d | rt = %d | rd = %d | aux = %d | func = %d\n\n",
+				instruction.R.op, instruction.R.rs, instruction.R.rt, instruction.R.rd,
+				instruction.R.aux, instruction.R.func);
+				break;
+
+		case 2:
+		case 3:
+			printf("\ninst J: op = %d | target = %d\n\n", instruction.J.op, instruction.J.target);
+			break;
+
+		case 1:
+		case 4 ... 15:
+		case 32 ... 38:
+		case 40 ... 43:
+		case 46:
+		case 48:
+		case 56:
+			printf("\ninst I: op = %d | rs = %d | rt = %d | imm = %d\n\n",
+				instruction.I.op, instruction.I.rs, instruction.I.rt, instruction.I.imm);
+			break;
+
+		default:
+			break;
+	}
+}
+
 
 /**
 * Printa uma parte da memoria
 **/
 void printMem(){
 	if(get_flag(FLAG_VERBOSE)) fprintf(log_file, "\nPrintando a memoria\n");
+	int b = 0;
+	word w = malloc(sizeof(unsigned int));
 
-	word w = malloc(sizeof(word));
-	int pos = 0;
+	/* Print texto */
+	if(get_flag(FLAG_VERBOSE)) printf("\nSeção de texto\n");
+	char* p_mem = mem;
+	do{
+		w = memcpy(w, p_mem, sizeof(unsigned int));
+		printaBinario(w, 0, log_file);
+		p_mem += 4;
 
-	w = memcpy(w, mem + pos, sizeof(word));
+		/* Formatação do print */
+		printf("\t");
+		if(b) printf("\n");
+		b = !b;
 
+	} while(p_mem < mem_text_end);
 
-	while(pos < 13421){
-		printaBinario(w, 0, log_file); //1
-		pos += 4;
-		w = memcpy(w, mem + pos, sizeof(word));
-		// TODO Fazer printar mais de um por linha?
-	}
+	if(get_flag(FLAG_VERBOSE)) printf("\nSeção de dados estaticos\n");
+	/* Print Static Data */
+	b = 0;
+	p_mem = mem + TEXT_SIZE;
+	do{
+		w = memcpy(w, p_mem, sizeof(unsigned int));
+		printaBinario(w, 0, log_file);
+		p_mem += 4;
+
+		/* Formatação do print */
+		printf("\t");
+		if(b) printf("\n");
+		b = !b;
+
+	} while(p_mem < mem + TEXT_SIZE + STATIC_DATA_SIZE);
 
 	if(get_flag(FLAG_VERBOSE)) fprintf(log_file, "\nFim do print\n");
 }
@@ -110,6 +159,11 @@ void launchError(int e){
 			fprintf(log_t_file, "ERRO na tradução do input: Limite máximo de 100 variaveis! Abortando...\n");
 			break;
 
+		case 6:
+			printf("ERRO na tradução do input: Variavel referenciada inexistente! Abortando... \n");
+			fprintf(log_t_file, "ERRO na tradução do input: Variavel referenciada inexistente! Abortando... \n");
+			break;
+
 		default:
 			printf("ERRO DESCONHECIDO. Abortando...\n");
 			exit(0);
@@ -130,25 +184,23 @@ void readProgram(){
 	}
 	size_t read_result = 0;
 
-	//TODO ler o arquivo
-	int pos = 0;
+	/* Read text */
+	fseek(bin_file, STATIC_DATA_SIZE, SEEK_SET);
 
-	/*word w = malloc(sizeof(word));
-	read_result = fread(w, sizeof(word), 1, bin_file);
-
-	while(read_result > 0){
-		printaBinario(w, 0, NULL); //super-debug, remover
-		memcpy((mem + pos), w, sizeof(word));
-	//	free(w);
-	//	word w = malloc(sizeof(word)); ??? Está vazando menos memória sem os frees? WTF?
-		read_result = fread(w, sizeof(int), 1, bin_file);
-		pos+=4;
-	} */
-
+	char* p_mem = mem;
 	do {
-		read_result = fread(mem+pos, sizeof(word), 1, bin_file);
-		pos += 4;
+		read_result = fread(p_mem, sizeof(unsigned int), 1, bin_file);
+		p_mem += 4;
+
+		if (p_mem == mem + TEXT_SIZE) launchError(0); //especificar
+
 	} while(read_result > 0);
+	mem_text_end = p_mem - 4;
+
+    /* Read Static Data */
+	fseek(bin_file, 0, SEEK_SET);
+	p_mem = mem + TEXT_SIZE;
+	read_result = fread(p_mem, STATIC_DATA_SIZE, 1, bin_file);
 
 	pause();
 
