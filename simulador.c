@@ -100,6 +100,7 @@ void init(){
 	mem = calloc(MEM_SIZE, 1); //Malloc + inicia como 0
 	if(get_flag(FLAG_DEBUG)) pause();
 
+	processadorInit();
 }
 
 

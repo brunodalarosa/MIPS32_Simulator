@@ -17,15 +17,13 @@ typedef unsigned int* word;
 #include "memoria.h"
 #include "processador.h"
 
-/* Testes */
-/* 000000 01000 10000 01001 00000 100000*/
-/* 00000001000100000100100000100000*/
-
 /* Sistemas de flags funiona com o sistema de parametros de execução */
 extern int flag;
 
 #define FLAG_DEBUG   1
 #define FLAG_VERBOSE 2
+
+
 
 #define set_flag(opt) flag = flag | opt
 #define get_flag(opt) flag & opt
@@ -43,6 +41,5 @@ extern FILE *output_file;
 extern FILE *bin_file;
 extern FILE *log_file;
 extern FILE *log_t_file;
-
 
 #endif

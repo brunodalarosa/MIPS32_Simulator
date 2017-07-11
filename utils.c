@@ -54,14 +54,14 @@ void printaInstrucao(inst instruction){
 	switch(opcode){
 		case 0:
 		case 28:
-			printf("\ninst R: op = %d | rs = %d | rt = %d | rd = %d | aux = %d | func = %d\n\n",
+			printf("\ninst R: op = %d | rs = %d | rt = %d | rd = %d | aux = %d | func = %d\n",
 				instruction.R.op, instruction.R.rs, instruction.R.rt, instruction.R.rd,
 				instruction.R.aux, instruction.R.func);
 				break;
 
 		case 2:
 		case 3:
-			printf("\ninst J: op = %d | target = %d\n\n", instruction.J.op, instruction.J.target);
+			printf("\ninst J: op = %d | target = %d\n", instruction.J.op, instruction.J.target);
 			break;
 
 		case 1:
@@ -71,7 +71,7 @@ void printaInstrucao(inst instruction){
 		case 46:
 		case 48:
 		case 56:
-			printf("\ninst I: op = %d | rs = %d | rt = %d | imm = %d\n\n",
+			printf("\ninst I: op = %d | rs = %d | rt = %d | imm = %d\n",
 				instruction.I.op, instruction.I.rs, instruction.I.rt, instruction.I.imm);
 			break;
 

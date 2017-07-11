@@ -435,26 +435,26 @@ struct yy_trans_info
 static const flex_int16_t yy_accept[202] =
     {   0,
         0,    0,  126,  124,  122,  121,  123,  124,  118,  119,
-      117,  124,  120,  116,  114,  114,  114,  114,  114,   78,
+      117,  124,  120,  116,  114,  114,  114,  114,  114,   79,
       114,  114,  114,  114,  114,  114,  114,  123,    3,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,  120,  114,  114,  114,  114,  114,  114,  114,  114,
-      114,  114,   81,   94,   95,  101,  114,   97,  114,  114,
-      114,  114,  114,  114,  114,   50,  102,  107,  103,  114,
-      114,  114,  105,  114,  114,  114,  114,  114,    7,    8,
+      114,  114,   68,  100,  101,  112,  114,  103,  114,  114,
+      114,  114,  114,  114,  114,   57,  107,  113,  108,  114,
+      114,  114,  110,  114,  114,  114,  114,  114,    7,    8,
         9,   10,    4,   33,   31,   29,   30,   34,   19,   20,
        21,   22,   23,   24,   25,   26,   32,   11,   12,   13,
 
        14,   15,   16,   17,   18,   27,   28,    5,    6,    0,
-        0,    0,    0,   35,   37,   70,  114,  114,  114,  114,
-       77,   38,   39,   40,   79,   98,   99,   67,   96,  100,
-      114,  114,  114,  114,  114,  114,  114,   44,   49,   65,
-       56,   54,   58,   60,   51,  104,  106,   82,   86,   90,
-       84,   53,    0,    0,  115,    0,   62,   36,   64,   71,
-       73,   74,   76,   41,   80,   45,  108,  109,  112,  113,
-       47,  110,  111,   42,   57,   68,   55,   59,   61,   52,
-       83,   88,   87,   92,   91,   85,   66,    1,    2,   63,
-      114,  114,   46,   48,   43,   69,   89,   93,   72,   75,
+        0,    0,    0,   52,   56,   81,  114,  114,  114,  114,
+       82,   98,   99,   50,   80,  104,  105,   92,  102,  106,
+      114,  114,  114,  114,  114,  114,  114,   95,   59,   90,
+       35,   60,   37,   36,   54,  109,  111,   66,   62,   64,
+       67,   58,    0,    0,  115,    0,   85,   53,   89,   71,
+       84,   83,   70,   51,   69,   93,   44,   46,   42,   41,
+       96,   45,   47,   48,   38,   87,   61,   40,   39,   55,
+       76,   72,   63,   74,   65,   43,   91,    1,    2,   86,
+      114,  114,   94,   97,   49,   88,   73,   75,   78,   77,
 
         0
     } ;
@@ -1090,461 +1090,461 @@ YY_RULE_SETUP
 case 35:
 YY_RULE_SETUP
 #line 46 "lexic.l"
-{yylval.op.code = 0;   yylval.op.func = 32;  return opcoder;}/*ops R*/
+{yylval.op.code = 0;  yylval.op.func = 0;   return opcoders;}/*ops RS*/
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
 #line 47 "lexic.l"
-{yylval.op.code = 0;   yylval.op.func = 33;  return opcoder;}
+{yylval.op.code = 0;  yylval.op.func = 2;   return opcoders;}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 48 "lexic.l"
-{yylval.op.code = 0;   yylval.op.func = 36;  return opcoder;}
+{yylval.op.code = 0;  yylval.op.func = 3;   return opcoders;}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
 #line 49 "lexic.l"
-{yylval.op.code = 28;  yylval.op.func = 32;  return opcoder;}/*rd-rs*/
+{yylval.op.code = 0;  yylval.op.func = 4;   return opcoders;}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
 #line 50 "lexic.l"
-{yylval.op.code = 28;  yylval.op.func = 33;  return opcoder;}/*rd-rs*/
+{yylval.op.code = 0;  yylval.op.func = 6;   return opcoders;}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
 #line 51 "lexic.l"
-{yylval.op.code = 0;   yylval.op.func = 26;  return opcoderd;}/*rs-rt*/
+{yylval.op.code = 0;  yylval.op.func = 7;   return opcoders;}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
 #line 52 "lexic.l"
-{yylval.op.code = 0;   yylval.op.func = 27;  return opcoderd;}/*rs-rt*/
+{yylval.op.code = 0;  yylval.op.func = 10;  return opcodemf;}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
 #line 53 "lexic.l"
-{yylval.op.code = 0;   yylval.op.func = 24;  return opcoder;}
+{yylval.op.code = 0;  yylval.op.func = 11;  return opcodemf;}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
 #line 54 "lexic.l"
-{yylval.op.code = 0;   yylval.op.func = 25;  return opcoder;}
+{yylval.op.code = 0;  yylval.op.func = 14;  return opcodet;}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
 #line 55 "lexic.l"
-{yylval.op.code = 28;  yylval.op.func = 2;   return opcoder;}
+{yylval.op.code = 0;  yylval.op.func = 16;  return opcodemf;}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
 #line 56 "lexic.l"
-{yylval.op.code = 28;  yylval.op.func = 0;   return opcoderd;}/*rs-rt*/
+{yylval.op.code = 0;  yylval.op.func = 17;  return opcodemt;}
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
 #line 57 "lexic.l"
-{yylval.op.code = 28;  yylval.op.func = 1;   return opcoderd;}/*rs-rt*/
+{yylval.op.code = 0;  yylval.op.func = 18;  return opcodemf;}
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
 #line 58 "lexic.l"
-{yylval.op.code = 28;  yylval.op.func = 4;   return opcoderd;}/*rs-rt*/
+{yylval.op.code = 0;  yylval.op.func = 19;  return opcodemt;}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
 #line 59 "lexic.l"
-{yylval.op.code = 28;  yylval.op.func = 5;   return opcoderd;}/*rs-rt*/
+{yylval.op.code = 0;  yylval.op.func = 24;  return opcoder;}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
 #line 60 "lexic.l"
-{yylval.op.code = 0;   yylval.op.func = 39;  return opcoder;}
+{yylval.op.code = 0;  yylval.op.func = 25;  return opcoder;}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
 #line 61 "lexic.l"
-{yylval.op.code = 0;   yylval.op.func = 37;  return opcoder;}
+{yylval.op.code = 0;  yylval.op.func = 26;  return opcoderd;}/*rs-rt*/
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
 #line 62 "lexic.l"
-{yylval.op.code = 0;   yylval.op.func = 34;  return opcoder;}
+{yylval.op.code = 0;  yylval.op.func = 27;  return opcoderd;}/*rs-rt*/
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
 #line 63 "lexic.l"
-{yylval.op.code = 0;   yylval.op.func = 35;  return opcoder;}
+{yylval.op.code = 0;  yylval.op.func = 32;  return opcoder;}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
 #line 64 "lexic.l"
-{yylval.op.code = 0;   yylval.op.func = 38;  return opcoder;}
+{yylval.op.code = 0;  yylval.op.func = 33;  return opcoder;}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
 #line 65 "lexic.l"
-{yylval.op.code = 0;   yylval.op.func = 42;  return opcoder;}
+{yylval.op.code = 0;  yylval.op.func = 34;  return opcoder;}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
 #line 66 "lexic.l"
-{yylval.op.code = 0;   yylval.op.func = 43;  return opcoder;}
+{yylval.op.code = 0;  yylval.op.func = 35;  return opcoder;}
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 68 "lexic.l"
-{yylval.op.code = 0;   yylval.op.func = 0;  return opcoders;}/*ops RS*/
+#line 67 "lexic.l"
+{yylval.op.code = 0;  yylval.op.func = 36;  return opcoder;}
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 69 "lexic.l"
-{yylval.op.code = 0;   yylval.op.func = 4;  return opcoders;}
+#line 68 "lexic.l"
+{yylval.op.code = 0;  yylval.op.func = 37;  return opcoder;}
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 70 "lexic.l"
-{yylval.op.code = 0;   yylval.op.func = 3;  return opcoders;}
+#line 69 "lexic.l"
+{yylval.op.code = 0;  yylval.op.func = 38;  return opcoder;}
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 71 "lexic.l"
-{yylval.op.code = 0;   yylval.op.func = 7;  return opcoders;}
+#line 70 "lexic.l"
+{yylval.op.code = 0;  yylval.op.func = 39;  return opcoder;}
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 72 "lexic.l"
-{yylval.op.code = 0;   yylval.op.func = 2;  return opcoders;}
+#line 71 "lexic.l"
+{yylval.op.code = 0;  yylval.op.func = 42;  return opcoder;}
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 73 "lexic.l"
-{yylval.op.code = 0;   yylval.op.func = 6;  return opcoders;}
+#line 72 "lexic.l"
+{yylval.op.code = 0;  yylval.op.func = 43;  return opcoder;}
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 75 "lexic.l"
-{yylval.op.code = 8;  return opcodei;} /*ops I*/
+#line 73 "lexic.l"
+{yylval.op.code = 0;  yylval.op.func = 48;  return opcodet;}
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 76 "lexic.l"
-{yylval.op.code = 9;  return opcodei;}
+#line 74 "lexic.l"
+{yylval.op.code = 0;  yylval.op.func = 49;  return opcodet;}
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 77 "lexic.l"
-{yylval.op.code = 12; return opcodei;}
+#line 75 "lexic.l"
+{yylval.op.code = 0;  yylval.op.func = 50;  return opcodet;}
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 78 "lexic.l"
-{yylval.op.code = 13; return opcodei;}
+#line 76 "lexic.l"
+{yylval.op.code = 0;  yylval.op.func = 51;  return opcodet;}
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 79 "lexic.l"
-{yylval.op.code = 14; return opcodei;}
+#line 77 "lexic.l"
+{yylval.op.code = 0;  yylval.op.func = 52;  return opcodet;}
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 80 "lexic.l"
-{yylval.op.code = 15; return opcodelui;}
+#line 78 "lexic.l"
+{yylval.op.code = 0;  yylval.op.func = 54;  return opcodet;}
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 81 "lexic.l"
-{yylval.op.code = 10; return opcodei;}
+#line 80 "lexic.l"
+{yylval.op.code = 0; yylval.op.func = 8; return opcodej;}
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 82 "lexic.l"
-{yylval.op.code = 11; return opcodei;}
+#line 81 "lexic.l"
+{yylval.op.code = 0; yylval.op.func = 9; return opcodej;}
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 84 "lexic.l"
-{yylval.op.code = 4;  return opcodeb;}
+#line 83 "lexic.l"
+{yylval.op.code = 1;  yylval.op.func = 0;  return opcodeb;}
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 85 "lexic.l"
+#line 84 "lexic.l"
 {yylval.op.code = 1;  yylval.op.func = 1;  return opcodeb;}
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 86 "lexic.l"
-{yylval.op.code = 1;  yylval.op.func = 17; return opcodeb;}
+#line 85 "lexic.l"
+{yylval.op.code = 1;  yylval.op.func = 8;  return opcodet;}
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 87 "lexic.l"
-{yylval.op.code = 7;  yylval.op.func = 0;  return opcodeb;}
+#line 86 "lexic.l"
+{yylval.op.code = 1;  yylval.op.func = 9;  return opcodet;}
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 88 "lexic.l"
-{yylval.op.code = 6;  yylval.op.func = 0;  return opcodeb;}
+#line 87 "lexic.l"
+{yylval.op.code = 1;  yylval.op.func = 10; return opcodet;}
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 89 "lexic.l"
-{yylval.op.code = 1;  yylval.op.func = 16; return opcodeb;}
+#line 88 "lexic.l"
+{yylval.op.code = 1;  yylval.op.func = 11; return opcodet;}
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 90 "lexic.l"
-{yylval.op.code = 1;  yylval.op.func = 0;  return opcodeb;}
+#line 89 "lexic.l"
+{yylval.op.code = 1;  yylval.op.func = 12; return opcodet;}
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 91 "lexic.l"
-{yylval.op.code = 5;  return opcodeb;}
+#line 90 "lexic.l"
+{yylval.op.code = 1;  yylval.op.func = 16; return opcodeb;}
 	YY_BREAK
 case 78:
+YY_RULE_SETUP
+#line 91 "lexic.l"
+{yylval.op.code = 1;  yylval.op.func = 17; return opcodeb;}
+	YY_BREAK
+case 79:
 YY_RULE_SETUP
 #line 93 "lexic.l"
 {yylval.op.code = 2; return opcodej;}
 	YY_BREAK
-case 79:
+case 80:
 YY_RULE_SETUP
 #line 94 "lexic.l"
 {yylval.op.code = 3; return opcodej;}
 	YY_BREAK
-case 80:
-YY_RULE_SETUP
-#line 95 "lexic.l"
-{yylval.op.code = 0; yylval.op.func = 9; return opcodej;}
-	YY_BREAK
 case 81:
 YY_RULE_SETUP
 #line 96 "lexic.l"
-{yylval.op.code = 0; yylval.op.func = 8; return opcodej;}
+{yylval.op.code = 4;  return opcodeb;}
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 98 "lexic.l"
-{yylval.op.code = 0; yylval.op.func = 52; return opcodet;}
+#line 97 "lexic.l"
+{yylval.op.code = 5;  return opcodeb;}
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 99 "lexic.l"
-{yylval.op.code = 1; yylval.op.func = 12; return opcodet;}
+#line 98 "lexic.l"
+{yylval.op.code = 6;  yylval.op.func = 0;  return opcodeb;}
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 100 "lexic.l"
-{yylval.op.code = 0; yylval.op.func = 54; return opcodet;}
+#line 99 "lexic.l"
+{yylval.op.code = 7;  yylval.op.func = 0;  return opcodeb;}
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
 #line 101 "lexic.l"
-{yylval.op.code = 0; yylval.op.func = 14; return opcodet;}
+{yylval.op.code = 8;  return opcodei;} /*ops I*/
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
 #line 102 "lexic.l"
-{yylval.op.code = 0; yylval.op.func = 48; return opcodet;}
+{yylval.op.code = 9;  return opcodei;}
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
 #line 103 "lexic.l"
-{yylval.op.code = 0; yylval.op.func = 49; return opcodet;}
+{yylval.op.code = 10; return opcodei;}
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
 #line 104 "lexic.l"
-{yylval.op.code = 1; yylval.op.func = 8;  return opcodet;}
+{yylval.op.code = 11; return opcodei;}
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
 #line 105 "lexic.l"
-{yylval.op.code = 1; yylval.op.func = 9;  return opcodet;}
+{yylval.op.code = 12; return opcodei;}
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
 #line 106 "lexic.l"
-{yylval.op.code = 0; yylval.op.func = 50; return opcodet;}
+{yylval.op.code = 13; return opcodei;}
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
 #line 107 "lexic.l"
-{yylval.op.code = 0; yylval.op.func = 51; return opcodet;}
+{yylval.op.code = 14; return opcodei;}
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
 #line 108 "lexic.l"
-{yylval.op.code = 1; yylval.op.func = 10; return opcodet;}
+{yylval.op.code = 15; return opcodelui;}
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
-#line 109 "lexic.l"
-{yylval.op.code = 1; yylval.op.func = 11; return opcodet;}
+#line 110 "lexic.l"
+{yylval.op.code = 28;  yylval.op.func = 0;   return opcoderd;}/*rs-rt*/
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
 #line 111 "lexic.l"
-{yylval.op.code = 32; return opcodel;}/*ops L*/
+{yylval.op.code = 28;  yylval.op.func = 1;   return opcoderd;}/*rs-rt*/
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
 #line 112 "lexic.l"
-{yylval.op.code = 33; return opcodel;}
+{yylval.op.code = 28;  yylval.op.func = 2;   return opcoder;}
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
 #line 113 "lexic.l"
-{yylval.op.code = 34; return opcodel;}
+{yylval.op.code = 28;  yylval.op.func = 4;   return opcoderd;}/*rs-rt*/
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
 #line 114 "lexic.l"
-{yylval.op.code = 35; return opcodel;}
+{yylval.op.code = 28;  yylval.op.func = 5;   return opcoderd;}/*rs-rt*/
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
 #line 115 "lexic.l"
-{yylval.op.code = 36; return opcodel;}
+{yylval.op.code = 28;  yylval.op.func = 32;  return opcoder;}/*rd-rs*/
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
 #line 116 "lexic.l"
-{yylval.op.code = 37; return opcodel;}
+{yylval.op.code = 28;  yylval.op.func = 33;  return opcoder;}/*rd-rs*/
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
-#line 117 "lexic.l"
-{yylval.op.code = 38; return opcodel;}
+#line 118 "lexic.l"
+{yylval.op.code = 32; return opcodel;}/*ops Load-Store*/
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
-#line 118 "lexic.l"
-{yylval.op.code = 48; return opcodel;}
+#line 119 "lexic.l"
+{yylval.op.code = 33; return opcodel;}
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
 #line 120 "lexic.l"
-{yylval.op.code = 40; return opcodel;}
+{yylval.op.code = 34; return opcodel;}
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
 #line 121 "lexic.l"
-{yylval.op.code = 41; return opcodel;}
+{yylval.op.code = 35; return opcodel;}
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
 #line 122 "lexic.l"
-{yylval.op.code = 42; return opcodel;}
+{yylval.op.code = 36; return opcodel;}
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
 #line 123 "lexic.l"
-{yylval.op.code = 43; return opcodel;}
+{yylval.op.code = 37; return opcodel;}
 	YY_BREAK
 case 106:
 YY_RULE_SETUP
 #line 124 "lexic.l"
-{yylval.op.code = 46; return opcodel;}
+{yylval.op.code = 38; return opcodel;}
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
 #line 125 "lexic.l"
-{yylval.op.code = 56; return opcodel;}
+{yylval.op.code = 40; return opcodel;}
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
-#line 127 "lexic.l"
-{yylval.op.code = 0;  yylval.op.func = 16; return opcodemf;}
+#line 126 "lexic.l"
+{yylval.op.code = 41; return opcodel;}
 	YY_BREAK
 case 109:
 YY_RULE_SETUP
-#line 128 "lexic.l"
-{yylval.op.code = 0;  yylval.op.func = 18; return opcodemf;}
+#line 127 "lexic.l"
+{yylval.op.code = 42; return opcodel;}
 	YY_BREAK
 case 110:
 YY_RULE_SETUP
-#line 130 "lexic.l"
-{yylval.op.code = 0;  yylval.op.func = 17; return opcodemt;}
+#line 128 "lexic.l"
+{yylval.op.code = 43; return opcodel;}
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
-#line 131 "lexic.l"
-{yylval.op.code = 0;  yylval.op.func = 19; return opcodemt;}
+#line 129 "lexic.l"
+{yylval.op.code = 46; return opcodel;}
 	YY_BREAK
 case 112:
 YY_RULE_SETUP
-#line 133 "lexic.l"
-{yylval.op.code = 0;  yylval.op.func = 11; return opcodemf;}
+#line 130 "lexic.l"
+{yylval.op.code = 48; return opcodel;}
 	YY_BREAK
 case 113:
 YY_RULE_SETUP
-#line 134 "lexic.l"
-{yylval.op.code = 0;  yylval.op.func = 10; return opcodemf;}
+#line 131 "lexic.l"
+{yylval.op.code = 56; return opcodel;}
 	YY_BREAK
 case 114:
 YY_RULE_SETUP
-#line 136 "lexic.l"
+#line 134 "lexic.l"
 { yylval.text = strdup(yytext); return id;}
 	YY_BREAK
 case 115:
 YY_RULE_SETUP
-#line 138 "lexic.l"
+#line 136 "lexic.l"
 {return t_int;}
 	YY_BREAK
 case 116:
 YY_RULE_SETUP
-#line 139 "lexic.l"
+#line 137 "lexic.l"
 {return colon;}
 	YY_BREAK
 case 117:
 YY_RULE_SETUP
-#line 140 "lexic.l"
+#line 138 "lexic.l"
 {return virg;}
 	YY_BREAK
 case 118:
 YY_RULE_SETUP
-#line 141 "lexic.l"
+#line 139 "lexic.l"
 {return abreparents;}
 	YY_BREAK
 case 119:
 YY_RULE_SETUP
-#line 142 "lexic.l"
+#line 140 "lexic.l"
 {return fechaparents;}
 	YY_BREAK
 case 120:
 YY_RULE_SETUP
-#line 143 "lexic.l"
+#line 141 "lexic.l"
 { yylval.val = atoi(yytext); return number; }
 	YY_BREAK
 case 121:
 /* rule 121 can match eol */
 YY_RULE_SETUP
-#line 144 "lexic.l"
+#line 142 "lexic.l"
 { return EOL;}
 	YY_BREAK
 case 122:
 YY_RULE_SETUP
-#line 145 "lexic.l"
+#line 143 "lexic.l"
 { /* ignore whitespace */ }
 	YY_BREAK
 case 123:
 YY_RULE_SETUP
-#line 146 "lexic.l"
+#line 144 "lexic.l"
 /* ignore comments */
 	YY_BREAK
 case 124:
 YY_RULE_SETUP
-#line 147 "lexic.l"
+#line 145 "lexic.l"
 { printf("\nERRO!\nCaracter desconhecido %c\n", *yytext); }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 148 "lexic.l"
+#line 146 "lexic.l"
 {return END_OF_FILE;}
 	YY_BREAK
 case 125:
 YY_RULE_SETUP
-#line 149 "lexic.l"
+#line 147 "lexic.l"
 ECHO;
 	YY_BREAK
 #line 1550 "lex.yy.c"
@@ -2546,7 +2546,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 149 "lexic.l"
+#line 147 "lexic.l"
 
 
 //rd = $t0 | rs = $s0 | rt = $t1

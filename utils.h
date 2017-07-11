@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define FLAG_NULL 0
+
 void pause();
 void launchError(int e);
 void ajuda();

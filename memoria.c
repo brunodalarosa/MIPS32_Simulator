@@ -4,7 +4,7 @@
 #include "memoria.h"
 
 
-void read(word w, char adress, int size){
+void read(word w, int adress, int size){
     memcpy(w, mem + adress,  size * 4);
 }
 

@@ -24,7 +24,7 @@ char* mem;
 /* Ponteiro para o fim do texto */
 char* mem_text_end;
 
-void read(word w, char adress, int size);
+void read(word w, int adress, int size);
 
 void write(word words, char* adress, int size);
 
