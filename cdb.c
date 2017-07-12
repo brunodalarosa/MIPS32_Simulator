@@ -2,3 +2,11 @@
 /* Autor : Bruno Cesar, bcesar.g6@gmail.com         */
 
 #include "cdb.h"
+
+void put(word data){
+    bus = data; //memcpy?
+}
+
+word get(){
+    return bus;
+}

@@ -21,4 +21,8 @@ void printMem();
 void printaBinario(word w, char isFile, FILE* dest);
 void printaInstrucao(inst instruction);
 
+void insereFila(inst instruction);
+inst* removeFila();
+void printaFila();
+
 #endif

@@ -10,12 +10,11 @@
 /* Etapa de busca                                              */
 /* Nesta etapa do pipeline uma instrução, na forma de palavra, */
 /* é buscada na memoria na posição do PC atual                 */
-/* Params = word w : Uma palavra vazia a ser preenchida (copy) */
-void busca(word w){
+/* Ela é então copiada para o registrador de instrução IR      */
+void busca(){
     printf("pc = %d ", pc);
-    read(w, pc, 1);
+    read(IR, pc, 1);
     pc+=4;
-    return;
 }
 
 /* Etapa de decoficação                                       */
@@ -23,7 +22,7 @@ void busca(word w){
 /* seus respectivos dados aos atributos da estrutura inst     */
 /* Params = word w : A palavra a ser decodificada             */
 /* Return = inst : A instrução decodificada e preenchida      */
-inst decodifica(word w){
+void decodifica(){
     inst instruction;
     unsigned int opcode = 0;
     unsigned int func = 0;
@@ -31,14 +30,14 @@ inst decodifica(word w){
     word aux = malloc(sizeof(unsigned int));
 
     // Move pra trás e pra frente os bits para pegar o campo desejado... não tem jeito melhor?
-    memcpy(aux, w, 4);
+    memcpy(aux, IR, 4);
     *aux = *aux >> 26;
     opcode = *aux;
 
     switch (opcode) {
         case 0:
         case 28:
-            memcpy(aux, w, 4);
+            memcpy(aux, IR, 4);
             *aux = *aux << 26;
             *aux = *aux >> 26;
             func = *aux;
@@ -47,22 +46,22 @@ inst decodifica(word w){
             instruction.R.op = opcode;
             instruction.R.func = func;
 
-            memcpy(aux, w, 4);
+            memcpy(aux, IR, 4);
             *aux = *aux << 6;
             *aux = *aux >> 27;
             instruction.R.rs = *aux;
 
-            memcpy(aux, w, 4);
+            memcpy(aux, IR, 4);
             *aux = *aux << 11;
             *aux = *aux >> 27;
             instruction.R.rt = *aux;
 
-            memcpy(aux, w, 4);
+            memcpy(aux, IR, 4);
             *aux = *aux << 16;
             *aux = *aux >> 27;
             instruction.R.rd = *aux;
 
-            memcpy(aux, w, 4);
+            memcpy(aux, IR, 4);
             *aux = *aux << 21;
             *aux = *aux >> 27;
             instruction.R.aux = *aux;
@@ -72,7 +71,7 @@ inst decodifica(word w){
         case 3:
             instruction.J.op = opcode;
 
-            memcpy(aux, w, 4);
+            memcpy(aux, IR, 4);
             *aux = *aux << 6;
             *aux = *aux >> 6;
             instruction.J.target = *aux;
@@ -89,17 +88,17 @@ inst decodifica(word w){
             //Instrução I
             instruction.I.op = opcode;
 
-            memcpy(aux, w, 4);
+            memcpy(aux, IR, 4);
             *aux = *aux << 6;
             *aux = *aux >> 27;
             instruction.I.rs = *aux;
 
-            memcpy(aux, w, 4);
+            memcpy(aux, IR, 4);
             *aux = *aux << 11;
             *aux = *aux >> 27;
             instruction.I.rt = *aux;
 
-            memcpy(aux, w, 4);
+            memcpy(aux, IR, 4);
             *aux = *aux << 16;
             *aux = *aux >> 16;
             instruction.I.imm = *aux;
@@ -110,8 +109,9 @@ inst decodifica(word w){
     }
 
     if(get_flag(FLAG_DEBUG)) printaInstrucao(instruction);
+
+    insereFila(instruction);
     free(aux);
-    return instruction; //Colocar na fila?
 }
 
 void executa(inst instruction){ //Faltam 78 operações a serem feitas.
@@ -470,10 +470,18 @@ void executa(inst instruction){ //Faltam 78 operações a serem feitas.
             //erro
             break;
     }
+
 }
 
 void processadorInit(){
-    /*
+    er_load1 = malloc(sizeof(estacao_reserva));
+    er_load2 = malloc(sizeof(estacao_reserva));
+    er_add1  = malloc(sizeof(estacao_reserva));
+    er_add2  = malloc(sizeof(estacao_reserva));
+    er_add3  = malloc(sizeof(estacao_reserva));
+    er_mult1 = malloc(sizeof(estacao_reserva));
+    er_mult2 = malloc(sizeof(estacao_reserva));
+
     er_load1 = FLAG_NULL;
     er_load2 = FLAG_NULL;
     er_add1  = FLAG_NULL;
@@ -481,38 +489,65 @@ void processadorInit(){
     er_add3  = FLAG_NULL;
     er_mult1 = FLAG_NULL;
     er_mult2 = FLAG_NULL;
-    */
+
+    fila = malloc(sizeof(fila_inst));
+    fila->next = NULL;
+
+    IR = malloc(sizeof(unsigned int));
+    *IR = FLAG_NULL;
 }
 
 /* Função principal, simula o pipeline*/
-void pipeline(){ //PIPELINE FUCKING REVERSO
-    word w;
-    inst instruction;
+void pipeline(){ //pipeline reverso
+    inst* ptr_instruction;
+    ptr_instruction = NULL;
+    char ativ = 1;
 
-    /*while(1){
-        if CDB != FLAG_NULL then Escrita();
+    while(ativ){
+        ativ = 0;
 
-        if ER != FLAG_NULL then executa();
+        //if CDB != FLAG_NULL then Escrita();
 
-        if fila_instrucao != FLAG_NULL then emissao();
+        //if ER != FLAG_NULL then executa();
 
-        if RI<word> != FLAG_NULL then decodifica();
+        ptr_instruction = removeFila();
+        if(ptr_instruction != NULL){
+            printaInstrucao(*ptr_instruction);
+            ativ = 1;
+            executa(*ptr_instruction); //TROCAR POR EMISSÃO
+        } else {
+            if(get_flag(FLAG_DEBUG)) printf("Pulando etapa de emissão (Fila vazia) \n");
+        }
+
+        if (*IR != FLAG_NULL){
+            ativ = 1;
+            decodifica();
+        } else {
+            if(get_flag(FLAG_DEBUG)) printf("Pulando etapa de decodicação (IR = NULL)\n");
+        }
 
         if (&mem[pc] < mem_text_end){
-            w = malloc(sizeof(unsigned int));
-            busca(w);
-            insereRI(w); // Copia a palavra pro RI?
-            free(w);
-        } else { RI = FLAG_NULL; } // ???
-    }*/
+            ativ = 1;
+            busca();
+        } else {
+            if(get_flag(FLAG_DEBUG)) printf("Pulando etapa de busca (PC = END_OF_TEXT)\n");
+            *IR = FLAG_NULL;
+        }
 
-    while(&mem[pc] < mem_text_end){
-        w = malloc(sizeof(unsigned int));
-        busca(w);
-        instruction = decodifica(w);
-        free(w);
-        executa(instruction);
+        if(get_flag(FLAG_VERBOSE)) printf("\n======== Fim do ciclo ========\n");
+        printaFila();
+        if(get_flag(FLAG_DEBUG)) pause();
     }
 
-    if(get_flag(FLAG_VERBOSE)) printf("Fim do ciclo\n");
+    /*while(&mem[pc] < mem_text_end){
+        busca();
+        decodifica();
+        //printaFila();
+        ptr_instruction = removeFila();
+
+        if(ptr_instruction != NULL){
+            executa(*ptr_instruction);
+        }
+    }*/
+
 }

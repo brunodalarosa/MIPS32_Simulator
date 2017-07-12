@@ -4,6 +4,12 @@
 #ifndef __CDB_H
 #define __CDB_H
 
-unsigned int* bus;
+#include "simulador.h"
+
+word bus;
+
+void put(word data);
+word get();
+
 
 #endif

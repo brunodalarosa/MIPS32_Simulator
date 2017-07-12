@@ -4,6 +4,9 @@
 #ifndef __PROCESSADOR_H
 #define __PROCESSADOR_H
 
+typedef union Inst inst;
+typedef struct node_ti* fila_inst;
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "memoria.h"
@@ -36,12 +39,11 @@ typedef struct{
 } inst_J;
 
 /* União de diferentes tipos de instrução, generaliza a instrução */
-typedef union Inst {
+union Inst {
     inst_R R;
     inst_I I;
     inst_J J;
-} inst;
-
+};
 
 /* Estações de reserva */
 typedef struct{
@@ -54,15 +56,25 @@ typedef struct{
     unsigned int A    : 16; //checar
 } estacao_reserva;
 
-estacao_reserva er_load1;
-estacao_reserva er_load2;
-estacao_reserva er_add1;
-estacao_reserva er_add2;
-estacao_reserva er_add3;
-estacao_reserva er_mult1;
-estacao_reserva er_mult2;
+estacao_reserva* er_load1;
+estacao_reserva* er_load2;
+estacao_reserva* er_add1;
+estacao_reserva* er_add2;
+estacao_reserva* er_add3;
+estacao_reserva* er_mult1;
+estacao_reserva* er_mult2;
+
+struct node_ti{
+    inst instruction;
+    fila_inst next;
+} node_ti;
+
+fila_inst fila;
+
+static word IR; // instruction Register
 
 void pipeline();
+void processadorInit();
 void processadorInit();
 
 #endif

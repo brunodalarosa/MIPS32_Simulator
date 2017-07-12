@@ -22,6 +22,57 @@ void ajuda(){
 
 }
 
+/* Insere uma instrução na fila de instruções */
+/* Args = fila_inst : O nó a ser inserido     */
+void insereFila(inst instruction){
+	fila_inst node = malloc(sizeof(fila_inst));
+	node->instruction = instruction;
+	node->next = NULL;
+
+	fila_inst ultimo = fila;
+	while(ultimo->next != NULL) ultimo = ultimo->next;
+
+	ultimo->next = node;
+}
+
+/* Remove uma instrução da fila de instruções 						  */
+/* return = inst : A instrução removida ou 0 caso a fila esteja vazia */
+inst* removeFila(){
+	fila_inst f = fila->next;
+
+	if( f != NULL){
+
+		inst* instruction;
+		instruction = malloc(sizeof(inst));
+		*instruction = f->instruction;
+
+		fila_inst aux = f;
+		fila->next = f->next;
+		free(aux);
+		return instruction;
+
+	} else{
+
+		printf("Nenhuma instrução na fila!!\n");
+		//launchError ??
+		return NULL;
+	}
+}
+
+/* Printa a fila de instruções */
+void printaFila(){
+	fila_inst walker = fila->next;
+
+	printf("Printando a fila de instruções:\n");
+	if(walker == NULL) printf("Fila vazia!\n");
+
+	while(walker != NULL){
+		printaInstrucao(walker->instruction);
+		walker = walker->next;
+	}
+	printf("\n");
+}
+
 /* Imprime uma instrução em formato binário  */
 /* Args| word w : Instrução a ser impressa */
 void printaBinario(word w, char isFile, FILE* dest){
@@ -47,6 +98,8 @@ void printaBinario(word w, char isFile, FILE* dest){
 	}
 }
 
+/* Imprime uma instrução em formato texto 	          */
+/* Args = inst instruction : Instrução a ser impressa */
 void printaInstrucao(inst instruction){
 	unsigned int opcode = 0;
 	opcode = instruction.R.op;
@@ -104,8 +157,8 @@ void printMem(){
 
 	} while(p_mem < mem_text_end);
 
-	if(get_flag(FLAG_VERBOSE)) printf("\nSeção de dados estaticos\n");
 	/* Print Static Data */
+	if(get_flag(FLAG_VERBOSE)) printf("\nSeção de dados estaticos\n");
 	b = 0;
 	p_mem = mem + TEXT_SIZE;
 	do{
