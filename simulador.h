@@ -22,18 +22,17 @@ extern int flag;
 
 #define FLAG_DEBUG   1
 #define FLAG_VERBOSE 2
-
-
+#define FLAG_STEP_BY_STEP 4
 
 #define set_flag(opt) flag = flag | opt
 #define get_flag(opt) flag & opt
 
 /* Valores padrões de execução */
-static char* saida      = "saida.txt";
-static char* t_saida    = "bin";
-static char* log_nome   = "log.txt";
-static char* t_log_nome = "log_tradutor.txt";
-static char* nome_input = "input.txt";
+extern char* saida;
+extern char* t_saida;
+extern char* log_nome;
+extern char* t_log_nome;
+extern char* nome_input;
 
 /* Arquivos */
 extern FILE *input_file;
@@ -42,4 +41,4 @@ extern FILE *bin_file;
 extern FILE *log_file;
 extern FILE *log_t_file;
 
-#endif
+#endif /* __SIMULADOR_H */

@@ -59,4 +59,4 @@ int labelMatch(char* label);
 void tradutor();
 void tradutorInit();
 
-#endif
+#endif /* __TRADUTOR_H  */

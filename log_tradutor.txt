@@ -1,4 +1,4 @@
-		Log da tradução da entrada input.txt
+		Log da tradução da entrada ./input2.txt
 Op tipo R: 0 8 9 18 0 32
 Op tipo R: 28 16 9 0 0 0
 Op tipo R: 28 16 9 0 0 1

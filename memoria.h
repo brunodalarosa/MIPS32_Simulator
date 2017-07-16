@@ -28,4 +28,4 @@ void read(word w, int adress, int size);
 
 void write(word words, char* adress, int size);
 
-#endif
+#endif /* __MEMORIA_H */

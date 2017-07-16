@@ -4,8 +4,25 @@
 #ifndef __PROCESSADOR_H
 #define __PROCESSADOR_H
 
+#define NUM_REGS 31
+
+#define ADD_T 1 //ADD já o nome de uma OP
+#define MUL_T   2
+#define LOAD  3
+#define STORE 4
+
+#define ADD_1  1
+#define ADD_2  2
+#define ADD_3  3
+#define MUL_1  4
+#define MUL_2  5
+#define LOAD_1 6
+#define LOAD_2 7
+
+
 typedef union Inst inst;
 typedef struct node_ti* fila_inst;
+typedef struct er_t estacao_reserva;
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,7 +30,7 @@ typedef struct node_ti* fila_inst;
 #include "simulador.h"
 #include "utils.h"
 
-static unsigned int pc = 0; // Program counter
+extern unsigned int pc; // Program counter
 
 /* Tipo de instruções Declaradas com bit-fields */
 typedef struct{
@@ -46,23 +63,25 @@ union Inst {
 };
 
 /* Estações de reserva */
-typedef struct{
-    unsigned int busy : 1;
-    unsigned int op   : 6;
-    unsigned int vj   : 16; //checar
-    unsigned int vk   : 16; //checar
-    unsigned int qj   : 16; //checar
-    unsigned int qk   : 16; //checar
-    unsigned int A    : 16; //checar
-} estacao_reserva;
+struct er_t{
+    unsigned int busy; //Usado também para contar a qtd de ciclos de cada Operação
+    unsigned int op;
+             int vj;
+             int vk;
+    unsigned int qj;
+    unsigned int qk;
+    unsigned int A;
+};
 
-estacao_reserva* er_load1;
-estacao_reserva* er_load2;
 estacao_reserva* er_add1;
 estacao_reserva* er_add2;
 estacao_reserva* er_add3;
 estacao_reserva* er_mult1;
 estacao_reserva* er_mult2;
+estacao_reserva* er_load1;
+estacao_reserva* er_load2;
+
+unsigned int* Qi;
 
 struct node_ti{
     inst instruction;
@@ -71,10 +90,12 @@ struct node_ti{
 
 fila_inst fila;
 
-static word IR; // instruction Register
 
 void pipeline();
 void processadorInit();
-void processadorInit();
+estacao_reserva* checa_er(int er_type);
+int emissao(inst instruction);
+void decodifica();
+void busca();
 
-#endif
+#endif /* __PROCESSADOR_H */

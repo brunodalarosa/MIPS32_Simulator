@@ -11,7 +11,12 @@ FILE *output_file = NULL;
 FILE *log_file    = NULL;
 FILE *log_t_file  = NULL;
 
-//char* mem = NULL;
+/* Valores padrões de execução */
+char* saida      = "saida.txt";
+char* t_saida    = "bin";
+char* log_nome   = "log.txt";
+char* t_log_nome = "log_tradutor.txt";
+char* nome_input = "input.txt";
 
 /* Função de leitura dos parametros de execução */
 void parseargs(int argc, char **argv){
@@ -25,10 +30,11 @@ void parseargs(int argc, char **argv){
         {"t_log", required_argument, NULL, 'm'},
         {"verbose", no_argument, NULL, 'v'},
         {"debug", no_argument, NULL, 'd'},
+		{"step-by-step", no_argument, NULL, 's'},
         {"help", no_argument, NULL, 'h'}
 	};
 
-	while ((op = getopt_long(argc, argv, "o:l:t:m:dvh", longopts, NULL)) != -1) {
+	while ((op = getopt_long(argc, argv, "o:l:t:m:dvsh", longopts, NULL)) != -1) {
 		switch (op) {
 			case 'o':
 				saida = optarg;
@@ -53,6 +59,10 @@ void parseargs(int argc, char **argv){
             case 'd':
                 set_flag(FLAG_DEBUG);
                 break;
+
+			case 's':
+				set_flag(FLAG_STEP_BY_STEP);
+				break;
 
             case 'h':
                 ajuda();
@@ -104,13 +114,20 @@ void init(){
 }
 
 
+void printBanner(){
+							      printf("\n|  ===== Simulador MIPS-32 ====  |\n");
+	if(get_flag(FLAG_DEBUG))        printf("| Debugging ativado              |\n");
+	if(get_flag(FLAG_VERBOSE)) 	    printf("| Execução modo Verbose          |\n");
+	if(get_flag(FLAG_STEP_BY_STEP)) printf("| Execução passo-a-passo ativada |\n");
+
+}
+
 /* Função main */
 int main(int argc, char **argv){
 
     parseargs(argc, argv);
 
-    if(get_flag(FLAG_VERBOSE)) printf("Flag verbose\n");
-    if(get_flag(FLAG_DEBUG)) printf("Flag debug\n");
+	printBanner();
 
 	init();
 

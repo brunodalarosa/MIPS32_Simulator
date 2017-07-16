@@ -12,4 +12,4 @@ void put(word data);
 word get();
 
 
-#endif
+#endif /* __CDB_H */
