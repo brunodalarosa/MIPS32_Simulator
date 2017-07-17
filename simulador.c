@@ -103,14 +103,17 @@ void init(){
 		launchError(0); //Muito improvável, especificar erro?
 	}
 
-	tradutorInit();
+	/* Inicializa os registradores */
+	regs = calloc(NUM_REGS, sizeof(unsigned int));
 
 	/* Inicializa a memoria */
 	if(get_flag(FLAG_VERBOSE)) printf("\nTamanho da memoria = %d bytes\n", MEM_SIZE);
 	mem = calloc(MEM_SIZE, 1); //Malloc + inicia como 0
 	if(get_flag(FLAG_DEBUG)) pause();
 
+	tradutorInit();
 	processadorInit();
+	ulaInit();
 }
 
 
@@ -139,11 +142,9 @@ int main(int argc, char **argv){
 
 	if(get_flag(FLAG_DEBUG)) printMem();
 
-	if(get_flag(FLAG_VERBOSE)) printf("Iniciando a simulação do programa\n");
+	if(get_flag(FLAG_VERBOSE)) printf("\nIniciando a simulação do programa\n");
 
-	if(get_flag(FLAG_DEBUG)) pause();
-
-	pipeline();
+	while(run());
 
 	fclose(log_file);
 

@@ -16,6 +16,9 @@ typedef unsigned int* word;
 #include "tradutor.h"
 #include "memoria.h"
 #include "processador.h"
+#include "clock.h"
+#include "registradores.h"
+#include "ula.h"
 
 /* Sistemas de flags funiona com o sistema de parametros de execução */
 extern int flag;

@@ -4,12 +4,10 @@
 #include "processador.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "memoria.h"
-#include "simulador.h"
 
 unsigned int pc = 0;
 static word IR; // instruction Register
-
+unsigned int ativ;
 
 /* Etapa de busca                                              */
 /* Nesta etapa do pipeline uma instrução, na forma de palavra, */
@@ -153,6 +151,7 @@ estacao_reserva* checa_er(int er_type){
 /*          0 Se a emissão falhou (cria stall)          */
 /*            e a instrução deve voltar para a fila     */
 int emissao(inst instruction){
+
     /* Se existe uma ER do tipo de OP livre :                */
     /*     Se operandos estiverem nos registradores :        */
     /*         Emite op -> ER com operandos em Vj e Vk       */
@@ -226,76 +225,111 @@ int emissao(inst instruction){
 
     }
 
-
     if(get_flag(FLAG_DEBUG)) printaER(er, 0, NULL);
     return 1;
 }
 
-
-/* Função principal, simula o pipeline*/
-void pipeline(){ //pipeline reverso
-    inst* ptr_instruction;
-    ptr_instruction = NULL;
-    char ativ = 1;
-    int verif = 0;
-
-    while(ativ){
-        if(get_flag(FLAG_DEBUG)) printf("\nPC = %d\n", pc);
-
-        ativ = 0;
-        //if CDB != FLAG_NULL then Escrita();
-
-        //if ER != FLAG_NULL then execucao();
-
-        ptr_instruction = pegaDaFila(0);
-        if(ptr_instruction != NULL){
-            //printaInstrucao(*ptr_instruction);
-            ativ = 1;
-            verif = emissao(*ptr_instruction);
-
-            /* Se a emissão ocorreu corretamente retira a instrução da fila */
-            if (verif){
-                pegaDaFila(1);
-                verif = 0;
-            } else{
-                if(get_flag(FLAG_VERBOSE)) printf("Emissão falhou! Stall criado no pipeline\n");
-            }
+/* Ativa uma estação de reserva para processar sua operação        */
+/* Params = estacao_reserva* er : Estação de reserva a ser ativada */
+int ativaER_add(estacao_reserva* er){
+    /* Checa se a operação deve ser realizada */
+    if(er->busy == 1){
+        if(er->qj == 0 && er->qk == 0){
+            /* A ULA executára a operação */
+            (*p[er->op]) (*er);
+            /* TODO colocar resultado no CDB ??? */
+            er->busy = 0;
 
         } else {
-            if(get_flag(FLAG_DEBUG)) printf("Pulando etapa de emissão (Fila vazia) \n");
+            /* Operando não estão prontos */
+            if(get_flag(FLAG_DEBUG)) printf("Operação na ER %s não pode ser executada:\n Operandos não estão prontos.", ER_nomes[identificaER(er)]);
         }
 
-        if (*IR != FLAG_NULL){
-            ativ = 1;
-            decodifica();
+
+    } else{
+        if(er->busy > 1){
+            er->busy = er->busy - 1; //Representa um ciclo gasto na operação
+            if(get_flag(FLAG_DEBUG)) printf("\n| ER %s -> Ciclos restantes = %d |\n", ER_nomes[identificaER(er)], er->busy );
         } else {
-            if(get_flag(FLAG_DEBUG)) printf("Pulando etapa de decodicação (IR = NULL)\n");
+            return 0;
         }
 
-        if (&mem[pc] < mem_text_end){
-            ativ = 1;
-            busca();
-        } else {
-            if(get_flag(FLAG_DEBUG)) printf("Pulando etapa de busca (PC = END_OF_TEXT)\n");
-            *IR = FLAG_NULL;
-        }
-
-        if(get_flag(FLAG_VERBOSE))      printf("\n======== Fim do ciclo ========\n");
-        if(get_flag(FLAG_DEBUG))        printaFila();
-        if(get_flag(FLAG_STEP_BY_STEP)) pause();
     }
 
-    /*while(&mem[pc] < mem_text_end){
-        busca();
-        decodifica();
-        //printaFila();
-        ptr_instruction = removeFila();
+    return 1;
+}
 
-        if(ptr_instruction != NULL){
-            emissao(*ptr_instruction);
+
+int execucao(){
+    /* Chamar a execução de cada estacao de reserva */
+    int ativ = 0;
+
+    ativ += ativaER_add(er_add1);
+    ativ += ativaER_add(er_add2);
+    ativ += ativaER_add(er_add3);
+    ativ += ativaER_add(er_mult1);
+    ativ += ativaER_add(er_mult2);
+
+    if(get_flag(FLAG_DEBUG)){
+        if(ativ == 0){
+            printf("Pulando etapa de execução (Estações de reserva vazias)\n");
         }
-    }*/
+    }
 
+    return ativ;
+}
+
+
+/* Função principal, simula o pipeline*/
+unsigned int pipeline(int ciclo){ //pipeline reverso
+    inst* ptr_instruction; //Criar uma especie de barramento pra isso?
+    ptr_instruction = NULL;
+    int verif = 0;
+    ativ = 0;
+
+    //if CDB != FLAG_NULL then Escrita();
+
+    ativ = execucao();
+
+    ptr_instruction = pegaDaFila(0);
+    if(ptr_instruction != NULL){
+        //printaInstrucao(*ptr_instruction);
+        ativ = 1;
+        verif = emissao(*ptr_instruction);
+
+        /* Se a emissão ocorreu corretamente retira a instrução da fila */
+        if (verif){
+            pegaDaFila(1);
+            verif = 0;
+        } else{
+            if(get_flag(FLAG_VERBOSE)) printf("Emissão falhou! Stall criado no pipeline\n");
+        }
+
+    } else {
+        if(get_flag(FLAG_DEBUG)) printf("Pulando etapa de emissão (Fila vazia) \n");
+    }
+
+    if (*IR != FLAG_NULL){
+        ativ = 1;
+        decodifica();
+    } else {
+        if(get_flag(FLAG_DEBUG)) printf("Pulando etapa de decodicação (IR = NULL)\n");
+    }
+
+    if(get_flag(FLAG_DEBUG)) printf("\nPC = %d\n", pc);
+    if (&mem[pc] < mem_text_end){
+        ativ = 1;
+        busca();
+    } else {
+        if(get_flag(FLAG_DEBUG)) printf("Pulando etapa de busca (PC = END_OF_TEXT)\n");
+        *IR = FLAG_NULL;
+    }
+
+    if(get_flag(FLAG_DEBUG))        printaFila();
+
+    if(get_flag(FLAG_VERBOSE))      printf("\n======== Fim do ciclo %d ========\n", ciclo);
+
+    return ativ;
 }
 
 void processadorInit(){

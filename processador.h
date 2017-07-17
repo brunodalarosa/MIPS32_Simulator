@@ -4,10 +4,8 @@
 #ifndef __PROCESSADOR_H
 #define __PROCESSADOR_H
 
-#define NUM_REGS 31
-
-#define ADD_T 1 //ADD já o nome de uma OP
-#define MUL_T   2
+#define ADD_T 1 //ADD já é o nome de uma OP
+#define MUL_T 2 //MUL já é o nome de uma OP
 #define LOAD  3
 #define STORE 4
 
@@ -29,6 +27,8 @@ typedef struct er_t estacao_reserva;
 #include "memoria.h"
 #include "simulador.h"
 #include "utils.h"
+#include "registradores.h"
+#include "ula.h"
 
 extern unsigned int pc; // Program counter
 
@@ -90,8 +90,7 @@ struct node_ti{
 
 fila_inst fila;
 
-
-void pipeline();
+unsigned int pipeline(int ciclo);
 void processadorInit();
 estacao_reserva* checa_er(int er_type);
 int emissao(inst instruction);

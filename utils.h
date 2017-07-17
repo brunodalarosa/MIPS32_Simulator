@@ -7,6 +7,7 @@
 #include "simulador.h"
 #include "memoria.h"
 #include "processador.h"
+#include "registradores.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -99,6 +100,8 @@ typedef struct{
     int er_type;
 } operation;
 
+extern char* ER_nomes[8];
+
 
 void pause();
 void launchError(int e);
@@ -115,5 +118,6 @@ void printaFila();
 operation getOp(inst instruction);
 int identificaER(estacao_reserva* er);
 void printaER(estacao_reserva* er, char isFile, FILE* dest);
+void printaRegs(char isFile, FILE* dest);
 
 #endif /* __UTILS_H */

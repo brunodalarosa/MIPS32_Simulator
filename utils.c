@@ -3,7 +3,7 @@
 
 #include "utils.h"
 
-char* ER_nomes[7] = {"ADD 1","ADD 2","ADD 3","MULT 1","MULT 2","LOAD 1","LOAD 2"};
+char* ER_nomes[8] = {"","ADD 1","ADD 2","ADD 3","MULT 1","MULT 2","LOAD 1","LOAD 2"};
 
 /* Printa a seção de ajuda */
 void ajuda(){
@@ -25,7 +25,35 @@ void ajuda(){
 
 }
 
-/* Função auxiliar : Printa uma estaçaõ de reserva */
+/* Função auxiliar : Printa todos o conteudo de todos registradores */
+void printaRegs(char isFile, FILE* dest){
+	if(isFile){
+		fprintf(dest, "|            ======= Registradores =======            |\n");
+		fprintf(dest, "| [$ze = %d]  [$at = %d]  [$v0 = %d]  [$v1 = %d]\n", regs[0],  regs[1],  regs[2],  regs[3]);
+		fprintf(dest, "| [$a0 = %d]  [$a1 = %d]  [$a2 = %d]  [$a3 = %d]\n", regs[4],  regs[5],  regs[6],  regs[7]);
+		fprintf(dest, "| [$t0 = %d]  [$t1 = %d]  [$t2 = %d]  [$t3 = %d]\n", regs[8],  regs[9],  regs[10], regs[11]);
+		fprintf(dest, "| [$t4 = %d]  [$t5 = %d]  [$t6 = %d]  [$t7 = %d]\n", regs[12], regs[13], regs[14], regs[15]);
+		fprintf(dest, "| [$s0 = %d]  [$s1 = %d]  [$s2 = %d]  [$s3 = %d]\n", regs[16], regs[17], regs[18], regs[19]);
+		fprintf(dest, "| [$s4 = %d]  [$s5 = %d]  [$s6 = %d]  [$s7 = %d]\n", regs[20], regs[21], regs[22], regs[23]);
+		fprintf(dest, "| [$t8 = %d]  [$t9 = %d]  [$k0 = %d]  [$k1 = %d]\n", regs[24], regs[25], regs[26], regs[27]);
+		fprintf(dest, "| [$gp = %d]  [$sp = %d]  [$fp = %d]  [$ra = %d]\n", regs[28], regs[29], regs[30], regs[31]);
+		fprintf(dest, "-------------------------------------------------------\n");
+
+	} else{
+		printf("|            ======= Registradores =======            |\n");
+		printf("| [$ze = %d]  [$at = %d]  [$v0 = %d]  [$v1 = %d]\n", regs[0],  regs[1],  regs[2],  regs[3]);
+		printf("| [$a0 = %d]  [$a1 = %d]  [$a2 = %d]  [$a3 = %d]\n", regs[4],  regs[5],  regs[6],  regs[7]);
+		printf("| [$t0 = %d]  [$t1 = %d]  [$t2 = %d]  [$t3 = %d]\n", regs[8],  regs[9],  regs[10], regs[11]);
+		printf("| [$t4 = %d]  [$t5 = %d]  [$t6 = %d]  [$t7 = %d]\n", regs[12], regs[13], regs[14], regs[15]);
+		printf("| [$s0 = %d]  [$s1 = %d]  [$s2 = %d]  [$s3 = %d]\n", regs[16], regs[17], regs[18], regs[19]);
+		printf("| [$s4 = %d]  [$s5 = %d]  [$s6 = %d]  [$s7 = %d]\n", regs[20], regs[21], regs[22], regs[23]);
+		printf("| [$t8 = %d]  [$t9 = %d]  [$k0 = %d]  [$k1 = %d]\n", regs[24], regs[25], regs[26], regs[27]);
+		printf("| [$gp = %d]  [$sp = %d]  [$fp = %d]  [$ra = %d]\n", regs[28], regs[29], regs[30], regs[31]);
+		printf("-------------------------------------------------------\n");
+	}
+}
+
+/* Função auxiliar : Printa uma estação de reserva */
 void printaER(estacao_reserva* er, char isFile, FILE* dest){
 	int busy = er->busy > 0 ? 1 : 0;
 	int cycles = er->busy;
@@ -99,70 +127,70 @@ operation getOp(inst instruction){
 				case 0:
 					printf("sll\n\n");
 					op.op = SLL;
-					op.cycles = 1; //todo
+					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 2:
 					printf("srl\n\n");
 					op.op = SRL;
-					op.cycles = 1; //todo
+					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 3:
 					printf("sra\n\n");
 					op.op = SRA;
-					op.cycles = 1; //todo
+					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 4:
 					printf("sllv\n\n");
 					op.op = SLLV;
-					op.cycles = 1; //todo
+					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 6:
 					printf("srlv\n\n");
 					op.op = SRLV;
-					op.cycles = 1; //todo
+					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 7:
 					printf("srav\n\n");
 					op.op = SRAV;
-					op.cycles = 1; //todo
+					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 8:
 					printf("jr\n\n");
 					op.op = JR;
-					op.cycles = 1; //todo
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 9:
 					printf("jalr\n\n");
 					op.op = JALR;
-					op.cycles = 1; //todo
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 10:
 					printf("movz\n\n");
 					op.op = MOVZ;
-					op.cycles = 1; //todo
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 11:
 					printf("movn\n\n");
 					op.op = MOVN;
-					op.cycles = 1; //todo
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
@@ -176,126 +204,126 @@ operation getOp(inst instruction){
 				case 16:
 					printf("mfhi\n\n");
 					op.op = MFHI;
-					op.cycles = 1; //todo
+					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 17:
 					printf("mthi\n\n");
 					op.op = MTHI;
-					op.cycles = 1; //todo
+					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 18:
 					printf("mflo\n\n");
 					op.op = MFLO;
-					op.cycles = 1; //todo
+					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 19:
 					printf("mtlo\n\n");
 					op.op = MTLO;
-					op.cycles = 1; //todo
+					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 24:
 					printf("mult\n\n");
 					op.op = MULT;
-					op.cycles = 1; //todo
+					op.cycles = 5;
 					op.er_type = MUL_T; //verificar
 					break;
 
 				case 25:
 					printf("multu\n\n");
 					op.op = MULTU;
-					op.cycles = 1; //todo
+					op.cycles = 5;
 					op.er_type = MUL_T; //verificar
 					break;
 
 				case 26:
 					printf("div\n\n");
 					op.op = DIV;
-					op.cycles = 1; //todo
+					op.cycles = 5;
 					op.er_type = MUL_T; //verificar
 					break;
 
 				case 27:
 					printf("divu\n\n");
 					op.op = DIVU;
-					op.cycles = 1; //todo
+					op.cycles = 5;
 					op.er_type = MUL_T; //verificar
 					break;
 
 				case 32:
 					printf("add\n\n");
 					op.op = ADD;
-					op.cycles = 1; //todo
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 33:
 					printf("addu\n\n");
 					op.op = ADDU;
-					op.cycles = 1; //todo
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 34:
 					printf("sub\n\n");
 					op.op = SUB;
-					op.cycles = 1; //todo
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 35:
 					printf("subu\n\n");
 					op.op = SUBU;
-					op.cycles = 1; //todo
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 36:
 					printf("and\n\n");
 					op.op = AND;
-					op.cycles = 1; //todo
+					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 37:
 					printf("or\n\n");
 					op.op = OR;
-					op.cycles = 1; //todo
+					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 38:
 					printf("xor\n\n");
 					op.op = XOR;
-					op.cycles = 1; //todo
+					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 39:
 					printf("nor\n\n");
 					op.op = NOR;
-					op.cycles = 1; //todo
+					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 42:
 					printf("slt\n\n");
 					op.op = SLT;
-					op.cycles = 1; //todo
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 43:
 					printf("sltu\n\n");
 					op.op = SLTU;
-					op.cycles = 1; //todo
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
@@ -355,14 +383,14 @@ operation getOp(inst instruction){
 				case 0:
 					//bltz
 					op.op = BLTZ;
-					op.cycles = 1; //todo
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 1:
 					//bgez
 					op.op = BGEZ;
-					op.cycles = 1; //todo
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
@@ -405,13 +433,13 @@ operation getOp(inst instruction){
 					//blztal
 					op.op = BLTZAL;
 					break;
-					op.cycles = 1; //todo
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 
 				case 17:
 					//bgezal
 					op.op = BGEZAL;
-					op.cycles = 1; //todo
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
@@ -425,98 +453,98 @@ operation getOp(inst instruction){
 		case 2:
 			//j
 			op.op = JMP;
-			op.cycles = 1; //todo
+			op.cycles = 2;
 			op.er_type = ADD_T; //verificar
 			break;
 
 		case 3:
 			//jal
 			op.op = JAL;
-			op.cycles = 1; //todo
+			op.cycles = 2;
 			op.er_type = ADD_T; //verificar
 			break;
 
 		case 4:
 			//beq
 			op.op = BEQ;
-			op.cycles = 1; //todo
+			op.cycles = 2;
 			op.er_type = ADD_T; //verificar
 			break;
 
 		case 5:
 			//bne
 			op.op = BNE;
-			op.cycles = 1; //todo
+			op.cycles = 2;
 			op.er_type = ADD_T; //verificar
 			break;
 
 		case 6:
 			//blez
 			op.op = BLEZ;
-			op.cycles = 1; //todo
+			op.cycles = 2;
 			op.er_type = ADD_T; //verificar
 			break;
 
 		case 7:
 			//bgtz
 			op.op = BGTZ;
-			op.cycles = 1; //todo
+			op.cycles = 2;
 			op.er_type = ADD_T; //verificar
 			break;
 
 		case 8:
 			//addi
 			op.op = ADDI;
-			op.cycles = 1; //todo
+			op.cycles = 2;
 			op.er_type = ADD_T; //verificar
 			break;
 
 		case 9:
 			//addiu
 			op.op = ADDIU;
-			op.cycles = 1; //todo
+			op.cycles = 2;
 			op.er_type = ADD_T; //verificar
 			break;
 
 		case 10:
 			//slti
 			op.op = SLTI;
-			op.cycles = 1; //todo
+			op.cycles = 2;
 			op.er_type = ADD_T; //verificar
 			break;
 
 		case 11:
 			//sltiu
 			op.op = SLTIU;
-			op.cycles = 1; //todo
+			op.cycles = 2;
 			op.er_type = ADD_T; //verificar
 			break;
 
 		case 12:
 			//andi
 			op.op = ANDI;
-			op.cycles = 1; //todo
+			op.cycles = 1;
 			op.er_type = ADD_T; //verificar
 			break;
 
 		case 13:
 			//ori
 			op.op = ORI;
-			op.cycles = 1; //todo
+			op.cycles = 1;
 			op.er_type = ADD_T; //verificar
 			break;
 
 		case 14:
 			//xori
 			op.op = XORI;
-			op.cycles = 1; //todo
+			op.cycles = 1;
 			op.er_type = ADD_T; //verificar
 			break;
 
 		case 15:
 			//lui
 			op.op = LUI;
-			op.cycles = 1; //todo
+			op.cycles = 2;
 			op.er_type = ADD_T; //verificar
 			break;
 
@@ -526,49 +554,49 @@ operation getOp(inst instruction){
 				case 0:
 					//madd
 					op.op = MADD;
-					op.cycles = 1; //todo
+					op.cycles = 5;
 					op.er_type = MUL_T;
 					break;
 
 				case 1:
 					//maddu
 					op.op = MADDU;
-					op.cycles = 1; //todo
+					op.cycles = 5;
 					op.er_type = MUL_T;
 					break;
 
 				case 2:
 					//mul
 					op.op = MUL;
-					op.cycles = 1; //todo
+					op.cycles = 5;
 					op.er_type = MUL_T;
 					break;
 
 				case 4:
 					//msub
 					op.op = MSUB;
-					op.cycles = 1; //todo
+					op.cycles = 5;
 					op.er_type = MUL_T;
 					break;
 
 				case 5:
 					//msubu
 					op.op = MSUBU;
-					op.cycles = 1; //todo
+					op.cycles = 5;
 					op.er_type = MUL_T;
 					break;
 
 				case 32:
 					//clo
 					op.op = CLO;
-					op.cycles = 1; //todo
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 33:
 					//clz
 					op.op = CLZ;
-					op.cycles = 1; //todo
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
@@ -582,84 +610,84 @@ operation getOp(inst instruction){
 		case 32:
 			//lb
 			op.op = LB;
-			op.cycles = 1; //todo
+			op.cycles = 4;
 			op.er_type = LOAD;
 			break;
 
 		case 33:
 			//lh
 			op.op = LH;
-			op.cycles = 1; //todo
+			op.cycles = 4;
 			op.er_type = LOAD;
 			break;
 
 		case 34:
 			//lwl
 			op.op = LWL;
-			op.cycles = 1; //todo
+			op.cycles = 4;
 			op.er_type = LOAD;
 			break;
 
 		case 35:
 			//lw
 			op.op = LW;
-			op.cycles = 1; //todo
+			op.cycles = 4;
 			op.er_type = LOAD;
 			break;
 
 		case 36:
 			//lbu
 			op.op = LBU;
-			op.cycles = 1; //todo
+			op.cycles = 4;
 			op.er_type = LOAD;
 			break;
 
 		case 37:
 			//lhu
 			op.op = LHU;
-			op.cycles = 1; //todo
+			op.cycles = 4;
 			op.er_type = LOAD;
 			break;
 
 		case 38:
 			//lwr
 			op.op = LWR;
-			op.cycles = 1; //todo
+			op.cycles = 4;
 			op.er_type = LOAD;
 			break;
 
 		case 40:
 			//sb
 			op.op = SB;
-			op.cycles = 1; //todo
+			op.cycles = 4;
 			op.er_type = STORE;
 			break;
 
 		case 41:
 			//sh
 			op.op = SH;
-			op.cycles = 1; //todo
+			op.cycles = 4;
 			op.er_type = STORE;
 			break;
 
 		case 42:
 			//swl
 			op.op = SWL;
-			op.cycles = 1; //todo
+			op.cycles = 4;
 			op.er_type = STORE;
 			break;
 
 		case 43:
 			//sw
 			op.op = SW;
-			op.cycles = 1; //todo
+			op.cycles = 4;
 			op.er_type = STORE;
 			break;
 
 		case 46:
 			//swr
 			op.op = SWR;
-			op.cycles = 1; //todo
+			op.cycles = 4;
 			op.er_type = STORE;
 			break;
 

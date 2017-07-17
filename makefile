@@ -10,7 +10,7 @@ LFLAGS = -I. -Wall -lfl
 
 DEPS = utils.h parser.h #Todos os .h que TODOS os .c dependem.
 
-OBJ = simulador.o tradutor.o memoria.o utils.o processador.o cdb.o parser.tab.o lex.yy.o
+OBJ = simulador.o tradutor.o memoria.o utils.o processador.o cdb.o clock.o ula.o parser.tab.o lex.yy.o
 
 %.o: %.c $(DEPS)
 	$(CC) $(CFLAGS) -o $@ $<
@@ -26,7 +26,7 @@ clean:
 tar:
 	tar cfv simulador.tar simulador.c simulador.h utils.c utils.h lexic.l parser.y \
 		memoria.c memoria.h tradutor.h tradutor.c processador.h processador.c \
-		cdb.c cdb.h
+		cdb.c cdb.h clock.c clock.h ula.c ula.h
 
 all: simulador
 

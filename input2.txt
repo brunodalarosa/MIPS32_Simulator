@@ -6,9 +6,9 @@
 loo:
     madd $s0, $t1
     maddu $s0, $t1
-    msub $s0, $t1
-    msubu $s0, $t1
-    clo $t0, $s0
-    clz $t0, $s0
+    sub $s0, $t1
+    subu $s0, $t1
+    msub $t0, $s0
+    msubu $t0, $s0
     div $s0, $t1
     divu $s0, $t1
