@@ -11,390 +11,720 @@ void ulaInit(){
     p[3] = sra;
     p[4] = sllv;
     p[5] = srlv;
-    p[6] = movz;
-    p[7] = movn;
-    p[8] = tnei;
-    p[9] = mfhi;
-    p[10] = mthi;
-    p[11] = mflo;
-    p[12] = mtlo;
-    p[13] = mult;
-    p[14] = multu;
-    p[15] = div_;
-    p[16] = divu;
-    p[17] = add;
-    p[18] = addu;
-    p[19] = sub;
-    p[20] = subu;
-    p[21] = and;
-    p[22] = or;
-    p[23] = xor;
-    p[24] = nor;
-    p[25] = slt;
-    p[26] = sltu;
-    p[27] = tge;
-    p[28] = tgeu;
-    p[29] = tlt;
-    p[30] = tltu;
-    p[31] = teq;
-    p[32] = tne;
-    p[33] = jr;
-    p[34] = jalr;
-    p[35] = bltz;
-    p[36] = bgez;
-    p[37] = tgei;
-    p[38] = tgeiu;
-    p[39] = tlti;
-    p[40] = tltiu;
-    p[41] = teqi;
-    p[42] = bltzal;
-    p[43] = bgezal;
-    p[44] = jmp;
-    p[45] = jal;
-    p[46] = beq;
-    p[47] = bne;
-    p[48] = blez;
-    p[49] = bgtz;
-    p[50] = addi;
-    p[51] = addiu;
-    p[52] = slti;
-    p[53] = sltiu;
-    p[54] = andi;
-    p[55] = ori;
-    p[56] = xori;
-    p[57] = lui;
-    p[58] = madd;
-    p[59] = maddu;
-    p[60] = mul;
-    p[61] = msub;
-    p[62] = msubu;
-    p[63] = clo;
-    p[64] = clz;
-    p[65] = lb;
-    p[66] = lh;
-    p[67] = lwl;
-    p[68] = lw;
-    p[69] = lbu;
-    p[70] = lhu;
-    p[71] = lwr;
-    p[72] = sb;
-    p[73] = sh;
-    p[74] = swl;
-    p[75] = sw;
-    p[76] = swr;
-    p[77] = ll;
-    p[78] = sc;
+    p[6] = srav;
+    p[7] = movz;
+    p[8] = movn;
+    p[9] = tnei;
+    p[10] = mfhi;
+    p[11] = mthi;
+    p[12] = mflo;
+    p[13] = mtlo;
+    p[14] = mult;
+    p[15] = multu;
+    p[16] = div_;
+    p[17] = divu;
+    p[18] = add;
+    p[19] = addu;
+    p[20] = sub;
+    p[21] = subu;
+    p[22] = and;
+    p[23] = or;
+    p[24] = xor;
+    p[25] = nor;
+    p[26] = slt;
+    p[27] = sltu;
+    p[28] = tge;
+    p[29] = tgeu;
+    p[30] = tlt;
+    p[31] = tltu;
+    p[32] = teq;
+    p[33] = tne;
+    p[34] = jr;
+    p[35] = jalr;
+    p[36] = bltz;
+    p[37] = bgez;
+    p[38] = tgei;
+    p[39] = tgeiu;
+    p[40] = tlti;
+    p[41] = tltiu;
+    p[42] = teqi;
+    p[43] = bltzal;
+    p[44] = bgezal;
+    p[45] = jmp;
+    p[46] = jal;
+    p[47] = beq;
+    p[48] = bne;
+    p[49] = blez;
+    p[50] = bgtz;
+    p[51] = addi;
+    p[52] = addiu;
+    p[53] = slti;
+    p[54] = sltiu;
+    p[55] = andi;
+    p[56] = ori;
+    p[57] = xori;
+    p[58] = lui;
+    p[59] = madd;
+    p[60] = maddu;
+    p[61] = mul;
+    p[62] = msub;
+    p[63] = msubu;
+    p[64] = clo;
+    p[65] = clz;
+    p[66] = lb;
+    p[67] = lh;
+    p[68] = lwl;
+    p[69] = lw;
+    p[70] = lbu;
+    p[71] = lhu;
+    p[72] = lwr;
+    p[73] = sb;
+    p[74] = sh;
+    p[75] = swl;
+    p[76] = sw;
+    p[77] = swr;
+    p[78] = ll;
+    p[79] = sc;
 
 }
 
-void sll(estacao_reserva er){
+unsigned int sll(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void srl(estacao_reserva er){
+unsigned int srl(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void sra(estacao_reserva er){
+unsigned int sra(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void sllv(estacao_reserva er){
+unsigned int sllv(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void srlv(estacao_reserva er){
+unsigned int srlv(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
+    printf("SRLV BEM LOUCO\n");
+    va_end(args);
+}
+
+unsigned int srav(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
+    printf("SRAV BEM LOUCO\n");
+    va_end(args);
+}
+
+
+unsigned int movz(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void movz(estacao_reserva er){
+unsigned int movn(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void movn(estacao_reserva er){
+unsigned int tnei(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void tnei(estacao_reserva er){
+unsigned int mfhi(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void mfhi(estacao_reserva er){
+unsigned int mthi(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void mthi(estacao_reserva er){
+unsigned int mflo(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void mflo(estacao_reserva er){
+unsigned int mtlo(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void mtlo(estacao_reserva er){
+unsigned int mult(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void mult(estacao_reserva er){
+unsigned int multu(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void multu(estacao_reserva er){
-    printf("SLL BEM LOUCO\n");
-}
-
-void div_(estacao_reserva er){
+unsigned int div_(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("DIV BEM LOUCO\n");
+    va_end(args);
 }
 
-void divu(estacao_reserva er){
+unsigned int divu(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("DIVU BEM LOUCO\n");
+    va_end(args);
 }
 
-void add(estacao_reserva er){
-    printf("ADD BEM LOUCO\n");
+unsigned int add(int num, ...){
+    va_list args;
+    va_start(args, num);
+
+    unsigned int operando1 = va_arg(args, unsigned int);
+    unsigned int operando2 = va_arg(args, unsigned int);
+
+    unsigned int resultado = operando1 + operando2;
+
+    printf("ADD BEM LOUCO ACONTECENDO BEM AQUI: %i + %i = %i\n",
+            operando1, operando2, resultado);
+
+    va_end(args);
+    return resultado;
 }
 
-void addu(estacao_reserva er){
+unsigned int addu(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("ADDU BEM LOUCO\n");
+    va_end(args);
 }
 
-void sub(estacao_reserva er){
+unsigned int sub(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SUB BEM LOUCO\n");
+    va_end(args);
 }
 
-void subu(estacao_reserva er){
+unsigned int subu(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SUBU BEM LOUCO\n");
+    va_end(args);
 }
 
-void and(estacao_reserva er){
+unsigned int and(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void or(estacao_reserva er){
+unsigned int or(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void xor(estacao_reserva er){
+unsigned int xor(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void nor(estacao_reserva er){
+unsigned int nor(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void slt(estacao_reserva er){
+unsigned int slt(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void sltu(estacao_reserva er){
+unsigned int sltu(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void tge(estacao_reserva er){
+unsigned int tge(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void tgeu(estacao_reserva er){
+unsigned int tgeu(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void tlt(estacao_reserva er){
+unsigned int tlt(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void tltu(estacao_reserva er){
+unsigned int tltu(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void teq(estacao_reserva er){
+unsigned int teq(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void tne(estacao_reserva er){
+unsigned int tne(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void jr(estacao_reserva er){
+unsigned int jr(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void jalr(estacao_reserva er){
+unsigned int jalr(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void bltz(estacao_reserva er){
+unsigned int bltz(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void bgez(estacao_reserva er){
+unsigned int bgez(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void tgei(estacao_reserva er){
+unsigned int tgei(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void tgeiu(estacao_reserva er){
+unsigned int tgeiu(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void tlti(estacao_reserva er){
+unsigned int tlti(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void tltiu(estacao_reserva er){
+unsigned int tltiu(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void teqi(estacao_reserva er){
+unsigned int teqi(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void bltzal(estacao_reserva er){
+unsigned int bltzal(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void bgezal(estacao_reserva er){
+unsigned int bgezal(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void jmp(estacao_reserva er){
+unsigned int jmp(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void jal(estacao_reserva er){
+unsigned int jal(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void beq(estacao_reserva er){
+unsigned int beq(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void bne(estacao_reserva er){
+unsigned int bne(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void blez(estacao_reserva er){
+unsigned int blez(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void bgtz(estacao_reserva er){
+unsigned int bgtz(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void addi(estacao_reserva er){
+unsigned int addi(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("ADDI BEM LOUCO\n");
+    va_end(args);
 }
 
-void addiu(estacao_reserva er){
+unsigned int addiu(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("ADDIU BEM LOUCO\n");
+    va_end(args);
 }
 
-void slti(estacao_reserva er){
+unsigned int slti(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void sltiu(estacao_reserva er){
+unsigned int sltiu(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void andi(estacao_reserva er){
+unsigned int andi(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void ori(estacao_reserva er){
+unsigned int ori(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void xori(estacao_reserva er){
+unsigned int xori(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void lui(estacao_reserva er){
+unsigned int lui(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void madd(estacao_reserva er){
+unsigned int madd(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("MADD BEM LOUCO\n");
+    va_end(args);
 }
 
-void maddu(estacao_reserva er){
+unsigned int maddu(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("MADDU BEM LOUCO\n");
+    va_end(args);
 }
 
-void mul(estacao_reserva er){
+unsigned int mul(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void msub(estacao_reserva er){
+unsigned int msub(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("MSUB BEM LOUCO\n");
+    va_end(args);
 }
 
-void msubu(estacao_reserva er){
+unsigned int msubu(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("MSUBU BEM LOUCO\n");
+    va_end(args);
 }
 
-void clo(estacao_reserva er){
+unsigned int clo(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void clz(estacao_reserva er){
+unsigned int clz(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void lb(estacao_reserva er){
+unsigned int lb(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void lh(estacao_reserva er){
+unsigned int lh(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void lwl(estacao_reserva er){
+unsigned int lwl(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void lw(estacao_reserva er){
+unsigned int lw(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void lbu(estacao_reserva er){
+unsigned int lbu(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void lhu(estacao_reserva er){
+unsigned int lhu(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void lwr(estacao_reserva er){
+unsigned int lwr(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void sb(estacao_reserva er){
+unsigned int sb(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void sh(estacao_reserva er){
+unsigned int sh(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void swl(estacao_reserva er){
+unsigned int swl(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void sw(estacao_reserva er){
+unsigned int sw(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void swr(estacao_reserva er){
+unsigned int swr(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void ll(estacao_reserva er){
+unsigned int ll(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }
 
-void sc(estacao_reserva er){
+unsigned int sc(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
+    va_end(args);
 }

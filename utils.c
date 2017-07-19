@@ -3,7 +3,7 @@
 
 #include "utils.h"
 
-char* ER_nomes[8] = {"","ADD 1","ADD 2","ADD 3","MULT 1","MULT 2","LOAD 1","LOAD 2"};
+char* ER_nomes[7] = {"ADD 1","ADD 2","ADD 3","MULT 1","MULT 2","LOAD 1","LOAD 2"};
 
 /* Printa a seção de ajuda */
 void ajuda(){
@@ -59,7 +59,7 @@ void printaER(estacao_reserva* er, char isFile, FILE* dest){
 	int cycles = er->busy;
 
 	if (isFile){
-		fprintf(dest, "\n|  Estação de reserva %s |\n", ER_nomes[identificaER(er)]);
+		fprintf(dest, "\n|  Estação de reserva %s |\n", ER_nomes[identificaER(er) - 1]);
 		fprintf(dest, "-----------------------------\n");
 
 		if(busy){
@@ -77,7 +77,7 @@ void printaER(estacao_reserva* er, char isFile, FILE* dest){
 		fprintf(dest, "------------------------------\n\n");
 
 	} else{
-		printf("\n|  Estação de reserva %s |\n", ER_nomes[identificaER(er)]);
+		printf("\n|  Estação de reserva %s |\n", ER_nomes[identificaER(er) - 1]);
 		printf("-----------------------------\n");
 
 		if(busy){

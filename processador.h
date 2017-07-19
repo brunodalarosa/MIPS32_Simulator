@@ -17,6 +17,7 @@
 #define LOAD_1 6
 #define LOAD_2 7
 
+#define NUM_ER 7
 
 typedef union Inst inst;
 typedef struct node_ti* fila_inst;
@@ -82,6 +83,7 @@ estacao_reserva* er_load1;
 estacao_reserva* er_load2;
 
 unsigned int* Qi;
+unsigned int* buffer_resultados;
 
 struct node_ti{
     inst instruction;

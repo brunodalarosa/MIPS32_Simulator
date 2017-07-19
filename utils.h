@@ -100,7 +100,7 @@ typedef struct{
     int er_type;
 } operation;
 
-extern char* ER_nomes[8];
+extern char* ER_nomes[7];
 
 
 void pause();

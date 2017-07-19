@@ -24,6 +24,8 @@ void busca(){
 /* Params = word w : A palavra a ser decodificada             */
 /* Return = inst : A instrução decodificada e preenchida      */
 void decodifica(){
+    /* TODO Identificar Jump inconcidional na Decodificação, */
+    /* chamar função auxiliar que altera PC e pular o restante das etapas do pipeline neste ciclo */
     inst instruction;
     unsigned int opcode = 0;
     unsigned int func = 0;
@@ -177,14 +179,14 @@ int emissao(inst instruction){
             if(Qi[instruction.R.rs] != 0){
                 er->qj = Qi[instruction.R.rs];
             } else{
-                er->vj = instruction.R.rs;
+                er->vj = regs[instruction.R.rs];
                 er->qj = 0;
             }
 
             if(Qi[instruction.R.rt] != 0){
                 er->qk = Qi[instruction.R.rt];
             } else{
-                er->vk = instruction.R.rt;
+                er->vk = regs[instruction.R.rt];
                 er->qk = 0;
             }
             break;
@@ -194,7 +196,7 @@ int emissao(inst instruction){
             if(Qi[instruction.I.rs] != 0){
                 er->qj = Qi[instruction.I.rs];
             } else{
-                er->vj = instruction.I.rs;
+                er->vj = regs[instruction.I.rs];
                 er->qj = 0;
             }
 
@@ -209,7 +211,7 @@ int emissao(inst instruction){
             if(Qi[instruction.I.rs] != 0){
                 er->qj = Qi[instruction.I.rs];
             } else{
-                er->vj = instruction.I.rs;
+                er->vj = regs[instruction.I.rs];
                 er->qj = 0;
             }
 
@@ -218,7 +220,7 @@ int emissao(inst instruction){
             if(Qi[instruction.R.rt] != 0){
                 er->qk = Qi[instruction.R.rt];
             } else{
-                er->vk = instruction.R.rt;
+                er->vk = regs[instruction.R.rt];
                 er->qk = 0;
             }
             break;
@@ -232,24 +234,26 @@ int emissao(inst instruction){
 /* Ativa uma estação de reserva para processar sua operação        */
 /* Params = estacao_reserva* er : Estação de reserva a ser ativada */
 int ativaER_add(estacao_reserva* er){
+    unsigned int identificador = identificaER(er) - 1;
+
     /* Checa se a operação deve ser realizada */
     if(er->busy == 1){
         if(er->qj == 0 && er->qk == 0){
             /* A ULA executára a operação */
-            (*p[er->op]) (*er);
-            /* TODO colocar resultado no CDB ??? */
+            buffer_resultados[identificador] = (*p[er->op]) (2, er->vj, er->vk);
+            printf("RESULTADO NA ativaER_add : %d\n", buffer_resultados[identificador]);
             er->busy = 0;
 
         } else {
             /* Operando não estão prontos */
-            if(get_flag(FLAG_DEBUG)) printf("Operação na ER %s não pode ser executada:\n Operandos não estão prontos.", ER_nomes[identificaER(er)]);
+            if(get_flag(FLAG_DEBUG)) printf("Operação na ER %s não pode ser executada:\n Operandos não estão prontos.", ER_nomes[identificador]);
         }
 
 
     } else{
         if(er->busy > 1){
             er->busy = er->busy - 1; //Representa um ciclo gasto na operação
-            if(get_flag(FLAG_DEBUG)) printf("\n| ER %s -> Ciclos restantes = %d |\n", ER_nomes[identificaER(er)], er->busy );
+            if(get_flag(FLAG_DEBUG)) printf("\n| ER %s -> Ciclos restantes = %d |\n", ER_nomes[identificador], er->busy );
         } else {
             return 0;
         }
@@ -356,5 +360,6 @@ void processadorInit(){
     *IR = FLAG_NULL;
 
     Qi = calloc(NUM_REGS, sizeof(unsigned int));
+    buffer_resultados = calloc(NUM_ER, sizeof(unsigned int));
 
 }
