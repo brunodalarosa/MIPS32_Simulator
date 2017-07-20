@@ -1673,7 +1673,7 @@ yyreduce:
     { checkSizes();
 			if ( labelMatch((yyvsp[-1].text)) == -1){
 				  lbl_names[lbl_count] = (yyvsp[-1].text);
-				  lbl_values[lbl_count] = DATA_OFFSET + line * INST_SIZE;
+				  lbl_values[lbl_count] = line * INST_SIZE;
 		    	  lbl_count++; line++;
 			 } else { launchError(1);}
 		 }
@@ -1685,7 +1685,7 @@ yyreduce:
     { checkSizes();
 		if ( labelMatch((yyvsp[-2].text)) == -1){
 				 lbl_names[lbl_count] = (yyvsp[-2].text);
-		   		 lbl_values[lbl_count] = DATA_OFFSET + line * INST_SIZE;
+		   		 lbl_values[lbl_count] = line * INST_SIZE;
 		   		 lbl_count++; line++;
 				 } else { launchError(1);}
 			 }

@@ -7,7 +7,8 @@
 
 unsigned int pc = 0;
 static word IR; // instruction Register
-unsigned int ativ;
+unsigned int process; //Variável de controle do processo
+int jump; // Variável de controle de saltos (Trava a busca e decodificação)
 
 /* Etapa de busca                                              */
 /* Nesta etapa do pipeline uma instrução, na forma de palavra, */
@@ -15,7 +16,7 @@ unsigned int ativ;
 /* Ela é então copiada para o registrador de instrução IR      */
 void busca(){
     read(IR, pc, 1);
-    pc+=4; //Fazer componente PC+4
+    pc+=4; //Fazer componente PC+4 TODO
 }
 
 /* Etapa de decoficação                                       */
@@ -78,7 +79,7 @@ void decodifica(){
             *aux = *aux << 6;
             *aux = *aux >> 6;
             instruction.J.target = *aux;
-
+            jump = 3; //Simula que o salto incondicional leva 2 ciclos
             break;
 
         case 1:
@@ -110,8 +111,6 @@ void decodifica(){
         default:
             break;
     }
-
-    //if(get_flag(FLAG_DEBUG)) printaInstrucao(instruction);
 
     insereFila(instruction);
     free(aux);
@@ -263,24 +262,33 @@ int ativaER_add(estacao_reserva* er){
     return 1;
 }
 
+/* Simula função de controle: Salto inconcidional */
+/* Atualiza PC e simula um ciclo adicional        */
+void inconditionalJump(){
+    inst* ptr_instruction = pegaDaFila(1);
+    pc = ptr_instruction->J.target; //TODO função PC_recebe(unsigned int target)
+    printf("Salto inconcidional para pc = %d\n", pc);
+    jump = 0; //Reseta o controle de salto
+
+}
 
 int execucao(){
     /* Chamar a execução de cada estacao de reserva */
-    int ativ = 0;
+    int process = 0;
 
-    ativ += ativaER_add(er_add1);
-    ativ += ativaER_add(er_add2);
-    ativ += ativaER_add(er_add3);
-    ativ += ativaER_add(er_mult1);
-    ativ += ativaER_add(er_mult2);
+    process += ativaER_add(er_add1);
+    process += ativaER_add(er_add2);
+    process += ativaER_add(er_add3);
+    process += ativaER_add(er_mult1);
+    process += ativaER_add(er_mult2);
 
     if(get_flag(FLAG_DEBUG)){
-        if(ativ == 0){
+        if(process == 0){
             printf("Pulando etapa de execução (Estações de reserva vazias)\n");
         }
     }
 
-    return ativ;
+    return process;
 }
 
 
@@ -288,52 +296,71 @@ int execucao(){
 unsigned int pipeline(int ciclo){ //pipeline reverso
     inst* ptr_instruction; //Criar uma especie de barramento pra isso?
     ptr_instruction = NULL;
-    int verif = 0;
-    ativ = 0;
+    int emissao_v = 0;
+    process = 0;
+
+    if(get_flag(FLAG_VERBOSE))      printf("\n======== Ciclo %d ========\n", ciclo);
 
     //if CDB != FLAG_NULL then Escrita();
 
-    ativ = execucao();
+    process = execucao();
 
-    ptr_instruction = pegaDaFila(0);
-    if(ptr_instruction != NULL){
-        //printaInstrucao(*ptr_instruction);
-        ativ = 1;
-        verif = emissao(*ptr_instruction);
 
-        /* Se a emissão ocorreu corretamente retira a instrução da fila */
-        if (verif){
-            pegaDaFila(1);
-            verif = 0;
-        } else{
-            if(get_flag(FLAG_VERBOSE)) printf("Emissão falhou! Stall criado no pipeline\n");
+    if (jump == 1) inconditionalJump();
+    if (jump > 0){
+
+        jump--;
+        if(get_flag(FLAG_DEBUG)) printf("Pulando etapa de busca, decodificação e emissão (Processando Salto)\n");
+        printf("JUMP = %d\n", jump );
+        process = 1;
+
+    } else{
+
+        if(get_flag(FLAG_DEBUG))    printaFila();
+        ptr_instruction = pegaDaFila(0);
+        if(ptr_instruction != NULL){
+            //printaInstrucao(*ptr_instruction);
+            process = 1;
+            emissao_v = emissao(*ptr_instruction);
+
+            /* Se a emissão ocorreu corretamente retira a instrução da fila */
+            if (emissao_v){
+                pegaDaFila(1);
+                emissao_v = 0;
+            } else{
+                if(get_flag(FLAG_VERBOSE)) printf("Emissão falhou! Stall criado no pipeline\n");
+            }
+
+        } else {
+            if(get_flag(FLAG_DEBUG)) printf("Pulando etapa de emissão (Fila vazia) \n");
         }
 
-    } else {
-        if(get_flag(FLAG_DEBUG)) printf("Pulando etapa de emissão (Fila vazia) \n");
+        if (*IR != FLAG_NULL){
+            process = 1;
+            decodifica();
+        } else {
+            if(get_flag(FLAG_DEBUG)) printf("Pulando etapa de decodicação (IR = NULL)\n");
+        }
+
+        /* Se a decodificação identificar um salto incondicional: */
+        /* Se já foi processada faz o salto */
+        /* Pula a etapa de busca            */
+
+
+        if(get_flag(FLAG_DEBUG)) printf("\nPC = %d\n", pc);
+        if (&mem[pc] < mem_text_end){
+            process = 1;
+            busca();
+        } else {
+            if(get_flag(FLAG_DEBUG)) printf("Pulando etapa de busca (PC = END_OF_TEXT)\n");
+            *IR = FLAG_NULL;
+        }
     }
 
-    if (*IR != FLAG_NULL){
-        ativ = 1;
-        decodifica();
-    } else {
-        if(get_flag(FLAG_DEBUG)) printf("Pulando etapa de decodicação (IR = NULL)\n");
-    }
-
-    if(get_flag(FLAG_DEBUG)) printf("\nPC = %d\n", pc);
-    if (&mem[pc] < mem_text_end){
-        ativ = 1;
-        busca();
-    } else {
-        if(get_flag(FLAG_DEBUG)) printf("Pulando etapa de busca (PC = END_OF_TEXT)\n");
-        *IR = FLAG_NULL;
-    }
-
-    if(get_flag(FLAG_DEBUG))        printaFila();
 
     if(get_flag(FLAG_VERBOSE))      printf("\n======== Fim do ciclo %d ========\n", ciclo);
 
-    return ativ;
+    return process;
 }
 
 void processadorInit(){
@@ -362,4 +389,5 @@ void processadorInit(){
     Qi = calloc(NUM_REGS, sizeof(unsigned int));
     buffer_resultados = calloc(NUM_ER, sizeof(unsigned int));
 
+    jump = 0;
 }

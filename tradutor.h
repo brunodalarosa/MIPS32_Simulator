@@ -22,8 +22,8 @@
 #include "utils.h"
 #include "processador.h"
 
-#define DATA_OFFSET 0
-#define INST_SIZE 32
+#define DATA_OFFSET 400
+#define INST_SIZE 4
 
 int lbl_count;
 char** lbl_names;

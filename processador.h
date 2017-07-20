@@ -31,7 +31,7 @@ typedef struct er_t estacao_reserva;
 #include "registradores.h"
 #include "ula.h"
 
-extern unsigned int pc; // Program counter
+extern unsigned int pc; // Program counter Criar PC.c e PC.h
 
 /* Tipo de instruções Declaradas com bit-fields */
 typedef struct{

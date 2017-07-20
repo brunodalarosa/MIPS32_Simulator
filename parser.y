@@ -281,7 +281,7 @@ M: opcodemf reg virg reg { //mfc0 & mfc1
 labelid: id colon { checkSizes();
 			if ( labelMatch($<text>1) == -1){
 				  lbl_names[lbl_count] = $<text>1;
-				  lbl_values[lbl_count] = DATA_OFFSET + line * INST_SIZE;
+				  lbl_values[lbl_count] = line * INST_SIZE;
 		    	  lbl_count++; line++;
 			 } else { launchError(1);}
 		 }
@@ -289,7 +289,7 @@ labelid: id colon { checkSizes();
 | id EOL colon { checkSizes();
 		if ( labelMatch($<text>1) == -1){
 				 lbl_names[lbl_count] = $<text>1;
-		   		 lbl_values[lbl_count] = DATA_OFFSET + line * INST_SIZE;
+		   		 lbl_values[lbl_count] = line * INST_SIZE;
 		   		 lbl_count++; line++;
 				 } else { launchError(1);}
 			 }
