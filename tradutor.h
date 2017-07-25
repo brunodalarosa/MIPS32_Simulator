@@ -5,9 +5,6 @@
 /* R  [1] : op(6)|rs(5)|rt(5)|rd(5)|shamt(5)|func(6) */
 /* I  [2] : op(6)|rs(5)|rt(5)|imm(16)                */
 /* J  [4] : op(6)|target(26)                         */
-/* M  [6] : op(6)|rs(5)|rd+rt+aux(15)|func(6)        */
-/* MS [7] : op(6)|rs(5)|rt(5)|rd(5)|func(11)         */
-/* B  [8] : op(6)|rs(5)|aux(5)|offset(16)            */
 
 
 #ifndef __TRADUTOR_H
@@ -31,13 +28,16 @@ unsigned int* lbl_values;
 int lbl_tam;
 
 int var_count;
+int val_count;
+int local_var_count;
 char** var_names;
+int *aux_val_count;
 unsigned int* var_adress;
-unsigned int* var_values;
 int var_tam; //var_tamanho inicial do vetor de variaveis
 
 int line;
 typedef struct node_t* node;
+typedef struct list_t* list;
 
 struct node_t{
     unsigned int tipo;
@@ -53,8 +53,17 @@ struct node_t{
 
 node lista;
 
+struct list_t{
+    int valor;
+    list prox;
+} list_t;
+
+list valores;
+list* var_values;
+
 void checkSizes(void);
 void insereLista(node n);
+void insereListaValores(list t);
 int labelMatch(char* label);
 void tradutor();
 void tradutorInit();

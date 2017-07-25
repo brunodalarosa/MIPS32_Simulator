@@ -1,25 +1,32 @@
-		Log da tradução da entrada ./input3.txt
-Op tipo J: 2 salto1
-Op tipo J: 2 salto2
-Op tipo J: 2 main
+		Log da tradução da entrada ./input2.txt
+Op tipo LS var: 35 0 8 x
+Op tipo LS var: 35 0 9 y
+Op tipo LS reg: 35 8 11 4
+Op tipo R: 0 8 9 10 0 32
+Op tipo R: 0 0 8 16 5 0
+Op tipo R: 0 0 8 18 5 2
+Op tipo R: 0 0 8 19 5 3
 
 Lista de nós:
- 1[4]|Op =  2|rs =  0|rt =  0|rd =  0|aux =  0|func =  0 salto1
- 2[4]|Op =  2|rs =  0|rt =  0|rd =  0|aux =  0|func =  0 salto2
- 3[4]|Op =  2|rs =  0|rt =  0|rd =  0|aux =  0|func =  0 main
+ 1[9]|Op = 35|rs =  0|rt =  8|rd =  0|aux =  0|func =  0 x
+ 2[9]|Op = 35|rs =  0|rt =  9|rd =  0|aux =  0|func =  0 y
+ 3[9]|Op = 35|rs =  8|rt = 11|rd =  0|aux =  4|func =  0 (null)
+ 4[1]|Op =  0|rs =  8|rt =  9|rd = 10|aux =  0|func = 32 (null)
+ 5[1]|Op =  0|rs =  0|rt =  8|rd = 16|aux =  5|func =  0 (null)
+ 6[1]|Op =  0|rs =  0|rt =  8|rd = 18|aux =  5|func =  2 (null)
+ 7[1]|Op =  0|rs =  0|rt =  8|rd = 19|aux =  5|func =  3 (null)
 
 		fim da lista
-000010000000000000000000001000000000100000000000000000000011010000001000000000000000000000001100
-Numero de linhas computadas = 15
+Numero de variaveis = 3
+ Numero de valores totais = 1110001100000010000000000000001000100011000000100100000000000001001000110100001011000000000000010000000001000010010101000000100000000000000000100010000001010000000000000000001000100100010100001000000000000010001001100101000011
+Numero de linhas computadas = 7
 
 Labels:
-main = 12
-salto1 = 32
-salto2 = 52
+fim = 28
 
 Variaveis:
-z (0) = 43
-y (4) = 10
-x (8) = 5
+z (0) = 37244320
+y (44) = 37467808
+x (44) = 37467840
 
 Fim do log de tradução.

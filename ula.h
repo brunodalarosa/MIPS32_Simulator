@@ -4,8 +4,11 @@
 #ifndef __ULA_H
 #define __ULA_H
 
-#include "processador.h"
 #include <stdarg.h>
+#include "processador.h"
+#include "simulador.h"
+#include "utils.h"
+#include "cache.h"
 
 unsigned int sll(int num, ...);
 unsigned int srl(int num, ...);
@@ -51,8 +54,6 @@ unsigned int tltiu(int num, ...);
 unsigned int teqi(int num, ...);
 unsigned int bltzal(int num, ...);
 unsigned int bgezal(int num, ...);
-unsigned int jmp(int num, ...);
-unsigned int jal(int num, ...);
 unsigned int beq(int num, ...);
 unsigned int bne(int num, ...);
 unsigned int blez(int num, ...);

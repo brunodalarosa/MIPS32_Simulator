@@ -42,6 +42,8 @@ letter	[a-zA-Z]
 "$sp" { yylval.val = 29;  return reg;}
 "$fp" { yylval.val = 30;  return reg;}
 "$ra" { yylval.val = 31;  return reg;}
+"$lo" { yylval.val = 32;  return reg;}
+"$hi" { yylval.val = 33;  return reg;}
 
 "sll"   {yylval.op.code = 0;  yylval.op.func = 0;   return opcoders;}/*ops RS*/
 "srl"   {yylval.op.code = 0;  yylval.op.func = 2;   return opcoders;}
@@ -93,8 +95,8 @@ letter	[a-zA-Z]
 "j"    {yylval.op.code = 2; return opcodej;}
 "jal"  {yylval.op.code = 3; return opcodej;}
 
-"beq"    {yylval.op.code = 4;  return opcodeb;}
-"bne"    {yylval.op.code = 5;  return opcodeb;}
+"beq"    {yylval.op.code = 4;  return opcodebeq;}
+"bne"    {yylval.op.code = 5;  return opcodebeq;}
 "blez"   {yylval.op.code = 6;  yylval.op.func = 0;  return opcodeb;}
 "bgtz"   {yylval.op.code = 7;  yylval.op.func = 0;  return opcodeb;}
 
@@ -138,6 +140,7 @@ letter	[a-zA-Z]
 "," {return virg;}
 "(" {return abreparents;}
 ")" {return fechaparents;}
+"-"{digit}+ { yylval.val = atoi(yytext); return number; }
 {digit}+ { yylval.val = atoi(yytext); return number; }
 \n { return EOL;}
 [ \t] { /* ignore whitespace */ }
@@ -145,9 +148,3 @@ letter	[a-zA-Z]
 . { printf("\nERRO!\nCaracter desconhecido %c\n", *yytext); }
 <<EOF>> {return END_OF_FILE;}
 %%
-
-//rd = $t0 | rs = $s0 | rt = $t1
-//imm = 4 | shamt = 32 | label = 100
-//target = 1000 | offset = 200
-//clo $t0, $s0
-//clz $t0, $s0

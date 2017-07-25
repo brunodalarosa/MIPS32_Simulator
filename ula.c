@@ -6,110 +6,133 @@
 void ulaInit(){
 
     p[0] = NULL;
-    p[1] = sll;
-    p[2] = srl;
-    p[3] = sra;
-    p[4] = sllv;
-    p[5] = srlv;
-    p[6] = srav;
-    p[7] = movz;
-    p[8] = movn;
-    p[9] = tnei;
-    p[10] = mfhi;
-    p[11] = mthi;
-    p[12] = mflo;
-    p[13] = mtlo;
-    p[14] = mult;
-    p[15] = multu;
-    p[16] = div_;
-    p[17] = divu;
-    p[18] = add;
-    p[19] = addu;
-    p[20] = sub;
-    p[21] = subu;
-    p[22] = and;
-    p[23] = or;
-    p[24] = xor;
-    p[25] = nor;
-    p[26] = slt;
-    p[27] = sltu;
-    p[28] = tge;
-    p[29] = tgeu;
-    p[30] = tlt;
-    p[31] = tltu;
-    p[32] = teq;
-    p[33] = tne;
-    p[34] = jr;
-    p[35] = jalr;
-    p[36] = bltz;
-    p[37] = bgez;
-    p[38] = tgei;
-    p[39] = tgeiu;
-    p[40] = tlti;
-    p[41] = tltiu;
-    p[42] = teqi;
-    p[43] = bltzal;
-    p[44] = bgezal;
-    p[45] = jmp;
-    p[46] = jal;
-    p[47] = beq;
-    p[48] = bne;
-    p[49] = blez;
-    p[50] = bgtz;
-    p[51] = addi;
-    p[52] = addiu;
-    p[53] = slti;
-    p[54] = sltiu;
-    p[55] = andi;
-    p[56] = ori;
-    p[57] = xori;
-    p[58] = lui;
-    p[59] = madd;
-    p[60] = maddu;
-    p[61] = mul;
-    p[62] = msub;
-    p[63] = msubu;
-    p[64] = clo;
-    p[65] = clz;
-    p[66] = lb;
-    p[67] = lh;
-    p[68] = lwl;
-    p[69] = lw;
-    p[70] = lbu;
-    p[71] = lhu;
-    p[72] = lwr;
-    p[73] = sb;
-    p[74] = sh;
-    p[75] = swl;
-    p[76] = sw;
-    p[77] = swr;
-    p[78] = ll;
-    p[79] = sc;
+    p[SLL]   = sll;
+    p[SRL]   = srl;
+    p[SRA]   = sra;
+    p[SLLV]  = sllv;
+    p[SRLV]  = srlv;
+    p[SRAV]  = srav;
+    p[MOVZ]  =  movz;
+    p[MOVN]  =  movn;
+    p[TNEI]  = tnei;
+    p[MFHI]  = mfhi;
+    p[MTHI]  = mthi;
+    p[MFLO]  = mflo;
+    p[MTLO]  = mtlo;
+    p[MULT]  = mult;
+    p[MULTU] = multu;
+    p[DIV]   = div_;
+    p[DIVU]  = divu;
+    p[ADD]   = add;
+    p[ADDU]  = addu;
+    p[SUB]   = sub;
+    p[SUBU]  = subu;
+    p[AND]   = and;
+    p[OR]    = or;
+    p[XOR]   = xor;
+    p[NOR]   = nor;
+    p[SLT]   = slt;
+    p[SLTU]  = sltu;
+    p[TGE]   = tge;
+    p[TGEU]  = tgeu;
+    p[TLT]   = tlt;
+    p[TLTU]  = tltu;
+    p[TEQ]   = teq;
+    p[TNE]   = tne;
+    p[JR]    = jr;
+    p[JALR]  = jalr;
+    p[BLTZ]  = bltz;
+    p[BGEZ]  = bgez;
+    p[TGEI]  = tgei;
+    p[TGEIU] = tgeiu;
+    p[TLTI]  = tlti;
+    p[TLTIU] = tltiu;
+    p[TEQI]  = teqi;
+    p[BLTZAL] = bltzal;
+    p[BGEZAL] = bgezal;
+    p[BEQ]   = beq;
+    p[BNE]   = bne;
+    p[BLEZ]  = blez;
+    p[BGTZ]  = bgtz;
+    p[ADDI]  = addi;
+    p[ADDIU] = addiu;
+    p[SLTI]  = slti;
+    p[SLTIU] = sltiu;
+    p[ANDI]  = andi;
+    p[ORI]   = ori;
+    p[XORI]  = xori;
+    p[LUI]   = lui;
+    p[MADD]  = madd;
+    p[MADDU] = maddu;
+    p[MUL]   = mul;
+    p[MSUB]  = msub;
+    p[MSUBU] = msubu;
+    p[CLO]   = clo;
+    p[CLZ]   = clz;
+    p[LB]    = lb;
+    p[LH]    = lh;
+    p[LWL]   = lwl;
+    p[LW]    = lw;
+    p[LBU]   = lbu;
+    p[LHU]   = lhu;
+    p[LWR]   = lwr;
+    p[SB]    = sb;
+    p[SH]    = sh;
+    p[SWL]   = swl;
+    p[SW]    = sw;
+    p[SWR]   = swr;
+    p[LL]    = ll;
+    p[SC]    = sc;
 
 }
 
 unsigned int sll(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
+    unsigned int operando1 = va_arg(args, unsigned int); //rs
+    operando1 = va_arg(args, unsigned int); //rt
+    unsigned int operando2 = va_arg(args, unsigned int); //shift amount
+
+    unsigned int resultado = operando1 << operando2;
+    if(get_flag(FLAG_DEBUG)) printf("Shift a esquerda: %d << %d = %d \n", operando1, operando2, resultado );
+
     va_end(args);
+
+    return resultado;
 }
 
 unsigned int srl(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
+    unsigned int operando1 = va_arg(args, unsigned int); //rs
+    operando1 = va_arg(args, unsigned int); //rt
+    unsigned int operando2 = va_arg(args, unsigned int); //shift amount
+
+    unsigned int resultado = operando1 >> operando2;
+    if(get_flag(FLAG_DEBUG)) printf("Shift a direita: %d >> %d = %d \n", operando1, operando2, resultado );
+
     va_end(args);
+
+    return resultado;
 }
 
 unsigned int sra(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
+    int operando1 = va_arg(args, int); //rs
+    operando1 = va_arg(args, int); //rt
+    unsigned int operando2 = va_arg(args, unsigned int); //shift amount
+
+    int aux = operando1 & INT_MAX;
+    int resultado = operando1 >> operando2;
+
+    //TODO checar se ta certo
+
+    if(get_flag(FLAG_DEBUG)) printf("Shift aritmético a direita: %d >> %d = %d \n", operando1, operando2, resultado);
+
     va_end(args);
+
+    return (unsigned int) resultado;
 }
 
 unsigned int sllv(int num, ...){
@@ -449,28 +472,24 @@ unsigned int bgezal(int num, ...){
     va_end(args);
 }
 
-unsigned int jmp(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-}
-
-unsigned int jal(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-}
-
 unsigned int beq(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
+    unsigned int operando2 = va_arg(args, unsigned int);
+    unsigned int offset = va_arg(args, unsigned int);
+
+    if(operando1 == operando2){
+        pc = offset;
+        if(get_flag(FLAG_DEBUG)) printf("\nSalto condicional ocorreu : PC = %d\n", offset );
+    } else {
+        if(get_flag(FLAG_DEBUG)) printf("\nSalto condicional não ocorreu. %d != %d\n ", operando1 , operando2 );
+    }
+
+    jump = 0; //Reseta o controle de salto
+
     va_end(args);
+    return 0;
 }
 
 unsigned int bne(int num, ...){
@@ -644,9 +663,16 @@ unsigned int lwl(int num, ...){
 unsigned int lw(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
+    unsigned int arg1 = va_arg(args, unsigned int);
+
+    endereco addr;
+    addr.i = arg1;
+
+    unsigned int dado = cRead(CACHE_DADOS, addr);
+
     va_end(args);
+
+    return dado;
 }
 
 unsigned int lbu(int num, ...){

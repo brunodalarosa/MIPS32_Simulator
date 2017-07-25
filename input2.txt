@@ -1,14 +1,16 @@
-.data
-    x : .int 5
-    y : .int 10
+    .data
+    x : .int 1, 2, 3, 4, 5
+    y : .int 6, 7, 8, 9, 10
+    z : .int 0
 .text
-    add $t0, $t1, $s2
-loo:
-    madd $s0, $t1
-    maddu $s0, $t1
-    sub $s0, $t1
-    subu $s0, $t1
-    msub $t0, $s0
-    msubu $t0, $s0
-    div $s0, $t1
-    divu $s0, $t1
+    lw $t0, x
+    lw $t1, y
+    lw $t3, 4($t0)
+    add $t2, $t0, $t1
+
+    sll $s0, $t0, 5
+    srl $s2, $t0, 5
+    sra $s3, $t0, 5
+
+
+fim:

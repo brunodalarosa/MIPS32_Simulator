@@ -13,6 +13,7 @@
 #include <string.h>
 
 #define FLAG_NULL 0
+#define INT_MAX 4294967296
 
 #define SLL    1
 #define SRL    2
@@ -35,64 +36,64 @@
 #define ADDU   19
 #define SUB    20
 #define SUBU   21
-#define AND    23
-#define OR     24
-#define XOR    25
-#define NOR    26
-#define SLT    27
-#define SLTU   28
-#define TGE    29
-#define TGEU   30
-#define TLT    31
-#define TLTU   32
-#define TEQ    33
-#define TNE    34
-#define JR     35
-#define JALR   36
-#define BLTZ   37
-#define BGEZ   38
-#define TGEI   39
-#define TGEIU  40
-#define TLTI   41
-#define TLTIU  42
-#define TEQI   43
-#define BLTZAL 44
-#define BGEZAL 45
-#define JMP    46 //J não pode um caracter apenas?
-#define JAL    47
-#define BEQ    48
-#define BNE    49
-#define BLEZ   50
-#define BGTZ   51
-#define ADDI   52
-#define ADDIU  53
-#define SLTI   54
-#define SLTIU  55
-#define ANDI   56
-#define ORI    57
-#define XORI   58
-#define LUI    59
-#define MADD   60
-#define MADDU  61
-#define MUL    62
-#define MSUB   63
-#define MSUBU  64
-#define CLO    65
-#define CLZ    66
-#define LB     67
-#define LH     68
-#define LWL    69
-#define LW     70
-#define LBU    71
-#define LHU    72
-#define LWR    73
-#define SB     74
-#define SH     75
-#define SWL    76
-#define SW     77
-#define SWR    78
-#define LL     79
-#define SC     80
+#define AND    22
+#define OR     23
+#define XOR    24
+#define NOR    25
+#define SLT    26
+#define SLTU   27
+#define TGE    28
+#define TGEU   29
+#define TLT    30
+#define TLTU   31
+#define TEQ    32
+#define TNE    33
+#define JR     34
+#define JALR   35
+#define BLTZ   36
+#define BGEZ   37
+#define TGEI   38
+#define TGEIU  39
+#define TLTI   40
+#define TLTIU  41
+#define TEQI   42
+#define BLTZAL 43
+#define BGEZAL 44
+//#define J     X / Não precisa ser definido por é lidado como uma função de controle
+//#define JAL   X / same as up
+#define BEQ    45
+#define BNE    46
+#define BLEZ   47
+#define BGTZ   48
+#define ADDI   49
+#define ADDIU  50
+#define SLTI   51
+#define SLTIU  52
+#define ANDI   53
+#define ORI    54
+#define XORI   55
+#define LUI    56
+#define MADD   57
+#define MADDU  58
+#define MUL    59
+#define MSUB   60
+#define MSUBU  61
+#define CLO    62
+#define CLZ    63
+#define LB     64
+#define LH     65
+#define LWL    66
+#define LW     67
+#define LBU    68
+#define LHU    69
+#define LWR    70
+#define SB     71
+#define SH     72
+#define SWL    73
+#define SW     74
+#define SWR    75
+#define LL     76
+#define SC     77
 
 typedef struct{
     int cycles;
@@ -114,10 +115,13 @@ void printaInstrucao(inst instruction);
 void insereFila(inst instruction);
 inst* pegaDaFila(int remover);
 void printaFila();
+void printaBloco(word w, unsigned int tam);
 
 operation getOp(inst instruction);
 int identificaER(estacao_reserva* er);
+int identificaREG(unsigned int er_id);
 void printaER(estacao_reserva* er, char isFile, FILE* dest);
 void printaRegs(char isFile, FILE* dest);
+int prompt();
 
 #endif /* __UTILS_H */

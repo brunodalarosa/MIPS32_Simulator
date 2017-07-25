@@ -5,11 +5,9 @@
 #define __CDB_H
 
 #include "simulador.h"
+#include "processador.h"
+#include "registradores.h"
 
-word bus;
-
-void put(word data);
-word get();
-
+void stream(unsigned int dado, unsigned int source_id);
 
 #endif /* __CDB_H */

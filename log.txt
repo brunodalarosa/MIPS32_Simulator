@@ -1,4 +1,0 @@
-
-Printando a memoria
-
-Fim do print

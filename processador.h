@@ -6,8 +6,9 @@
 
 #define ADD_T 1 //ADD já é o nome de uma OP
 #define MUL_T 2 //MUL já é o nome de uma OP
-#define LOAD  3
-#define STORE 4
+#define BRANCH 3
+#define LOAD  4
+#define STORE 5
 
 #define ADD_1  1
 #define ADD_2  2
@@ -18,6 +19,8 @@
 #define LOAD_2 7
 
 #define NUM_ER 7
+
+#define FLAG_BUFFER_VAZIO -1
 
 typedef union Inst inst;
 typedef struct node_ti* fila_inst;
@@ -30,8 +33,10 @@ typedef struct er_t estacao_reserva;
 #include "utils.h"
 #include "registradores.h"
 #include "ula.h"
+#include "cache.h"
 
 extern unsigned int pc; // Program counter Criar PC.c e PC.h
+extern int jump;
 
 /* Tipo de instruções Declaradas com bit-fields */
 typedef struct{
@@ -74,16 +79,16 @@ struct er_t{
     unsigned int A;
 };
 
-estacao_reserva* er_add1;
-estacao_reserva* er_add2;
-estacao_reserva* er_add3;
-estacao_reserva* er_mult1;
-estacao_reserva* er_mult2;
-estacao_reserva* er_load1;
-estacao_reserva* er_load2;
+extern estacao_reserva* er_add1;
+extern estacao_reserva* er_add2;
+extern estacao_reserva* er_add3;
+extern estacao_reserva* er_mult1;
+extern estacao_reserva* er_mult2;
+extern estacao_reserva* er_load1;
+extern estacao_reserva* er_load2;
 
 unsigned int* Qi;
-unsigned int* buffer_resultados;
+int* buffer_resultados;
 
 struct node_ti{
     inst instruction;

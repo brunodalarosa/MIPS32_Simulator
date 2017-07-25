@@ -19,6 +19,7 @@ typedef unsigned int* word;
 #include "clock.h"
 #include "registradores.h"
 #include "ula.h"
+#include "cache.h"
 
 /* Sistemas de flags funiona com o sistema de parametros de execução */
 extern int flag;
@@ -26,6 +27,7 @@ extern int flag;
 #define FLAG_DEBUG   1
 #define FLAG_VERBOSE 2
 #define FLAG_STEP_BY_STEP 4
+#define FLAG_REGISTRADORES 8
 
 #define set_flag(opt) flag = flag | opt
 #define get_flag(opt) flag & opt

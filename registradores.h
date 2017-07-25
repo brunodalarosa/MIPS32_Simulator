@@ -4,7 +4,7 @@
 #ifndef __REGISTRADORES_H
 #define __REGISTRADORES_H
 
-#define NUM_REGS 31
+#define NUM_REGS 34
 
 unsigned int* regs;
 

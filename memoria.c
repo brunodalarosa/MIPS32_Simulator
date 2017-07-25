@@ -3,11 +3,12 @@
 
 #include "memoria.h"
 
-
-void read(word w, int adress, int size){
-    memcpy(w, mem + adress,  size * 4);
+/* Lê [size]Bytes da memória começando da posição[adress] e copia estes dados para [w] */
+void read(word w, unsigned int adress, unsigned int size){
+    memcpy(w, mem + adress, size);
 }
 
-void write(word words, char* adress, int size){
-
+/* Escreve [size]Bytes de [w] na memória começando da posição[adress] */
+void write(unsigned int adress, word w, unsigned int size){
+    memcpy(mem+adress, w, size);
 }

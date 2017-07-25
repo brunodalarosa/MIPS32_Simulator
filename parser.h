@@ -75,13 +75,14 @@ extern int yydebug;
     opcodet = 271,
     opcodemf = 272,
     opcodemt = 273,
-    abreparents = 274,
-    fechaparents = 275,
-    colon = 276,
-    data = 277,
-    text = 278,
-    id = 279,
-    t_int = 280
+    opcodebeq = 274,
+    abreparents = 275,
+    fechaparents = 276,
+    colon = 277,
+    data = 278,
+    text = 279,
+    id = 280,
+    t_int = 281
   };
 #endif
 
@@ -96,7 +97,7 @@ union YYSTYPE
 	strcinst op;
 	char* text;
 
-#line 100 "parser.h" /* yacc.c:1909  */
+#line 101 "parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

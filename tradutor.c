@@ -10,11 +10,12 @@ void checkSizes(){
 		lbl_values = realloc(lbl_values, sizeof(int) * lbl_tam);
 	}
 
-	if (var_count == var_tam){
-		if (var_count >= 100) launchError(3); //limite maximo de variaveis
+	if (val_count == var_tam){
+		if (val_count >= 100) launchError(3); //limite maximo de variaveis
 		var_tam = var_tam + 5;
 		var_names = realloc(var_names, sizeof(char*) * var_tam);
-		var_values = realloc(var_values, sizeof(int) * var_tam);
+		var_values = realloc(var_values, sizeof(list) * var_tam);
+		aux_val_count = realloc(aux_val_count, sizeof(int) * var_tam);
 	}
 }
 
@@ -38,7 +39,7 @@ int varMatch(char* id){
 	int i;
 	for(i = 0; i < var_count; i++){
 		if(strcmp(id, var_names[i]) == 0){
-			return (i * 32);
+			return (i * sizeof(unsigned int));
 		}
 	}
 	return -1;
@@ -115,7 +116,7 @@ word traduz(node n){
 			}
 			break;
 
-		case 9: //SL
+		case 9: //LS
 			shift -= 5; //21
 			n->rs <<= shift;
 			shift -= 5; //16
@@ -145,6 +146,18 @@ void insereLista(node n){
 	while(ultimo->prox != NULL) ultimo = ultimo->prox;
 
 	ultimo->prox = n;
+}
+
+/* Insere um valor na lista de valores */
+/* Arg| O nó do valor a ser inserido   */
+void insereListaValores(list t){
+	printf("VALOR %d\n", t->valor );
+	list ultimo = valores;
+
+	while(ultimo->prox != NULL) ultimo = ultimo->prox;
+
+	ultimo->prox = t;
+
 }
 
 /* Caminha pela lista de instruções printando uma a uma */
@@ -190,14 +203,26 @@ void fechaLog(){
 /* com as variaveis declaradas e o restante dos 400 Bytes com zeros		   */
 void escreveDados(){
 	unsigned int* zeros;
-	int i, size = 100 - var_count;
+	int i, size = 100 - val_count;
+	list vars, aux;
 
-	if(get_flag(FLAG_VERBOSE)) printf("Numero de variaveis = %d\n", var_count);
+	if(get_flag(FLAG_VERBOSE)) fprintf(log_t_file, "Numero de variaveis = %d\n Numero de valores totais = %d", var_count, val_count);
 
-	/* Escreve na ordem certa */
-	for(i = var_count-1; i >= 0; i--){
-		fwrite(&var_values[i], sizeof(unsigned int), 1, bin_file);
+	/* Escreve na ordem certa SERÁ? */
+	/*for(i = var_count-1; i >= 0; i--){
+	/*	fwrite(&var_values[i], sizeof(unsigned int), 1, bin_file);
+	/*} */
+
+	aux = vars = var_values[0];
+	vars = vars->prox;
+	while(vars != NULL){
+		printf("Valor = %d\n", vars->valor);
+		fwrite(&vars->valor, sizeof(int), 1, bin_file);
+		vars = vars->prox;
 	}
+
+
+	free(aux);
 
 	zeros = (unsigned int*) calloc(size, sizeof(unsigned int));
 	fwrite(zeros, sizeof(unsigned int), size, bin_file);
@@ -230,14 +255,20 @@ void tradutorInit(){
 	lbl_tam = 10; //lbl_tamanho inicial do vetor de labels
 	var_count = 0;
 	var_tam = 10; //lbl_tamanho inicial do vetor de labels
+	local_var_count = 0;
+
 
 	/* Inicialização dos Vetores para controle de Labels e variaveis */
+	aux_val_count = malloc(sizeof(int) * var_tam);
+
 	lbl_names  = malloc(sizeof(char*) * lbl_tam);
 	lbl_values = malloc(sizeof(unsigned int) * lbl_tam);
 
 	var_names = malloc(sizeof(char*) * var_tam);
-	var_values = malloc(sizeof(unsigned int) * var_tam);
 	var_adress = malloc(sizeof(unsigned int) * var_tam);
+
+	var_values = malloc(sizeof(list) * var_tam);
+	valores = malloc(sizeof(struct list_t));
 
 	set_input();
 
@@ -258,20 +289,7 @@ void tradutor(){
 
 	escreveDados();
 
-	/* Por que isso tá aqui? */
-	/*if(get_flag(FLAG_DEBUG)){
-		word dados = malloc(sizeof(unsigned int) * 100);
-		fseek(bin_file, 0, SEEK_SET);
-		fread((void*) dados, sizeof(unsigned int), 100, bin_file);
-		int q;
-		for(q = 0; q < 100; q++){
-			printaBinario(&dados[q],);
-		}
-	}*/
-
 	escreveTexto(lista);
-
-	/* TODO finazlizar o arquivo */
 
 	fechaLog();
 	fclose(bin_file);

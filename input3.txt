@@ -1,18 +1,18 @@
 .data
-x : .int 5
+x : .int 8
 y : .int 10
 z : .int 43
 
 .text
-
+    add $t0, $t1, $t3
     j salto1
 
 main:
-
+    msub $t4, $t5
     j salto2
 
 salto1:
-    
+    beq $s1, $s2, salto2
     j main
 
 salto2:

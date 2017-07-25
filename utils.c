@@ -16,6 +16,7 @@ void ajuda(){
 		printf("\t[ -v ] 	    \tExecuta a simulador no modo Verbose.	       Padrão: Desativado\n");
 		printf("\t[ -d ] 	    \tExecuta o simulador no modo Debug. 	       Padrão: Desativado\n");
 		printf("\t[ -s ]        \tExecuta no modo passo-a-passo.			   Padrão: Desativado\n");
+		printf("\t[ -r ]        \tImprime o conteúdo dos registradores durante a execução. Padrão: Desativado\n");
 		printf("\t[ -h ] 	    \tExibe esta mensagem.\n");
 
 
@@ -28,7 +29,7 @@ void ajuda(){
 /* Função auxiliar : Printa todos o conteudo de todos registradores */
 void printaRegs(char isFile, FILE* dest){
 	if(isFile){
-		fprintf(dest, "|            ======= Registradores =======            |\n");
+		fprintf(dest, "\n|            ======= Registradores =======            |\n");
 		fprintf(dest, "| [$ze = %d]  [$at = %d]  [$v0 = %d]  [$v1 = %d]\n", regs[0],  regs[1],  regs[2],  regs[3]);
 		fprintf(dest, "| [$a0 = %d]  [$a1 = %d]  [$a2 = %d]  [$a3 = %d]\n", regs[4],  regs[5],  regs[6],  regs[7]);
 		fprintf(dest, "| [$t0 = %d]  [$t1 = %d]  [$t2 = %d]  [$t3 = %d]\n", regs[8],  regs[9],  regs[10], regs[11]);
@@ -37,10 +38,11 @@ void printaRegs(char isFile, FILE* dest){
 		fprintf(dest, "| [$s4 = %d]  [$s5 = %d]  [$s6 = %d]  [$s7 = %d]\n", regs[20], regs[21], regs[22], regs[23]);
 		fprintf(dest, "| [$t8 = %d]  [$t9 = %d]  [$k0 = %d]  [$k1 = %d]\n", regs[24], regs[25], regs[26], regs[27]);
 		fprintf(dest, "| [$gp = %d]  [$sp = %d]  [$fp = %d]  [$ra = %d]\n", regs[28], regs[29], regs[30], regs[31]);
+		fprintf(dest, "|            [$lo = %d]  [$hi = %d]            \n", regs[32], regs[33]);
 		fprintf(dest, "-------------------------------------------------------\n");
 
 	} else{
-		printf("|            ======= Registradores =======            |\n");
+		printf("\n|         ======= Registradores =======            |\n");
 		printf("| [$ze = %d]  [$at = %d]  [$v0 = %d]  [$v1 = %d]\n", regs[0],  regs[1],  regs[2],  regs[3]);
 		printf("| [$a0 = %d]  [$a1 = %d]  [$a2 = %d]  [$a3 = %d]\n", regs[4],  regs[5],  regs[6],  regs[7]);
 		printf("| [$t0 = %d]  [$t1 = %d]  [$t2 = %d]  [$t3 = %d]\n", regs[8],  regs[9],  regs[10], regs[11]);
@@ -49,8 +51,23 @@ void printaRegs(char isFile, FILE* dest){
 		printf("| [$s4 = %d]  [$s5 = %d]  [$s6 = %d]  [$s7 = %d]\n", regs[20], regs[21], regs[22], regs[23]);
 		printf("| [$t8 = %d]  [$t9 = %d]  [$k0 = %d]  [$k1 = %d]\n", regs[24], regs[25], regs[26], regs[27]);
 		printf("| [$gp = %d]  [$sp = %d]  [$fp = %d]  [$ra = %d]\n", regs[28], regs[29], regs[30], regs[31]);
-		printf("-------------------------------------------------------\n");
+		printf("|            [$lo = %d]  [$hi = %d]            \n", regs[32], regs[33]);
+		printf("---------------------------------------------------\n");
 	}
+}
+
+/* Identifica o registrador de destino através de sua posição em Qi. */
+/* Atualiza Qi. Retorna -1 caso não exista 						  	 */
+int identificaREG(unsigned int er_id){
+	int i;
+	for(i = 0; i < NUM_REGS; i++){
+		if(Qi[i] == er_id){
+			Qi[i] = 0;
+			return i;
+		}
+	}
+
+	return -1;
 }
 
 /* Função auxiliar : Printa uma estação de reserva */
@@ -68,12 +85,12 @@ void printaER(estacao_reserva* er, char isFile, FILE* dest){
 			fprintf(dest, "|       --- Livre ---        |\n");
 		}
 
-		fprintf(dest, "| Op : %d                   |\n", er->op);
-		fprintf(dest, "| Vj : %d                    |\n", er->vj);
-		fprintf(dest, "| Vk : %d                    |\n", er->vk);
-		fprintf(dest, "| Qj : %d                    |\n", er->qj);
-		fprintf(dest, "| Qk : %d                    |\n", er->qk);
-		fprintf(dest, "| A  : %d                    |\n", er->A);
+		fprintf(dest, "| Op : %d\n", er->op);
+		fprintf(dest, "| Vj : %d\n", er->vj);
+		fprintf(dest, "| Vk : %d\n", er->vk);
+		fprintf(dest, "| Qj : %d\n", er->qj);
+		fprintf(dest, "| Qk : %d\n", er->qk);
+		fprintf(dest, "| A  : %d\n", er->A);
 		fprintf(dest, "------------------------------\n\n");
 
 	} else{
@@ -384,14 +401,14 @@ operation getOp(inst instruction){
 					//bltz
 					op.op = BLTZ;
 					op.cycles = 2;
-					op.er_type = ADD_T; //verificar
+					op.er_type = BRANCH; //verificar
 					break;
 
 				case 1:
 					//bgez
 					op.op = BGEZ;
 					op.cycles = 2;
-					op.er_type = ADD_T; //verificar
+					op.er_type = BRANCH; //verificar
 					break;
 
 				case 8:
@@ -434,13 +451,13 @@ operation getOp(inst instruction){
 					op.op = BLTZAL;
 					break;
 					op.cycles = 2;
-					op.er_type = ADD_T; //verificar
+					op.er_type = BRANCH; //verificar
 
 				case 17:
 					//bgezal
 					op.op = BGEZAL;
 					op.cycles = 2;
-					op.er_type = ADD_T; //verificar
+					op.er_type = BRANCH; //verificar
 					break;
 
 				default:
@@ -450,46 +467,32 @@ operation getOp(inst instruction){
 			}
 			break;
 
-		case 2:
-			//j
-			op.op = JMP;
-			op.cycles = 2;
-			op.er_type = ADD_T; //verificar
-			break;
-
-		case 3:
-			//jal
-			op.op = JAL;
-			op.cycles = 2;
-			op.er_type = ADD_T; //verificar
-			break;
-
 		case 4:
 			//beq
 			op.op = BEQ;
 			op.cycles = 2;
-			op.er_type = ADD_T; //verificar
+			op.er_type = BRANCH; //verificar
 			break;
 
 		case 5:
 			//bne
 			op.op = BNE;
 			op.cycles = 2;
-			op.er_type = ADD_T; //verificar
+			op.er_type = BRANCH; //verificar
 			break;
 
 		case 6:
 			//blez
 			op.op = BLEZ;
 			op.cycles = 2;
-			op.er_type = ADD_T; //verificar
+			op.er_type = BRANCH; //verificar
 			break;
 
 		case 7:
 			//bgtz
 			op.op = BGTZ;
 			op.cycles = 2;
-			op.er_type = ADD_T; //verificar
+			op.er_type = BRANCH; //verificar
 			break;
 
 		case 8:
@@ -839,7 +842,7 @@ void printMem(){
 	char* p_mem = mem;
 	do{
 		w = memcpy(w, p_mem, sizeof(unsigned int));
-		printaBinario(w, 0, log_file);
+		printaBinario(w, 0, log_file); //MUDAR PRA 1
 		p_mem += 4;
 
 		/* Formatação do print */
@@ -855,7 +858,7 @@ void printMem(){
 	p_mem = mem + TEXT_SIZE;
 	do{
 		w = memcpy(w, p_mem, sizeof(unsigned int));
-		printaBinario(w, 0, log_file);
+		printaBinario(w, 0, log_file); //MUDAR PRA 1
 		p_mem += 4;
 
 		/* Formatação do print */
@@ -876,6 +879,34 @@ void pause(){
     getchar();
 }
 
+/**
+* Função auxiliar prompt (S/N)
+**/
+int prompt(){
+	char r;
+
+	do{
+		printf("(S/N) : ");
+		r = getchar();
+
+		switch (r) {
+			case 'S':
+			case 's':
+			return 1;
+
+			case 'N':
+			case 'n':
+			return 0;
+
+			default:
+			break;
+		}
+		getchar();
+		printf("\nEntrada incorreta! Insira apenas S ou N\n");
+
+	} while(1);
+}
+
 /* Função de tratamento de erros: Escreve a mensagem de erro, */
 /* fecha os arquivos de saida e log e para a execução. 	      */
 /* Args| int e: Código referente ao erro identificado.        */
@@ -890,13 +921,13 @@ void launchError(int e){
             exit(0);
 
 		case 3:
-			printf("ERRO na tradução do input: Declaração de Label repetido! Abortando... \n");
-			fprintf(log_t_file, "ERRO na tradução do input: Declaração de Label repetidos! Abortando... \n");
+			printf("ERRO na tradução do input: Declaração de Label repetido! Abortando...\n");
+			fprintf(log_t_file, "ERRO na tradução do input: Declaração de Label repetidos! Abortando...\n");
 			break;
 
 		case 4:
-			printf("ERRO na tradução do input: Label referenciado inexistente! Abortando... \n");
-			fprintf(log_t_file, "ERRO na tradução do input: Label referenciado inexistente! Abortando... \n");
+			printf("ERRO na tradução do input: Label referenciado inexistente! Abortando...\n");
+			fprintf(log_t_file, "ERRO na tradução do input: Label referenciado inexistente! Abortando...\n");
 			break;
 
 		case 5:
@@ -905,12 +936,22 @@ void launchError(int e){
 			break;
 
 		case 6:
-			printf("ERRO na tradução do input: Variavel referenciada inexistente! Abortando... \n");
-			fprintf(log_t_file, "ERRO na tradução do input: Variavel referenciada inexistente! Abortando... \n");
+			printf("ERRO na tradução do input: Variavel referenciada inexistente! Abortando...\n");
+			fprintf(log_t_file, "ERRO na tradução do input: Variavel referenciada inexistente! Abortando...\n");
+			break;
+
+		case 7:
+			printf("ERRO na execução: Impossível escrever na area de texto! Abortando...\n");
+			fprintf(log_t_file, "ERRO na execução: Impossível escrever na area de texto! Abortando...\n");
+			break;
+
+		case 8:
+			printf("ERRO na execução: Escrita inválida em registrador! Abortando...\n");
+			fprintf(log_t_file, "ERRO na execução: Escrita inválida em registrador! Abortando...\n");
 			break;
 
 		default:
-			printf("ERRO DESCONHECIDO. Abortando...\n");
+			printf("Abortando...\n");
 			exit(0);
 	}
 
@@ -918,6 +959,21 @@ void launchError(int e){
 	//fclose();
 	exit(0);
 }
+
+/**
+* Printa um bloco de memoria de 4 palavras
+**/
+void printaBloco(word w, unsigned int tam){
+	int i;
+	printf("\n\t\t       BLOCO\n");
+
+	for(i = 0; i < tam; i++){
+		printf("       | "); printaBinario((w+i), 0, NULL); printf(" |\n");
+	}
+
+	printf("\n");
+}
+
 
 /**
 * Lê o arquivo binário e carrega o programa para a memoria

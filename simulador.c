@@ -31,10 +31,11 @@ void parseargs(int argc, char **argv){
         {"verbose", no_argument, NULL, 'v'},
         {"debug", no_argument, NULL, 'd'},
 		{"step-by-step", no_argument, NULL, 's'},
-        {"help", no_argument, NULL, 'h'}
+		{"register-print", no_argument, NULL, 'r'},
+		{"help", no_argument, NULL, 'h'}
 	};
 
-	while ((op = getopt_long(argc, argv, "o:l:t:m:dvsh", longopts, NULL)) != -1) {
+	while ((op = getopt_long(argc, argv, "o:l:t:m:dvsrh", longopts, NULL)) != -1) {
 		switch (op) {
 			case 'o':
 				saida = optarg;
@@ -62,6 +63,10 @@ void parseargs(int argc, char **argv){
 
 			case 's':
 				set_flag(FLAG_STEP_BY_STEP);
+				break;
+
+			case 'r':
+				set_flag(FLAG_REGISTRADORES);
 				break;
 
             case 'h':
@@ -107,21 +112,25 @@ void init(){
 	regs = calloc(NUM_REGS, sizeof(unsigned int));
 
 	/* Inicializa a memoria */
-	if(get_flag(FLAG_VERBOSE)) printf("\nTamanho da memoria = %d bytes\n", MEM_SIZE);
 	mem = calloc(MEM_SIZE, 1); //Malloc + inicia como 0
-	if(get_flag(FLAG_DEBUG)) pause();
 
 	tradutorInit();
 	processadorInit();
 	ulaInit();
+	cacheInit();
 }
 
 
 void printBanner(){
-							      printf("\n|  ===== Simulador MIPS-32 ====  |\n");
-	if(get_flag(FLAG_DEBUG))        printf("| Debugging ativado              |\n");
-	if(get_flag(FLAG_VERBOSE)) 	    printf("| Execução modo Verbose          |\n");
-	if(get_flag(FLAG_STEP_BY_STEP)) printf("| Execução passo-a-passo ativada |\n");
+							       printf("\n|               ===== Simulador MIPS-32 ====              |\n");
+								     printf("|     Versao Beta / Desenvolvido por bcesar.g6@gmail.com  |\n");
+									 printf("-----------------------------------------------------------\n");
+									 printf("| Tamanho da memoria = %d bytes ( %d MB)          |\n", MEM_SIZE, (MEM_SIZE/ 1024 / 1024));
+
+	if(get_flag(FLAG_DEBUG))         printf("| Debugging ativado                                       |\n");
+	if(get_flag(FLAG_VERBOSE)) 	     printf("| Execução modo Verbose                                   |\n");
+	if(get_flag(FLAG_STEP_BY_STEP))  printf("| Execução passo-a-passo ativada                          |\n");
+	if(get_flag(FLAG_REGISTRADORES)) printf("| Printando o banco de registradores durante a execução   |\n");
 
 }
 
@@ -130,19 +139,26 @@ int main(int argc, char **argv){
 
     parseargs(argc, argv);
 
-	printBanner();
-
 	init();
+
+	printBanner();
 
 	tradutor();
 
-	if(get_flag(FLAG_VERBOSE)) printf("Tradução realizada com sucesso\n");
+	if(get_flag(FLAG_VERBOSE)) printf("\n> Tradução realizada com sucesso!\n");
 
 	readProgram();
 
-	if(get_flag(FLAG_DEBUG)) printMem();
+	if(get_flag(FLAG_DEBUG)){
+		printf("\nDeseja printar parte inicial da memoria?\n");
+		if(prompt()) printMem();
+		getchar();
+	}
 
 	if(get_flag(FLAG_VERBOSE)) printf("\nIniciando a simulação do programa\n");
+
+	pause();
+	system("clear"); //Deixar? Colocar como parte de pause?
 
 	while(run());
 

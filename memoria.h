@@ -13,9 +13,9 @@
 
 #define CELL 1
 #define WORD 4
-#define MEM_SIZE 536870912
-#define MAX_WORDS 134217728
-#define TEXT_SIZE 8388608
+#define MEM_SIZE 536870912 //512MB
+#define MAX_WORDS 16777216
+#define TEXT_SIZE 67108864 //64MB
 #define STATIC_DATA_SIZE 400
 
 /* Ponteiro global para memoria */
@@ -24,8 +24,8 @@ char* mem;
 /* Ponteiro para o fim do texto */
 char* mem_text_end;
 
-void read(word w, int adress, int size);
+void read(word w, unsigned int adress, unsigned int size);
 
-void write(word words, char* adress, int size);
+void write(unsigned int adress, word w, unsigned int size);
 
 #endif /* __MEMORIA_H */

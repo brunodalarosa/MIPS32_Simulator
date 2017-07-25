@@ -20,7 +20,7 @@ void set_input();
 /* 0 a 31 respectivamente, bison gera com +258, logo $zero = 258 */
 %token number virg EOL END_OF_FILE
 %token opcodeb opcoder opcoders opcoderd opcodel opcodei opcodelui
-%token opcodej opcodet opcodemf opcodemt
+%token opcodej opcodet opcodemf opcodemt opcodebeq
 %token abreparents fechaparents colon
 %token data text id t_int
 
@@ -62,10 +62,11 @@ instrucao: linha EOL instrucao {}
 | /*Vazio*/
 ;
 
-linha: operacao {line++;}
+linha: operacao {}
 
 operacao: /* nada */
-| R {fprintf(log_t_file,"Op tipo R: %d %d %d %d %d %d\n",
+| R {line++;
+	fprintf(log_t_file,"Op tipo R: %d %d %d %d %d %d\n",
  						  		$<op.code>1, $<op.rs>1, $<op.rt>1,
 						  		$<op.rd>1, $<op.aux>1, $<op.func>1);
 
@@ -79,7 +80,8 @@ operacao: /* nada */
 	n->func = $<op.func>1;
     insereLista(n); }
 
-| I { if ($<op.label>1 == NULL){
+| I {line++;
+	 if ($<op.label>1 == NULL){
 		fprintf(log_t_file,"Op tipo I: %d %d %d %d\n",
 	  						        $<op.code>1, $<op.rs>1, $<op.rt>1,
 								    $<op.aux>1);
@@ -103,8 +105,9 @@ operacao: /* nada */
 		insereLista(n);}
 }
 
-| SL { if ($<op.label>1 == NULL){
-		fprintf(log_t_file,"Op tipo SL reg: %d %d %d %d\n",
+| LS {line++;
+	  if ($<op.label>1 == NULL){
+		fprintf(log_t_file,"Op tipo LS reg: %d %d %d %d\n",
 									$<op.code>1, $<op.rs>1, $<op.rt>1,
 									$<op.aux>1);
 
@@ -116,7 +119,7 @@ operacao: /* nada */
 		n->aux  = $<op.aux>1;
 		insereLista(n);}
 	else {
-		fprintf(log_t_file, "Op tipo SL var: %d %d %d %s\n", $<op.code>1, $<op.rs>1,
+		fprintf(log_t_file, "Op tipo LS var: %d %d %d %s\n", $<op.code>1, $<op.rs>1,
 													$<op.rt>1, $<op.label>1);
 		node n 	 = malloc(sizeof(node_t));
 		n->tipo  = 9;
@@ -127,7 +130,8 @@ operacao: /* nada */
 		insereLista(n);}
 }
 
-| J { if ($<op.label>1 != NULL){
+| J {line++;
+	 if ($<op.label>1 != NULL){
 		fprintf(log_t_file,"Op tipo J: %d %s\n", $<op.code>1, $<op.label>1);
 
 		node n = malloc(sizeof(node_t));
@@ -147,9 +151,10 @@ operacao: /* nada */
 }
 
 
-| M {fprintf(log_t_file, "Op tipo M: %d %d %d %d %d\n",
- 								  $<op.code>1, $<op.rs>1, $<op.rt>1, $<op.rd>1,
-							      $<op.func>1);
+| M {line++;
+	 fprintf(log_t_file, "Op tipo M: %d %d %d %d %d\n",
+						  $<op.code>1, $<op.rs>1, $<op.rt>1, $<op.rd>1,
+					      $<op.func>1);
 
 			  node n = malloc(sizeof(node_t));
 			  n->tipo = 7;
@@ -162,9 +167,9 @@ operacao: /* nada */
 			  insereLista(n);}
 
 R: opcoder reg virg reg virg reg {
-	$<op.rs>$  = $<val>2;
-	$<op.rt>$  = $<val>4;
-	$<op.rd>$  = $<val>6;
+	$<op.rd>$  = $<val>2;
+	$<op.rs>$  = $<val>4;
+	$<op.rt>$  = $<val>6;
 	$<op.aux>$ = 0;}
 
 | opcoder reg virg reg { //clo & clz
@@ -230,20 +235,21 @@ I: opcodei reg virg reg virg imm{
 	$<op.rt>$ = $<op.func>1;
 	$<op.label>$ = $<text>4;}
 
-| opcodeb reg virg reg virg id{
+| opcodebeq reg virg reg virg id{
 	$<op.rs>$ = $<val>2;
 	$<op.rt>$ = $<val>4;
 	$<op.label>$ = $<text>6;}
 ;
 
-SL: opcodel reg virg offset abreparents reg fechaparents {
+LS: opcodel reg virg offset abreparents reg fechaparents {
 	$<op.rt>$  = $<val>2;
 	$<op.aux>$ = $<val>4; //offset
 	$<op.rs>$  = $<val>6;}
 
 |  opcodel reg virg id {
 	$<op.rt>$  = $<val>2;
-	$<op.label>$ = $<text>4;}
+	$<op.label>$ = $<text>4;
+	$<op.rs>$ = 0;} //address = 0 + var_address
 ;
 
 J: opcodej address{ $<op.aux>$ = $<val>2; }
@@ -282,7 +288,7 @@ labelid: id colon { checkSizes();
 			if ( labelMatch($<text>1) == -1){
 				  lbl_names[lbl_count] = $<text>1;
 				  lbl_values[lbl_count] = line * INST_SIZE;
-		    	  lbl_count++; line++;
+		    	  lbl_count++;
 			 } else { launchError(1);}
 		 }
 
@@ -290,22 +296,47 @@ labelid: id colon { checkSizes();
 		if ( labelMatch($<text>1) == -1){
 				 lbl_names[lbl_count] = $<text>1;
 		   		 lbl_values[lbl_count] = line * INST_SIZE;
-		   		 lbl_count++; line++;
+		   		 lbl_count++;
 				 } else { launchError(1);}
 			 }
 ;
 
-var: id colon t_int number EOL var { checkSizes();
-							   var_names[var_count] = $<text>1;
-							   var_adress[var_count] = var_count * INST_SIZE;
-							   var_values[var_count] = $<val>4;
-				    		   var_count++;}
-
-| id colon t_int number EOL { checkSizes();
+var: id colon t_int val var {
+							checkSizes();
 							var_names[var_count] = $<text>1;
-							var_adress[var_count] = var_count * INST_SIZE;
-							var_values[var_count] = $<val>4;
-							var_count++;}
+							var_adress[var_count] = val_count * INST_SIZE;
+							var_values[var_count] = valores;
+							valores = malloc(sizeof(list_t));
+							val_count += local_var_count;
+							aux_val_count[var_count] = local_var_count;
+							local_var_count = 0;
+				    		var_count++;}
+
+| id colon t_int val {
+						checkSizes();
+						var_names[var_count] = $<text>1;
+						var_adress[var_count] = val_count * INST_SIZE;
+						var_values[var_count] = valores;
+						valores = malloc(sizeof(list_t));
+						val_count += local_var_count;
+						aux_val_count[var_count] = local_var_count;
+						local_var_count = 0;
+						var_count++;}
+;
+
+val: number EOL {
+		list val = malloc(sizeof(list_t));
+		val->valor = $<val>1;
+		val->prox = NULL;
+		insereListaValores(val);
+		local_var_count++;}
+
+| number virg val{
+		list val = malloc(sizeof(list_t));
+		val->valor = $<val>1;
+		val->prox = NULL;
+		insereListaValores(val);
+		local_var_count++;}
 ;
 
 address: number;
@@ -321,4 +352,5 @@ void set_input(){
 yyerror(char *s) {
 	fprintf(stderr, "erro na linha %d: %s\n", line ,s);
 	fprintf(log_t_file, "erro na linha %d: %s\n", line ,s);
+	launchError(0);
 }
