@@ -53,7 +53,6 @@ letter	[a-zA-Z]
 "srav"  {yylval.op.code = 0;  yylval.op.func = 7;   return opcoders;}
 "movz"  {yylval.op.code = 0;  yylval.op.func = 10;  return opcodemf;}
 "movn"  {yylval.op.code = 0;  yylval.op.func = 11;  return opcodemf;}
-"tnei"  {yylval.op.code = 0;  yylval.op.func = 14;  return opcodet;}
 "mfhi"  {yylval.op.code = 0;  yylval.op.func = 16;  return opcodemf;}
 "mthi"  {yylval.op.code = 0;  yylval.op.func = 17;  return opcodemt;}
 "mflo"  {yylval.op.code = 0;  yylval.op.func = 18;  return opcodemf;}
@@ -72,22 +71,13 @@ letter	[a-zA-Z]
 "nor"   {yylval.op.code = 0;  yylval.op.func = 39;  return opcoder;}
 "slt"   {yylval.op.code = 0;  yylval.op.func = 42;  return opcoder;}
 "sltu"  {yylval.op.code = 0;  yylval.op.func = 43;  return opcoder;}
-"tge"   {yylval.op.code = 0;  yylval.op.func = 48;  return opcodet;}
-"tgeu"  {yylval.op.code = 0;  yylval.op.func = 49;  return opcodet;}
-"tlt"   {yylval.op.code = 0;  yylval.op.func = 50;  return opcodet;}
-"tltu"  {yylval.op.code = 0;  yylval.op.func = 51;  return opcodet;}
 "teq"   {yylval.op.code = 0;  yylval.op.func = 52;  return opcodet;}
-"tne"   {yylval.op.code = 0;  yylval.op.func = 54;  return opcodet;}
 
 "jr"   {yylval.op.code = 0; yylval.op.func = 8; return opcodej;}
 "jalr" {yylval.op.code = 0; yylval.op.func = 9; return opcodej;}
 
 "bltz"   {yylval.op.code = 1;  yylval.op.func = 0;  return opcodeb;}
 "bgez"   {yylval.op.code = 1;  yylval.op.func = 1;  return opcodeb;}
-"tgei"   {yylval.op.code = 1;  yylval.op.func = 8;  return opcodet;}
-"tgeiu"  {yylval.op.code = 1;  yylval.op.func = 9;  return opcodet;}
-"tlti"   {yylval.op.code = 1;  yylval.op.func = 10; return opcodet;}
-"tltiu"  {yylval.op.code = 1;  yylval.op.func = 11; return opcodet;}
 "teqi"   {yylval.op.code = 1;  yylval.op.func = 12; return opcodet;}
 "bltzal" {yylval.op.code = 1;  yylval.op.func = 16; return opcodeb;}
 "bgezal" {yylval.op.code = 1;  yylval.op.func = 17; return opcodeb;}

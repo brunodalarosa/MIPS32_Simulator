@@ -1,6 +1,6 @@
     .data
-    x : .int 1, 2, 3, 4, 5
-    y : .int 6, 7, 8, 9, 10
+    x : .int 1
+    y : .int 6
     z : .int 0
 .text
     lw $t0, x

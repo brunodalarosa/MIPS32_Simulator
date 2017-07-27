@@ -318,7 +318,35 @@ int ativaER_add(estacao_reserva* er){
             /* A ULA executára a operação */
             if(get_flag(FLAG_DEBUG)) printf("\n| ER %s executando > ", ER_nomes[identificador]);
 
-            buffer_resultados[identificador] = (*p[er->op]) (3, er->vj, er->vk, er->A);
+            ulaRet retorno;
+
+             retorno = (*p[er->op]) (3, er->vj, er->vk, er->A);
+
+             switch (retorno.flag) {
+                 case FLAG_SUCCESS:
+                    buffer_resultados[identificador] = retorno.resultado;
+                    break;
+
+                case FLAG_FAIL:
+                    if(get_flag(FLAG_DEBUG)) printf("Operação retornou FAIL\n");
+                    identificaER(identificador); //Limpa Qi na posição de RD da instrução que falhou.
+                    break;
+
+                case FLAG_MTHI:
+                    Qi[REG_HI] = identificador;
+                    buffer_resultados[identificador] = retorno.resultado;
+                    break;
+
+                case FLAG_MTLO:
+                    Qi[REG_LO] = identificador;
+                    buffer_resultados[identificador] = retorno.resultado;
+                    break;
+
+                case FLAG_NO_RETURN:
+                default:
+                    break;
+             }
+
             er->busy = 0;
 
         } else {
@@ -353,7 +381,23 @@ int ativaER_load(estacao_reserva* er){
         /* Parte 2 Operação */
         if(get_flag(FLAG_DEBUG)) printf("\n| ER %s executando > ", ER_nomes[identificador]);
 
-        buffer_resultados[identificador] = (*p[er->op]) (2, er->A);
+        ulaRet retorno;
+
+        retorno = (*p[er->op]) (2, er->A);
+
+        switch (retorno.flag) {
+            case FLAG_SUCCESS:
+               buffer_resultados[identificador] = retorno.resultado;
+               break;
+
+           case FLAG_FAIL:
+               if(get_flag(FLAG_DEBUG)) printf("Operação retornou FAIL\n");
+               break;
+
+           case FLAG_NO_RETURN:
+           default:
+               break;
+        }
 
         er->busy = 0;
 

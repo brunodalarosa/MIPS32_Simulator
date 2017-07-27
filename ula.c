@@ -14,7 +14,6 @@ void ulaInit(){
     p[SRAV]  = srav;
     p[MOVZ]  =  movz;
     p[MOVN]  =  movn;
-    p[TNEI]  = tnei;
     p[MFHI]  = mfhi;
     p[MTHI]  = mthi;
     p[MFLO]  = mflo;
@@ -33,21 +32,10 @@ void ulaInit(){
     p[NOR]   = nor;
     p[SLT]   = slt;
     p[SLTU]  = sltu;
-    p[TGE]   = tge;
-    p[TGEU]  = tgeu;
-    p[TLT]   = tlt;
-    p[TLTU]  = tltu;
-    p[TEQ]   = teq;
-    p[TNE]   = tne;
     p[JR]    = jr;
     p[JALR]  = jalr;
     p[BLTZ]  = bltz;
     p[BGEZ]  = bgez;
-    p[TGEI]  = tgei;
-    p[TGEIU] = tgeiu;
-    p[TLTI]  = tlti;
-    p[TLTIU] = tltiu;
-    p[TEQI]  = teqi;
     p[BLTZAL] = bltzal;
     p[BGEZAL] = bgezal;
     p[BEQ]   = beq;
@@ -86,7 +74,7 @@ void ulaInit(){
 
 }
 
-unsigned int sll(int num, ...){
+ulaRet sll(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int); //rs
@@ -98,10 +86,14 @@ unsigned int sll(int num, ...){
 
     va_end(args);
 
-    return resultado;
+    ulaRet retorno;
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
+    return retorno;
 }
 
-unsigned int srl(int num, ...){
+ulaRet srl(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int); //rs
@@ -113,17 +105,20 @@ unsigned int srl(int num, ...){
 
     va_end(args);
 
-    return resultado;
+    ulaRet retorno;
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
+    return retorno;
 }
 
-unsigned int sra(int num, ...){
+ulaRet sra(int num, ...){
     va_list args;
     va_start(args, num);
     int operando1 = va_arg(args, int); //rs
     operando1 = va_arg(args, int); //rt
     unsigned int operando2 = va_arg(args, unsigned int); //shift amount
 
-    int aux = operando1 & INT_MAX;
     int resultado = operando1 >> operando2;
 
     //TODO checar se ta certo
@@ -132,107 +127,205 @@ unsigned int sra(int num, ...){
 
     va_end(args);
 
-    return (unsigned int) resultado;
+    ulaRet retorno;
+    retorno.resultado = (unsigned int) resultado;
+    retorno.flag = FLAG_SUCCESS;
+
+    return retorno;
 }
 
-unsigned int sllv(int num, ...){
+ulaRet sllv(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int); //rs
+    unsigned int operando2 = va_arg(args, unsigned int); //rt
+
+    unsigned int resultado = operando1 << operando2;
+    if(get_flag(FLAG_DEBUG)) printf("Shift logico a esquerda variavel: %d << %d = %d \n", operando1, operando2, resultado);
+
+    va_end(args);
+
+    ulaRet retorno;
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
+    return retorno;
+}
+
+ulaRet srlv(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int); //rs
+    unsigned int operando2 = va_arg(args, unsigned int); //rt
+
+    unsigned int resultado = operando1 >> operando2;
+
+    if(get_flag(FLAG_DEBUG)) printf("Shift logico a direita variavel: %d >> %d = %d \n", operando1, operando2, resultado);
+
+    va_end(args);
+
+    ulaRet retorno;
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
+    return retorno;
+}
+
+ulaRet srav(int num, ...){
+    va_list args;
+    va_start(args, num);
+    int operando1 = va_arg(args, int); //rs
+    unsigned int operando2 = va_arg(args, unsigned int); //rt
+
+    int resultado = operando1 >> operando2;
+
+    if(get_flag(FLAG_DEBUG)) printf("Shift aritmético a direita variavel: %d >> %d = %d \n", operando1, operando2, resultado);
+
+    va_end(args);
+
+    ulaRet retorno;
+    retorno.resultado = (unsigned int) resultado;
+    retorno.flag = FLAG_SUCCESS;
+
+    return retorno;
+}
+
+
+ulaRet movz(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int); //rs
+    unsigned int operando2 = va_arg(args, unsigned int); //rt
+
+    ulaRet retorno;
+
+    if(operando2 == 0){
+        retorno.resultado = operando1;
+        retorno.flag = FLAG_SUCCESS;
+
+        if(get_flag(FLAG_DEBUG)) printf("Move condicional zero: sucesso!\n");
+
+    } else {
+        retorno.flag = FLAG_FAIL;
+        if(get_flag(FLAG_DEBUG)) printf("Move condicional zero: falha (%d != 0)\n", operando2);
+
+    }
+
+    va_end(args);
+
+    return retorno;
+}
+
+ulaRet movn(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int); //rs
+    unsigned int operando2 = va_arg(args, unsigned int); //rt
+
+    ulaRet retorno;
+
+    if(operando2 == 0){
+        retorno.resultado = operando1;
+        retorno.flag = FLAG_SUCCESS;
+
+        if(get_flag(FLAG_DEBUG)) printf("Move condicional diferente de zero: sucesso! (%d != 0)\n", operando2);
+
+    } else {
+        retorno.flag = FLAG_FAIL;
+        if(get_flag(FLAG_DEBUG)) printf("Move condicional diferente de zero: falha\n");
+
+    }
+
+    va_end(args);
+
+    return retorno;
+}
+
+ulaRet mfhi(int num, ...){
+    va_list args;
+    va_start(args, num);
+    va_end(args);
+    //Não usa variaveis
+
+    if(get_flag(FLAG_DEBUG)) printf("Move from Hi executado\n");
+
+    ulaRet retorno;
+    retorno.resultado = regs[REG_HI];
+    retorno.flag = FLAG_SUCCESS;
+
+    return retorno;
+}
+
+ulaRet mthi(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
+
+    ulaRet retorno;
+
+    if(get_flag(FLAG_DEBUG)) printf("Move to Hi executado (%d)\n", operando1);
+    retorno.resultado = operando1;
+    retorno.flag = FLAG_MTHI;
+
+    va_end(args);
+
+    return retorno;
+}
+
+ulaRet mflo(int num, ...){
+    va_list args;
+    va_start(args, num);
+    va_end(args);
+    //Não usa variaveis
+
+    if(get_flag(FLAG_DEBUG)) printf("Move from Lo executado\n");
+
+    ulaRet retorno;
+    retorno.resultado = regs[REG_LO];
+    retorno.flag = FLAG_SUCCESS;
+
+    return retorno;
+}
+
+ulaRet mtlo(int num, ...){
+    va_list args;
+    va_start(args, num);
+    unsigned int operando1 = va_arg(args, unsigned int);
+
+    ulaRet retorno;
+
+    if(get_flag(FLAG_DEBUG)) printf("Move to Lo executado (%d)\n", operando1);
+    retorno.resultado = operando1;
+    retorno.flag = FLAG_MTLO;
+
+    va_end(args);
+
+    return retorno;
+}
+
+ulaRet mult(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int srlv(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SRLV BEM LOUCO\n");
-    va_end(args);
-}
-
-unsigned int srav(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SRAV BEM LOUCO\n");
-    va_end(args);
-}
-
-
-unsigned int movz(int num, ...){
+ulaRet multu(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int movn(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-}
-
-unsigned int tnei(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-}
-
-unsigned int mfhi(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-}
-
-unsigned int mthi(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-}
-
-unsigned int mflo(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-}
-
-unsigned int mtlo(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-}
-
-unsigned int mult(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-}
-
-unsigned int multu(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-}
-
-unsigned int div_(int num, ...){
+ulaRet div_(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
@@ -240,7 +333,7 @@ unsigned int div_(int num, ...){
     va_end(args);
 }
 
-unsigned int divu(int num, ...){
+ulaRet divu(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
@@ -248,7 +341,7 @@ unsigned int divu(int num, ...){
     va_end(args);
 }
 
-unsigned int add(int num, ...){
+ulaRet add(int num, ...){
     va_list args;
     va_start(args, num);
 
@@ -260,11 +353,17 @@ unsigned int add(int num, ...){
     printf("ADD BEM LOUCO ACONTECENDO BEM AQUI: %i + %i = %i\n",
             operando1, operando2, resultado);
 
+    ulaRet retorno;
+
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
     va_end(args);
-    return resultado;
+
+    return retorno;
 }
 
-unsigned int addu(int num, ...){
+ulaRet addu(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
@@ -272,7 +371,7 @@ unsigned int addu(int num, ...){
     va_end(args);
 }
 
-unsigned int sub(int num, ...){
+ulaRet sub(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
@@ -280,7 +379,7 @@ unsigned int sub(int num, ...){
     va_end(args);
 }
 
-unsigned int subu(int num, ...){
+ulaRet subu(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
@@ -288,191 +387,139 @@ unsigned int subu(int num, ...){
     va_end(args);
 }
 
-unsigned int and(int num, ...){
+ulaRet and(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int or(int num, ...){
+ulaRet or(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int xor(int num, ...){
+ulaRet xor(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int nor(int num, ...){
+ulaRet nor(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int slt(int num, ...){
+ulaRet slt(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int sltu(int num, ...){
+ulaRet sltu(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int tge(int num, ...){
+ulaRet jr(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int tgeu(int num, ...){
+ulaRet jalr(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int tlt(int num, ...){
+ulaRet bltz(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int tltu(int num, ...){
+ulaRet bgez(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int teq(int num, ...){
+ulaRet bltzal(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int tne(int num, ...){
+ulaRet bgezal(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int jr(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-}
-
-unsigned int jalr(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-}
-
-unsigned int bltz(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-}
-
-unsigned int bgez(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-}
-
-unsigned int tgei(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-}
-
-unsigned int tgeiu(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-}
-
-unsigned int tlti(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-}
-
-unsigned int tltiu(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-}
-
-unsigned int teqi(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-}
-
-unsigned int bltzal(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-}
-
-unsigned int bgezal(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-}
-
-unsigned int beq(int num, ...){
+ulaRet beq(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
@@ -488,35 +535,48 @@ unsigned int beq(int num, ...){
 
     jump = 0; //Reseta o controle de salto
 
+    ulaRet retorno;
+    retorno.flag = FLAG_NO_RETURN;
+
     va_end(args);
-    return 0;
+
+    return retorno;
 }
 
-unsigned int bne(int num, ...){
+ulaRet bne(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int blez(int num, ...){
+ulaRet blez(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int bgtz(int num, ...){
+ulaRet bgtz(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int addi(int num, ...){
+ulaRet addi(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
@@ -524,7 +584,7 @@ unsigned int addi(int num, ...){
     va_end(args);
 }
 
-unsigned int addiu(int num, ...){
+ulaRet addiu(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
@@ -532,55 +592,73 @@ unsigned int addiu(int num, ...){
     va_end(args);
 }
 
-unsigned int slti(int num, ...){
+ulaRet slti(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int sltiu(int num, ...){
+ulaRet sltiu(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int andi(int num, ...){
+ulaRet andi(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int ori(int num, ...){
+ulaRet ori(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int xori(int num, ...){
+ulaRet xori(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int lui(int num, ...){
+ulaRet lui(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int madd(int num, ...){
+ulaRet madd(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
@@ -588,7 +666,7 @@ unsigned int madd(int num, ...){
     va_end(args);
 }
 
-unsigned int maddu(int num, ...){
+ulaRet maddu(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
@@ -596,15 +674,18 @@ unsigned int maddu(int num, ...){
     va_end(args);
 }
 
-unsigned int mul(int num, ...){
+ulaRet mul(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int msub(int num, ...){
+ulaRet msub(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
@@ -612,7 +693,7 @@ unsigned int msub(int num, ...){
     va_end(args);
 }
 
-unsigned int msubu(int num, ...){
+ulaRet msubu(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
@@ -620,47 +701,62 @@ unsigned int msubu(int num, ...){
     va_end(args);
 }
 
-unsigned int clo(int num, ...){
+ulaRet clo(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int clz(int num, ...){
+ulaRet clz(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int lb(int num, ...){
+ulaRet lb(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int lh(int num, ...){
+ulaRet lh(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int lwl(int num, ...){
+ulaRet lwl(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int lw(int num, ...){
+ulaRet lw(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int arg1 = va_arg(args, unsigned int);
@@ -672,85 +768,119 @@ unsigned int lw(int num, ...){
 
     va_end(args);
 
-    return dado;
+    ulaRet retorno;
+    retorno.resultado = dado;
+    retorno.flag = FLAG_SUCCESS;
+
+    return retorno;
 }
 
-unsigned int lbu(int num, ...){
+ulaRet lbu(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int lhu(int num, ...){
+ulaRet lhu(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int lwr(int num, ...){
+ulaRet lwr(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int sb(int num, ...){
+ulaRet sb(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int sh(int num, ...){
+ulaRet sh(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int swl(int num, ...){
+ulaRet swl(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int sw(int num, ...){
+ulaRet sw(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int swr(int num, ...){
+ulaRet swr(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int ll(int num, ...){
+ulaRet ll(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }
 
-unsigned int sc(int num, ...){
+ulaRet sc(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);
     printf("SLL BEM LOUCO\n");
     va_end(args);
+    ulaRet retorno;
+
+    return retorno;
 }

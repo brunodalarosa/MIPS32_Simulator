@@ -9,86 +9,86 @@
 #include "simulador.h"
 #include "utils.h"
 #include "cache.h"
+#include "registradores.h"
 
-unsigned int sll(int num, ...);
-unsigned int srl(int num, ...);
-unsigned int sra(int num, ...);
-unsigned int sllv(int num, ...);
-unsigned int srlv(int num, ...);
-unsigned int srav(int num, ...);
-unsigned int movz(int num, ...);
-unsigned int movn(int num, ...);
-unsigned int tnei(int num, ...);
-unsigned int mfhi(int num, ...);
-unsigned int mthi(int num, ...);
-unsigned int mflo(int num, ...);
-unsigned int mtlo(int num, ...);
-unsigned int mult(int num, ...);
-unsigned int multu(int num, ...);
-unsigned int div_(int num, ...);
-unsigned int divu(int num, ...);
-unsigned int add(int num, ...);
-unsigned int addu(int num, ...);
-unsigned int sub(int num, ...);
-unsigned int subu(int num, ...);
-unsigned int and(int num, ...);
-unsigned int or(int num, ...);
-unsigned int xor(int num, ...);
-unsigned int nor(int num, ...);
-unsigned int slt(int num, ...);
-unsigned int sltu(int num, ...);
-unsigned int tge(int num, ...);
-unsigned int tgeu(int num, ...);
-unsigned int tlt(int num, ...);
-unsigned int tltu(int num, ...);
-unsigned int teq(int num, ...);
-unsigned int tne(int num, ...);
-unsigned int jr(int num, ...);
-unsigned int jalr(int num, ...);
-unsigned int bltz(int num, ...);
-unsigned int bgez(int num, ...);
-unsigned int tgei(int num, ...);
-unsigned int tgeiu(int num, ...);
-unsigned int tlti(int num, ...);
-unsigned int tltiu(int num, ...);
-unsigned int teqi(int num, ...);
-unsigned int bltzal(int num, ...);
-unsigned int bgezal(int num, ...);
-unsigned int beq(int num, ...);
-unsigned int bne(int num, ...);
-unsigned int blez(int num, ...);
-unsigned int bgtz(int num, ...);
-unsigned int addi(int num, ...);
-unsigned int addiu(int num, ...);
-unsigned int slti(int num, ...);
-unsigned int sltiu(int num, ...);
-unsigned int andi(int num, ...);
-unsigned int ori(int num, ...);
-unsigned int xori(int num, ...);
-unsigned int lui(int num, ...);
-unsigned int madd(int num, ...);
-unsigned int maddu(int num, ...);
-unsigned int mul(int num, ...);
-unsigned int msub(int num, ...);
-unsigned int msubu(int num, ...);
-unsigned int clo(int num, ...);
-unsigned int clz(int num, ...);
-unsigned int lb(int num, ...);
-unsigned int lh(int num, ...);
-unsigned int lwl(int num, ...);
-unsigned int lw(int num, ...);
-unsigned int lbu(int num, ...);
-unsigned int lhu(int num, ...);
-unsigned int lwr(int num, ...);
-unsigned int sb(int num, ...);
-unsigned int sh(int num, ...);
-unsigned int swl(int num, ...);
-unsigned int sw(int num, ...);
-unsigned int swr(int num, ...);
-unsigned int ll(int num, ...);
-unsigned int sc(int num, ...);
+#define FLAG_FAIL       0
+#define FLAG_SUCCESS    1
+#define FLAG_NO_RETURN  2
+#define FLAG_MTHI       4
+#define FLAG_MTLO       8
 
-unsigned int (*p[80]) (int num, ...); //Vetor de ponteiros para funções
+typedef struct{
+    unsigned int resultado;
+    int flag;
+} ulaRet;
+
+ulaRet sll(int num, ...);
+ulaRet srl(int num, ...);
+ulaRet sra(int num, ...);
+ulaRet sllv(int num, ...);
+ulaRet srlv(int num, ...);
+ulaRet srav(int num, ...);
+ulaRet movz(int num, ...);
+ulaRet movn(int num, ...);
+ulaRet mfhi(int num, ...);
+ulaRet mthi(int num, ...);
+ulaRet mflo(int num, ...);
+ulaRet mtlo(int num, ...);
+ulaRet mult(int num, ...);
+ulaRet multu(int num, ...);
+ulaRet div_(int num, ...);
+ulaRet divu(int num, ...);
+ulaRet add(int num, ...);
+ulaRet addu(int num, ...);
+ulaRet sub(int num, ...);
+ulaRet subu(int num, ...);
+ulaRet and(int num, ...);
+ulaRet or(int num, ...);
+ulaRet xor(int num, ...);
+ulaRet nor(int num, ...);
+ulaRet slt(int num, ...);
+ulaRet sltu(int num, ...);
+ulaRet jr(int num, ...);
+ulaRet jalr(int num, ...);
+ulaRet bltz(int num, ...);
+ulaRet bgez(int num, ...);
+ulaRet bltzal(int num, ...);
+ulaRet bgezal(int num, ...);
+ulaRet beq(int num, ...);
+ulaRet bne(int num, ...);
+ulaRet blez(int num, ...);
+ulaRet bgtz(int num, ...);
+ulaRet addi(int num, ...);
+ulaRet addiu(int num, ...);
+ulaRet slti(int num, ...);
+ulaRet sltiu(int num, ...);
+ulaRet andi(int num, ...);
+ulaRet ori(int num, ...);
+ulaRet xori(int num, ...);
+ulaRet lui(int num, ...);
+ulaRet madd(int num, ...);
+ulaRet maddu(int num, ...);
+ulaRet mul(int num, ...);
+ulaRet msub(int num, ...);
+ulaRet msubu(int num, ...);
+ulaRet clo(int num, ...);
+ulaRet clz(int num, ...);
+ulaRet lb(int num, ...);
+ulaRet lh(int num, ...);
+ulaRet lwl(int num, ...);
+ulaRet lw(int num, ...);
+ulaRet lbu(int num, ...);
+ulaRet lhu(int num, ...);
+ulaRet lwr(int num, ...);
+ulaRet sb(int num, ...);
+ulaRet sh(int num, ...);
+ulaRet swl(int num, ...);
+ulaRet sw(int num, ...);
+ulaRet swr(int num, ...);
+ulaRet ll(int num, ...);
+ulaRet sc(int num, ...);
+
+ulaRet (*p[80]) (int num, ...); //Vetor de ponteiros para funções
 
 void ulaInit();
 
