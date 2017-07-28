@@ -1,18 +1,20 @@
 .data
-x : .int 8
-y : .int 10
-z : .int 43
+x : .int -2
+y : .int 4
+z : .int 8
 
 .text
-    add $t0, $t1, $t3
-    j salto1
+    lw $t1, y
+    lw $t2, x
 
-main:
-    msub $t4, $t5
-    j salto2
+    div $t1, $t2
 
-salto1:
-    beq $s1, $s2, salto2
-    j main
+    mfhi $s0
+    mflo $s1
 
-salto2:
+    add $s2, $s0, $s1
+
+    mthi $s2
+    mtlo $s2
+
+    divu $t1, $t2

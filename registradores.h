@@ -4,11 +4,12 @@
 #ifndef __REGISTRADORES_H
 #define __REGISTRADORES_H
 
+#define REG_RA 31
 #define REG_LO 32
 #define REG_HI 33
 
 #define NUM_REGS 34
 
-unsigned int* regs;
+int* regs;
 
 #endif /* __REGISTRADORES_H */

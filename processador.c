@@ -9,6 +9,9 @@ unsigned int pc = 0;
 static unsigned int IR; // instruction Register
 unsigned int process; //Variável de controle do processo
 int jump; // Variável de controle de saltos (Trava a busca e decodificação)
+barr_aux* barr_Lo = NULL; //Barramento auxiliar do registrador Lo
+barr_aux* barr_Hi = NULL; //Barramento auxiliar do registrador Hi
+
 
 estacao_reserva* er_add1  = NULL;
 estacao_reserva* er_add2  = NULL;
@@ -17,6 +20,10 @@ estacao_reserva* er_mult1 = NULL;
 estacao_reserva* er_mult2 = NULL;
 estacao_reserva* er_load1 = NULL;
 estacao_reserva* er_load2 = NULL;
+estacao_reserva* er_load3 = NULL;
+estacao_reserva* er_load4 = NULL;
+estacao_reserva* er_load5 = NULL;
+
 
 /* Simula função de controle: Salto inconcidional */
 void inconditionalJump(){
@@ -176,12 +183,14 @@ estacao_reserva* checa_er(int er_type){
     switch(er_type){
         case ADD_T:
         case BRANCH:
+        case ADDI_T:
             if (er_add1->busy == 0) return er_add1;
             if (er_add2->busy == 0) return er_add2;
             if (er_add3->busy == 0) return er_add3;
             break;
 
         case MUL_T:
+        case MULTI_T:
             if (er_mult1->busy == 0) return er_mult1;
             if (er_mult2->busy == 0) return er_mult2;
             break;
@@ -190,6 +199,10 @@ estacao_reserva* checa_er(int er_type){
         case STORE:
             if (er_load1->busy == 0) return er_load1;
             if (er_load2->busy == 0) return er_load2;
+            if (er_load3->busy == 0) return er_load3;
+            if (er_load4->busy == 0) return er_load4;
+            if (er_load5->busy == 0) return er_load5;
+
             break;
 
         default:
@@ -218,13 +231,14 @@ int emissao(inst instruction){
     operation op = getOp(instruction);
     estacao_reserva* er = NULL;
     er = checa_er(op.er_type);
-    if(get_flag(FLAG_DEBUG)) printf("identificador = %d\n", identificaER(er));
+    //if(get_flag(FLAG_DEBUG)) printf("identificador = %d\n", identificaER(er));
 
     if(er == NULL) return 0;
 
     /* Carrega a operação na ER */
     er->op = op.op;
     er->busy = op.cycles;
+
 
     switch(op.er_type){
         case ADD_T:
@@ -246,8 +260,13 @@ int emissao(inst instruction){
 
             er->A = instruction.R.aux;
 
-            Qi[instruction.R.rd] = identificaER(er);
-            if(get_flag(FLAG_DEBUG)) printf("\nReservando para saida de ADD: Qi[%d] = %s \n", instruction.R.rd, ER_nomes[identificaER(er) - 1]);
+            if(instruction.R.rd != 0){
+                Qi[instruction.R.rd] = identificaER(er);
+                if(get_flag(FLAG_DEBUG)) printf("\nReservando Qi[%d] para saida de %s\n", instruction.R.rd, ER_nomes[identificaER(er) - 1]);
+            }
+
+            casosEspeciais(op.op, er);
+
             break;
 
         case BRANCH:
@@ -270,6 +289,7 @@ int emissao(inst instruction){
             break;
 
         case LOAD:
+        case ADDI_T:
             if(Qi[instruction.I.rs] != 0){
                 er->qj = Qi[instruction.I.rs];
             } else{
@@ -280,7 +300,7 @@ int emissao(inst instruction){
             er->A = instruction.I.imm;
 
             Qi[instruction.I.rt] = identificaER(er);
-            if(get_flag(FLAG_DEBUG)) printf("\nReservando para saida de Load: Qi[%d] = %s \n", instruction.I.rt , ER_nomes[identificaER(er) - 1]);
+            if(get_flag(FLAG_DEBUG)) printf("\nReservando Qi[%d] para a saida de %s\n", instruction.I.rt , ER_nomes[identificaER(er) - 1]);
             break;
 
         case STORE:
@@ -333,13 +353,16 @@ int ativaER_add(estacao_reserva* er){
                     break;
 
                 case FLAG_MTHI:
-                    Qi[REG_HI] = identificador;
                     buffer_resultados[identificador] = retorno.resultado;
                     break;
 
                 case FLAG_MTLO:
-                    Qi[REG_LO] = identificador;
                     buffer_resultados[identificador] = retorno.resultado;
+                    break;
+
+                case FLAG_MUL_OP:
+                    barr_Lo->er_id = identificador;
+                    barr_Hi->er_id = identificador;
                     break;
 
                 case FLAG_NO_RETURN:
@@ -426,6 +449,10 @@ int execucao(){
     process += ativaER_add(er_mult2);
     process += ativaER_load(er_load1);
     process += ativaER_load(er_load2);
+    process += ativaER_load(er_load3);
+    process += ativaER_load(er_load4);
+    process += ativaER_load(er_load5);
+
 
     if(get_flag(FLAG_DEBUG)){
         if(process == 0){
@@ -437,25 +464,47 @@ int execucao(){
 }
 
 /* Etapa de escrita do pipeline */
-//TODO
+/* Utiliza o CDB para transferir os dados do buffer_resultados */
+/* para seus respectivos destinos e ERs que precisam do dado   */
 void escrita(){
-    /* Utiliza o CDB para transferir os dados do buffer_resultados */
-    /* para seus respectivos destinos e ERs que precisam do dado   */
+
     unsigned int dado;
     int i;
+    int process = 0;
+
+    /* Tratamento para as operações de divisão e multiplicação */
+    if(barr_Hi->er_id != -1){
+        if(get_flag(FLAG_VERBOSE)) printf("Stremando o dado %d vindo de %s\n",barr_Hi->dado, ER_nomes[barr_Hi->er_id - 1]);
+        stream(barr_Hi->dado, barr_Hi->er_id+1);
+        barr_Hi->er_id = -1;
+        process++;
+    }
+
+    if(barr_Lo->er_id != -1){
+        if(get_flag(FLAG_VERBOSE)) printf("Stremando o dado %d vindo de %s\n",barr_Lo->dado, ER_nomes[barr_Lo->er_id - 1]);
+        stream(barr_Lo->dado, barr_Lo->er_id+1);
+        barr_Lo->er_id = -1;
+        process++;
+    }
 
     for(i = 0; i < NUM_ER; i++){
         if (buffer_resultados[i] != FLAG_BUFFER_VAZIO){
             dado = buffer_resultados[i];
             if(get_flag(FLAG_VERBOSE)) printf("Stremando o dado %d vindo da %s...\n", dado, ER_nomes[i]);
             stream(dado, i+1);
+            process++;
         }
 
     /* No fim do processo limpar o buffer_resultados */
         buffer_resultados[i] = FLAG_BUFFER_VAZIO;
     }
 
-    printf("\n");
+    /* Caso uma escrita ocorreu printa o banco de registradores se a flag estiver ativa */
+    if(process){
+        if(get_flag(FLAG_REGISTRADORES)) printaRegs(0, NULL);
+    } else{
+        if(get_flag(FLAG_VERBOSE)) printf("Pulando etapa de escrita (Nada a ser escrito)\n\n");
+    }
 }
 
 
@@ -515,7 +564,7 @@ unsigned int pipeline(int ciclo){ //pipeline reverso
 
     }else{
 
-        if(get_flag(FLAG_DEBUG)) printf("PC = %d\n", pc);
+        if(get_flag(FLAG_DEBUG)) printf("(PC = %d)\n", pc);
         if (&mem[pc] < mem_text_end){
             process = 1;
             busca();
@@ -536,6 +585,9 @@ void processadorInit(){
 
     er_load1 = malloc(sizeof(estacao_reserva));
     er_load2 = malloc(sizeof(estacao_reserva));
+    er_load3 = malloc(sizeof(estacao_reserva));
+    er_load4 = malloc(sizeof(estacao_reserva));
+    er_load5 = malloc(sizeof(estacao_reserva));
     er_add1  = malloc(sizeof(estacao_reserva));
     er_add2  = malloc(sizeof(estacao_reserva));
     er_add3  = malloc(sizeof(estacao_reserva));
@@ -544,6 +596,9 @@ void processadorInit(){
 
     er_load1->busy = 0;
     er_load2->busy = 0;
+    er_load3->busy = 0;
+    er_load4->busy = 0;
+    er_load5->busy = 0;
     er_add1->busy  = 0;
     er_add2->busy  = 0;
     er_add3->busy  = 0;
@@ -555,8 +610,13 @@ void processadorInit(){
 
     Qi = calloc(NUM_REGS, sizeof(unsigned int));
 
-    buffer_resultados = malloc(sizeof(unsigned int) * NUM_ER);
+    barr_Hi = malloc(sizeof(barr_aux));
+    barr_Lo = malloc(sizeof(barr_aux));
 
+    barr_Hi->er_id = FLAG_BUFFER_VAZIO;
+    barr_Lo->er_id = FLAG_BUFFER_VAZIO;
+
+    buffer_resultados = malloc(sizeof(unsigned int) * NUM_ER);
     for(i = 0; i < NUM_ER; i++){
         buffer_resultados[i] = FLAG_BUFFER_VAZIO;
     }

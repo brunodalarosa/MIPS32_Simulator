@@ -16,6 +16,7 @@
 #define FLAG_NO_RETURN  2
 #define FLAG_MTHI       4
 #define FLAG_MTLO       8
+#define FLAG_MUL_OP     16
 
 typedef struct{
     unsigned int resultado;

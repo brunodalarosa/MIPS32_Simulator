@@ -3,7 +3,10 @@
 
 #include "utils.h"
 
-char* ER_nomes[7] = {"ADD 1","ADD 2","ADD 3","MULT 1","MULT 2","LOAD 1","LOAD 2"};
+char* ER_nomes[NUM_ER] = {"ADD 1","ADD 2","ADD 3","MULT 1","MULT 2","LOAD 1","LOAD 2","LOAD 3","LOAD 4","LOAD 5"};
+char* REG_nomes[NUM_REGS] = {"$zero", "$at", "$v0", "$v1", "$a0", "$a1", "$a2", "$a3", "$t0", "$t1", "$t2", "$t3",
+						     "$t4", "$t5", "$t6", "$t7", "$s0", "$s1", "$s2", "$s3", "$s4", "$s5", "$s6", "$s7",
+						     "$t8", "$t9", "$k0", "$k1", "$gp", "$sp", "$fp", "$ra", "Lo", "Hi"};
 
 /* Printa a seção de ajuda */
 void ajuda(){
@@ -29,7 +32,7 @@ void ajuda(){
 /* Função auxiliar : Printa todos o conteudo de todos registradores */
 void printaRegs(char isFile, FILE* dest){
 	if(isFile){
-		fprintf(dest, "\n|            ======= Registradores =======            |\n");
+		fprintf(dest, "\n|            ======= Registradores =======            \n");
 		fprintf(dest, "| [$ze = %d]  [$at = %d]  [$v0 = %d]  [$v1 = %d]\n", regs[0],  regs[1],  regs[2],  regs[3]);
 		fprintf(dest, "| [$a0 = %d]  [$a1 = %d]  [$a2 = %d]  [$a3 = %d]\n", regs[4],  regs[5],  regs[6],  regs[7]);
 		fprintf(dest, "| [$t0 = %d]  [$t1 = %d]  [$t2 = %d]  [$t3 = %d]\n", regs[8],  regs[9],  regs[10], regs[11]);
@@ -38,11 +41,11 @@ void printaRegs(char isFile, FILE* dest){
 		fprintf(dest, "| [$s4 = %d]  [$s5 = %d]  [$s6 = %d]  [$s7 = %d]\n", regs[20], regs[21], regs[22], regs[23]);
 		fprintf(dest, "| [$t8 = %d]  [$t9 = %d]  [$k0 = %d]  [$k1 = %d]\n", regs[24], regs[25], regs[26], regs[27]);
 		fprintf(dest, "| [$gp = %d]  [$sp = %d]  [$fp = %d]  [$ra = %d]\n", regs[28], regs[29], regs[30], regs[31]);
-		fprintf(dest, "|            [$lo = %d]  [$hi = %d]            \n", regs[32], regs[33]);
-		fprintf(dest, "-------------------------------------------------------\n");
+		fprintf(dest, "|             [Lo = %d]   [Hi = %d]            \n", regs[32], regs[33]);
+		fprintf(dest, "-------------------------------------------------------\n\n");
 
 	} else{
-		printf("\n|         ======= Registradores =======            |\n");
+		printf("\n|         ======= Registradores =======            \n");
 		printf("| [$ze = %d]  [$at = %d]  [$v0 = %d]  [$v1 = %d]\n", regs[0],  regs[1],  regs[2],  regs[3]);
 		printf("| [$a0 = %d]  [$a1 = %d]  [$a2 = %d]  [$a3 = %d]\n", regs[4],  regs[5],  regs[6],  regs[7]);
 		printf("| [$t0 = %d]  [$t1 = %d]  [$t2 = %d]  [$t3 = %d]\n", regs[8],  regs[9],  regs[10], regs[11]);
@@ -52,7 +55,7 @@ void printaRegs(char isFile, FILE* dest){
 		printf("| [$t8 = %d]  [$t9 = %d]  [$k0 = %d]  [$k1 = %d]\n", regs[24], regs[25], regs[26], regs[27]);
 		printf("| [$gp = %d]  [$sp = %d]  [$fp = %d]  [$ra = %d]\n", regs[28], regs[29], regs[30], regs[31]);
 		printf("|            [$lo = %d]  [$hi = %d]            \n", regs[32], regs[33]);
-		printf("---------------------------------------------------\n");
+		printf("---------------------------------------------------\n\n");
 	}
 }
 
@@ -125,6 +128,10 @@ int identificaER(estacao_reserva* er){
 
 	if(er == er_load1) return LOAD_1;
 	if(er == er_load2) return LOAD_2;
+	if(er == er_load3) return LOAD_3;
+	if(er == er_load4) return LOAD_4;
+	if(er == er_load5) return LOAD_5;
+
 
 	return 0; //Caso de erro?
 }
@@ -499,49 +506,49 @@ operation getOp(inst instruction){
 			//addi
 			op.op = ADDI;
 			op.cycles = 2;
-			op.er_type = ADD_T; //verificar
+			op.er_type = ADDI_T;
 			break;
 
 		case 9:
 			//addiu
 			op.op = ADDIU;
 			op.cycles = 2;
-			op.er_type = ADD_T; //verificar
+			op.er_type = ADDI_T;
 			break;
 
 		case 10:
 			//slti
 			op.op = SLTI;
 			op.cycles = 2;
-			op.er_type = ADD_T; //verificar
+			op.er_type = ADDI_T;
 			break;
 
 		case 11:
 			//sltiu
 			op.op = SLTIU;
 			op.cycles = 2;
-			op.er_type = ADD_T; //verificar
+			op.er_type = ADDI_T;
 			break;
 
 		case 12:
 			//andi
 			op.op = ANDI;
 			op.cycles = 1;
-			op.er_type = ADD_T; //verificar
+			op.er_type = ADDI_T;
 			break;
 
 		case 13:
 			//ori
 			op.op = ORI;
 			op.cycles = 1;
-			op.er_type = ADD_T; //verificar
+			op.er_type = ADDI_T;
 			break;
 
 		case 14:
 			//xori
 			op.op = XORI;
 			op.cycles = 1;
-			op.er_type = ADD_T; //verificar
+			op.er_type = ADDI_T;
 			break;
 
 		case 15:
@@ -715,6 +722,58 @@ operation getOp(inst instruction){
 	}
 
 	return op;
+}
+
+/* Função auxiliar para tratamento de operações especiais */
+void casosEspeciais(int op, estacao_reserva* er){
+
+	switch (op) {
+		case MFLO:
+			if(Qi[REG_LO] != 0){
+				er->qj = Qi[REG_LO];
+			} else{
+				er->vj = regs[REG_LO];
+				er->qj = 0;
+			}
+			break;
+
+		case MFHI:
+			if(Qi[REG_HI] != 0){
+				er->qj = Qi[REG_HI];
+			} else{
+				er->vj = regs[REG_HI];
+				er->qj = 0;
+			}
+			break;
+
+		case MTLO:
+			Qi[REG_LO] = identificaER(er);
+			if(get_flag(FLAG_DEBUG)) printf("\nReservando LO para saida de %s \n", ER_nomes[identificaER(er) - 1]);
+			break;
+
+		case MTHI:
+			Qi[REG_HI] = identificaER(er);
+			if(get_flag(FLAG_DEBUG)) printf("\nReservando HI para saida de %s \n", ER_nomes[identificaER(er) - 1]);
+			break;
+
+		case DIV:
+		case DIVU:
+		case MULTU:
+		case MULT:
+			Qi[REG_LO] = identificaER(er);
+			Qi[REG_HI] = identificaER(er);
+			if(get_flag(FLAG_DEBUG)) printf("\nReservando HI e LO para a saida de %s\n", ER_nomes[identificaER(er) - 1]);
+			break;
+
+		case BGEZAL:
+		case BLTZAL:
+			Qi[REG_RA] = identificaER(er);
+			if(get_flag(FLAG_DEBUG)) printf("\nReservando RA para a saida de %s\n", ER_nomes[identificaER(er) - 1]);
+			break;
+
+		default:
+			break;
+	}
 }
 
 /* Insere uma instrução na fila de instruções */

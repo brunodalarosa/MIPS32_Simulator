@@ -69,9 +69,6 @@ void ulaInit(){
     p[SWL]   = swl;
     p[SW]    = sw;
     p[SWR]   = swr;
-    p[LL]    = ll;
-    p[SC]    = sc;
-
 }
 
 ulaRet sll(int num, ...){
@@ -306,8 +303,11 @@ ulaRet mtlo(int num, ...){
 ulaRet mult(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
+    int operando1 = va_arg(args, int); //rs
+    int operando2 = va_arg(args, int); //rt
+
+    int resultado = operando1 * operando2; //TODO ?
+
     va_end(args);
     ulaRet retorno;
 
@@ -317,8 +317,11 @@ ulaRet mult(int num, ...){
 ulaRet multu(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
+    unsigned int operando1 = va_arg(args, unsigned int); //rs
+    unsigned int operando2 = va_arg(args, unsigned int); //rt
+
+    unsigned int resultado = operando1 * operando2; //TODO ?
+
     va_end(args);
     ulaRet retorno;
 
@@ -328,30 +331,59 @@ ulaRet multu(int num, ...){
 ulaRet div_(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("DIV BEM LOUCO\n");
+    int operando1 = va_arg(args, int); //rs
+    int operando2 = va_arg(args, int); //rt
+
+    int quociente = operando1 / operando2;
+    int resto = operando1 % operando2;
+
+    barr_Lo->dado = quociente;
+    barr_Hi->dado = resto;
+
+    if(get_flag(FLAG_DEBUG)) printf("Divisão %d / %d -> (quociente = %d | resto = %d )\n",
+                                     operando1, operando2, quociente, resto);
+
     va_end(args);
+
+    ulaRet retorno;
+    retorno.flag = FLAG_MUL_OP;
+
+    return retorno;
 }
 
 ulaRet divu(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("DIVU BEM LOUCO\n");
+    unsigned int operando1 = va_arg(args, unsigned int); //rs
+    unsigned int operando2 = va_arg(args, unsigned int); //rt
+
+    unsigned int quociente = operando1 / operando2;
+    unsigned int resto = operando1 % operando2;
+
+    barr_Lo->dado = quociente;
+    barr_Hi->dado = resto;
+
+    if(get_flag(FLAG_DEBUG)) printf("Divisão (unsigned) %d / %d -> (quociente = %d | resto = %d )\n",
+                                     operando1, operando2, quociente, resto);
+
     va_end(args);
+
+    ulaRet retorno;
+    retorno.flag = FLAG_MUL_OP;
+
+    return retorno;
 }
 
 ulaRet add(int num, ...){
     va_list args;
     va_start(args, num);
 
-    unsigned int operando1 = va_arg(args, unsigned int);
-    unsigned int operando2 = va_arg(args, unsigned int);
+    int operando1 = va_arg(args, int);
+    int operando2 = va_arg(args, int);
 
-    unsigned int resultado = operando1 + operando2;
+    int resultado = operando1 + operando2;
 
-    printf("ADD BEM LOUCO ACONTECENDO BEM AQUI: %i + %i = %i\n",
-            operando1, operando2, resultado);
+    if(get_flag(FLAG_DEBUG)) printf("Adição: %i + %i = %i\n", operando1, operando2, resultado);
 
     ulaRet retorno;
 
@@ -366,34 +398,83 @@ ulaRet add(int num, ...){
 ulaRet addu(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("ADDU BEM LOUCO\n");
+
+    unsigned int operando1 = va_arg(args, unsigned int);//rs
+    unsigned int operando2 = va_arg(args, unsigned int);//rt
+
+    unsigned int resultado = operando1 + operando2;
+
+    if(get_flag(FLAG_DEBUG)) printf("Adição (unsigned): %i + %i = %i\n", operando1, operando2, resultado);
+
+    ulaRet retorno;
+
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
     va_end(args);
+
+    return retorno;
 }
 
 ulaRet sub(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SUB BEM LOUCO\n");
+
+    int operando1 = va_arg(args, int);
+    int operando2 = va_arg(args, int);
+
+    int resultado = operando1 - operando2;
+
+    if(get_flag(FLAG_DEBUG)) printf("Subtração: %i - %i = %i\n", operando1, operando2, resultado);
+
+    ulaRet retorno;
+
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
     va_end(args);
+
+    return retorno;
 }
 
 ulaRet subu(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SUBU BEM LOUCO\n");
+
+    unsigned int operando1 = va_arg(args, unsigned int);//rs
+    unsigned int operando2 = va_arg(args, unsigned int);//rt
+
+    unsigned int resultado = operando1 - operando2;
+
+    if(get_flag(FLAG_DEBUG)) printf("Subtração (unsigned): %i + %i = %i\n", operando1, operando2, resultado);
+
+    ulaRet retorno;
+
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
     va_end(args);
+
+    return retorno;
 }
 
 ulaRet and(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+
+    unsigned int operando1 = va_arg(args, unsigned int);//rs
+    unsigned int operando2 = va_arg(args, unsigned int);//rt
+
+    unsigned int resultado = operando1 && operando2;
+
+    if(get_flag(FLAG_DEBUG)) printf("And lógico: %i AND %i = %i\n", operando1, operando2, resultado);
+
     ulaRet retorno;
+
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
+    va_end(args);
 
     return retorno;
 }
@@ -401,10 +482,20 @@ ulaRet and(int num, ...){
 ulaRet or(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+
+    unsigned int operando1 = va_arg(args, unsigned int);//rs
+    unsigned int operando2 = va_arg(args, unsigned int);//rt
+
+    unsigned int resultado = operando1 || operando2;
+
+    if(get_flag(FLAG_DEBUG)) printf("Or lógico: %i OR %i = %i\n", operando1, operando2, resultado);
+
     ulaRet retorno;
+
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
+    va_end(args);
 
     return retorno;
 }
@@ -412,10 +503,20 @@ ulaRet or(int num, ...){
 ulaRet xor(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+
+    unsigned int operando1 = va_arg(args, unsigned int);//rs
+    unsigned int operando2 = va_arg(args, unsigned int);//rt
+
+    unsigned int resultado = operando1 != operando2; //XOR
+
+    if(get_flag(FLAG_DEBUG)) printf("Xor lógico: %i XOR %i = %i\n", operando1, operando2, resultado);
+
     ulaRet retorno;
+
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
+    va_end(args);
 
     return retorno;
 }
@@ -423,10 +524,20 @@ ulaRet xor(int num, ...){
 ulaRet nor(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+
+    unsigned int operando1 = va_arg(args, unsigned int);//rs
+    unsigned int operando2 = va_arg(args, unsigned int);//rt
+
+    unsigned int resultado = !(operando1 || operando2); //NOR
+
+    if(get_flag(FLAG_DEBUG)) printf("Nor lógico: %i NOR %i = %i\n", operando1, operando2, resultado);
+
     ulaRet retorno;
+
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
+    va_end(args);
 
     return retorno;
 }
@@ -434,10 +545,26 @@ ulaRet nor(int num, ...){
 ulaRet slt(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+
+    int operando1 = va_arg(args, int);//rs
+    int operando2 = va_arg(args, int);//rt
+
+    int resultado;
+
+    if(operando1 < operando2){
+        resultado = 1; //True
+    } else {
+        resultado = 0; //False
+    }
+
+    if(get_flag(FLAG_DEBUG)) printf("Set if %d < %d : %d\n", operando1, operando2, resultado);
+
     ulaRet retorno;
+
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
+    va_end(args);
 
     return retorno;
 }
@@ -445,10 +572,26 @@ ulaRet slt(int num, ...){
 ulaRet sltu(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+
+    unsigned int operando1 = va_arg(args, unsigned int);//rs
+    unsigned int operando2 = va_arg(args, unsigned int);//rt
+
+    unsigned int resultado;
+
+    if(operando1 < operando2){
+        resultado = 1; //True
+    } else {
+        resultado = 0; //False
+    }
+
+    if(get_flag(FLAG_DEBUG)) printf("Set if (unsigned) %d < %d : %d\n", operando1, operando2, resultado);
+
     ulaRet retorno;
+
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
+    va_end(args);
 
     return retorno;
 }
@@ -456,10 +599,17 @@ ulaRet sltu(int num, ...){
 ulaRet jr(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+    unsigned int operando1 = va_arg(args, unsigned int);//rs
+
+    pc = operando1;
+    if(get_flag(FLAG_DEBUG)) printf("\nSalto incondicional (JR) ocorreu : PC = %d\n", operando1);
+
+    jump = 0; //Reseta o controle de salto
+
     ulaRet retorno;
+    retorno.flag = FLAG_NO_RETURN;
+
+    va_end(args);
 
     return retorno;
 }
@@ -467,10 +617,18 @@ ulaRet jr(int num, ...){
 ulaRet jalr(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+    unsigned int operando1 = va_arg(args, unsigned int);//rs
+
     ulaRet retorno;
+    retorno.resultado = pc; //Link
+    retorno.flag = FLAG_SUCCESS;
+
+    pc = operando1;
+    if(get_flag(FLAG_DEBUG)) printf("\nSalto incondicional (JALR) ocorreu : PC = %d\n", operando1);
+
+    jump = 0; //Reseta o controle de salto
+
+    va_end(args);
 
     return retorno;
 }
@@ -478,10 +636,23 @@ ulaRet jalr(int num, ...){
 ulaRet bltz(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+    int operando1 = va_arg(args, int);//rs
+    int operando2 = va_arg(args, int); //rt - ignorado nessa operação
+    unsigned int offset = va_arg(args, unsigned int);//offset
+
+    if(operando1 < 0){
+        pc = offset;
+        if(get_flag(FLAG_DEBUG)) printf("\nSalto condicional ocorreu : PC = %d\n", offset );
+    } else {
+        if(get_flag(FLAG_DEBUG)) printf("\nSalto condicional não ocorreu. %d >= 0\n ", operando1);
+    }
+
+    jump = 0; //Reseta o controle de salto
+
     ulaRet retorno;
+    retorno.flag = FLAG_NO_RETURN;
+
+    va_end(args);
 
     return retorno;
 }
@@ -489,10 +660,23 @@ ulaRet bltz(int num, ...){
 ulaRet bgez(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+    int operando1 = va_arg(args, int); //rs
+    int operando2 = va_arg(args, int); //rt - ignorado nessa operação
+    unsigned int offset = va_arg(args, unsigned int); //offset
+
+    if(operando1 >= 0){
+        pc = offset;
+        if(get_flag(FLAG_DEBUG)) printf("\nSalto condicional ocorreu : PC = %d\n", offset );
+    } else {
+        if(get_flag(FLAG_DEBUG)) printf("\nSalto condicional não ocorreu. %d < 0\n ", operando1);
+    }
+
+    jump = 0; //Reseta o controle de salto
+
     ulaRet retorno;
+    retorno.flag = FLAG_NO_RETURN;
+
+    va_end(args);
 
     return retorno;
 }
@@ -500,10 +684,27 @@ ulaRet bgez(int num, ...){
 ulaRet bltzal(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+    int operando1 = va_arg(args, int);//rs
+    int operando2 = va_arg(args, int); //rt - ignorado nessa operação
+    unsigned int offset = va_arg(args, unsigned int);//offset
+
     ulaRet retorno;
+
+    if(operando1 < 0){
+        retorno.resultado = pc; //Link
+        retorno.flag = FLAG_SUCCESS;
+
+        pc = offset;
+        if(get_flag(FLAG_DEBUG)) printf("\nSalto condicional ocorreu : PC = %d\n", offset );
+    } else {
+
+        retorno.flag = FLAG_FAIL;
+        if(get_flag(FLAG_DEBUG)) printf("\nSalto condicional não ocorreu. %d >= 0\n ", operando1);
+    }
+
+    jump = 0; //Reseta o controle de salto
+
+    va_end(args);
 
     return retorno;
 }
@@ -511,10 +712,26 @@ ulaRet bltzal(int num, ...){
 ulaRet bgezal(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+    int operando1 = va_arg(args, int); //rs
+    int operando2 = va_arg(args, int); //rt - ignorado nessa operação
+    unsigned int offset = va_arg(args, unsigned int); //offset
+
     ulaRet retorno;
+
+    if(operando1 >= 0){
+        retorno.resultado = pc; //Link
+        retorno.flag = FLAG_SUCCESS;
+
+        pc = offset;
+        if(get_flag(FLAG_DEBUG)) printf("\nSalto condicional ocorreu : PC = %d\n", offset );
+    } else {
+        retorno.flag = FLAG_FAIL;
+        if(get_flag(FLAG_DEBUG)) printf("\nSalto condicional não ocorreu. %d < 0\n ", operando1);
+    }
+
+    jump = 0; //Reseta o controle de salto
+
+    va_end(args);
 
     return retorno;
 }
@@ -546,10 +763,23 @@ ulaRet beq(int num, ...){
 ulaRet bne(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+    int operando1 = va_arg(args, int); //rs
+    int operando2 = va_arg(args, int); //rt
+    unsigned int offset = va_arg(args, unsigned int); //offset
+
+    if(operando1 != operando2){
+        pc = offset;
+        if(get_flag(FLAG_DEBUG)) printf("\nSalto condicional ocorreu : PC = %d\n", offset );
+    } else {
+        if(get_flag(FLAG_DEBUG)) printf("\nSalto condicional não ocorreu. %d == %d\n ", operando1, operando2);
+    }
+
+    jump = 0; //Reseta o controle de salto
+
     ulaRet retorno;
+    retorno.flag = FLAG_NO_RETURN;
+
+    va_end(args);
 
     return retorno;
 }
@@ -557,10 +787,23 @@ ulaRet bne(int num, ...){
 ulaRet blez(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+    int operando1 = va_arg(args, int);//rs
+    int operando2 = va_arg(args, int); //rt - ignorado nessa operação
+    unsigned int offset = va_arg(args, unsigned int);//offset
+
+    if(operando1 <= 0){
+        pc = offset;
+        if(get_flag(FLAG_DEBUG)) printf("\nSalto condicional ocorreu : PC = %d\n", offset );
+    } else {
+        if(get_flag(FLAG_DEBUG)) printf("\nSalto condicional não ocorreu. %d > 0\n ", operando1);
+    }
+
+    jump = 0; //Reseta o controle de salto
+
     ulaRet retorno;
+    retorno.flag = FLAG_NO_RETURN;
+
+    va_end(args);
 
     return retorno;
 }
@@ -568,10 +811,23 @@ ulaRet blez(int num, ...){
 ulaRet bgtz(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+    int operando1 = va_arg(args, int); //rs
+    int operando2 = va_arg(args, int); //rt - ignorado nessa operação
+    unsigned int offset = va_arg(args, unsigned int); //offset
+
+    if(operando1 > 0){
+        pc = offset;
+        if(get_flag(FLAG_DEBUG)) printf("\nSalto condicional ocorreu : PC = %d\n", offset );
+    } else {
+        if(get_flag(FLAG_DEBUG)) printf("\nSalto condicional não ocorreu. %d <= 0\n ", operando1);
+    }
+
+    jump = 0; //Reseta o controle de salto
+
     ulaRet retorno;
+    retorno.flag = FLAG_NO_RETURN;
+
+    va_end(args);
 
     return retorno;
 }
@@ -579,26 +835,70 @@ ulaRet bgtz(int num, ...){
 ulaRet addi(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("ADDI BEM LOUCO\n");
+
+    int operando1 = va_arg(args, int); //rs
+    int operando2 = va_arg(args, int); //rt - ignorado nessa operação
+    int imediato = va_arg(args, int); //imm
+
+    int resultado = operando1 + imediato;
+
+    if(get_flag(FLAG_DEBUG)) printf("Adição com imediato: %i + %i = %i\n", operando1, imediato, resultado);
+
+    ulaRet retorno;
+
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
     va_end(args);
+
+    return retorno;
 }
 
 ulaRet addiu(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("ADDIU BEM LOUCO\n");
+
+    unsigned int operando1 = va_arg(args, unsigned int); //rs
+    unsigned int operando2 = va_arg(args, unsigned int); //rt - ignorado nessa operação
+    unsigned int imediato = va_arg(args, unsigned int); //imm
+
+    unsigned int resultado = operando1 + imediato;
+
+    if(get_flag(FLAG_DEBUG)) printf("Adição com imediato (unsigned): %i + %i = %i\n", operando1, imediato, resultado);
+
+    ulaRet retorno;
+
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
     va_end(args);
+
+    return retorno;
 }
 
 ulaRet slti(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+
+    int operando1 = va_arg(args, int);//rs
+    int operando2 = va_arg(args, int);//rt - ignorado nessa operação
+    int imediato = va_arg(args, int); //imm
+    int resultado;
+
+    if(operando1 < imediato){
+        resultado = 1; //True
+    } else {
+        resultado = 0; //False
+    }
+
+    if(get_flag(FLAG_DEBUG)) printf("Set if %d < %d : %d (imediato)\n", operando1, imediato, resultado);
+
     ulaRet retorno;
+
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
+    va_end(args);
 
     return retorno;
 }
@@ -606,10 +906,26 @@ ulaRet slti(int num, ...){
 ulaRet sltiu(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+
+    unsigned int operando1 = va_arg(args, unsigned int);//rs
+    unsigned int operando2 = va_arg(args, unsigned int);//rt - ignorado nessa operação
+    unsigned int imediato = va_arg(args, unsigned int); //imm
+    unsigned int resultado;
+
+    if(operando1 < imediato){
+        resultado = 1; //True
+    } else {
+        resultado = 0; //False
+    }
+
+    if(get_flag(FLAG_DEBUG)) printf("Set if %d < %d : %d (imediato & unsigned)\n", operando1, imediato, resultado);
+
     ulaRet retorno;
+
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
+    va_end(args);
 
     return retorno;
 }
@@ -617,10 +933,21 @@ ulaRet sltiu(int num, ...){
 ulaRet andi(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+
+    unsigned int operando1 = va_arg(args, unsigned int);//rs
+    unsigned int operando2 = va_arg(args, unsigned int);//rt - ignorado nessa operação
+    unsigned int imediato = va_arg(args, unsigned int);//imm
+
+    unsigned int resultado = operando1 && imediato;
+
+    if(get_flag(FLAG_DEBUG)) printf("And lógico: %i AND %i = %i (imediato)\n", operando1, imediato, resultado);
+
     ulaRet retorno;
+
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
+    va_end(args);
 
     return retorno;
 }
@@ -628,10 +955,21 @@ ulaRet andi(int num, ...){
 ulaRet ori(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+
+    unsigned int operando1 = va_arg(args, unsigned int);//rs
+    unsigned int operando2 = va_arg(args, unsigned int);//rt - ignorado nessa operação
+    unsigned int imediato = va_arg(args, unsigned int);//imm
+
+    unsigned int resultado = operando1 || imediato;
+
+    if(get_flag(FLAG_DEBUG)) printf("Or lógico: %i OR %i = %i (imediato)\n", operando1, imediato, resultado);
+
     ulaRet retorno;
+
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
+    va_end(args);
 
     return retorno;
 }
@@ -639,10 +977,21 @@ ulaRet ori(int num, ...){
 ulaRet xori(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+
+    unsigned int operando1 = va_arg(args, unsigned int);//rs
+    unsigned int operando2 = va_arg(args, unsigned int);//rt - ignorado nessa operação
+    unsigned int imediato = va_arg(args, unsigned int);//imm
+
+    unsigned int resultado = operando1 != imediato;
+
+    if(get_flag(FLAG_DEBUG)) printf("Xori lógico: %i XOR %i = %i (imediato)\n", operando1, imediato, resultado);
+
     ulaRet retorno;
+
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
+    va_end(args);
 
     return retorno;
 }
@@ -704,10 +1053,23 @@ ulaRet msubu(int num, ...){
 ulaRet clo(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+    unsigned int operando1 = va_arg(args, unsigned int);//rs
+
+    int i;
+    unsigned int resultado = 0;
+
+    for(i = INT_MAX; i > 0; i = i >> 1){
+        if(i & operando1) resultado++;
+    }
+
+    if(get_flag(FLAG_DEBUG)) printf("Contagem de Uns: %i = %i 1's\n", operando1, resultado);
+
     ulaRet retorno;
+
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
+    va_end(args);
 
     return retorno;
 }
@@ -715,10 +1077,23 @@ ulaRet clo(int num, ...){
 ulaRet clz(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
+    unsigned int operando1 = va_arg(args, unsigned int);//rs
+
+    int i;
+    unsigned int resultado = 0;
+
+    for(i = INT_MAX; i > 0; i = i >> 1){
+        if(i ^ operando1) resultado++;
+    }
+
+    if(get_flag(FLAG_DEBUG)) printf("Contagem de Zeros: %i = %i 0's\n", operando1, resultado);
+
     ulaRet retorno;
+
+    retorno.resultado = resultado;
+    retorno.flag = FLAG_SUCCESS;
+
+    va_end(args);
 
     return retorno;
 }
@@ -853,28 +1228,6 @@ ulaRet sw(int num, ...){
 }
 
 ulaRet swr(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-    ulaRet retorno;
-
-    return retorno;
-}
-
-ulaRet ll(int num, ...){
-    va_list args;
-    va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
-    va_end(args);
-    ulaRet retorno;
-
-    return retorno;
-}
-
-ulaRet sc(int num, ...){
     va_list args;
     va_start(args, num);
     unsigned int operando1 = va_arg(args, unsigned int);

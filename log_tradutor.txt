@@ -1,32 +1,19 @@
-		Log da tradução da entrada ./input2.txt
-Op tipo LS var: 35 0 8 x
 Op tipo LS var: 35 0 9 y
-Op tipo LS reg: 35 8 11 4
-Op tipo R: 0 8 9 10 0 32
-Op tipo R: 0 0 8 16 5 0
-Op tipo R: 0 0 8 18 5 2
-Op tipo R: 0 0 8 19 5 3
-
-Lista de nós:
- 1[9]|Op = 35|rs =  0|rt =  8|rd =  0|aux =  0|func =  0 x
- 2[9]|Op = 35|rs =  0|rt =  9|rd =  0|aux =  0|func =  0 y
- 3[9]|Op = 35|rs =  8|rt = 11|rd =  0|aux =  4|func =  0 (null)
- 4[1]|Op =  0|rs =  8|rt =  9|rd = 10|aux =  0|func = 32 (null)
- 5[1]|Op =  0|rs =  0|rt =  8|rd = 16|aux =  5|func =  0 (null)
- 6[1]|Op =  0|rs =  0|rt =  8|rd = 18|aux =  5|func =  2 (null)
- 7[1]|Op =  0|rs =  0|rt =  8|rd = 19|aux =  5|func =  3 (null)
-
-		fim da lista
+Op tipo LS var: 35 0 10 x
+Op tipo R: 0 9 10 0 0 26
+Op tipo M: 0 0 0 16 16
+Op tipo M: 0 0 0 17 18
+Op tipo R: 0 16 17 18 0 32
+Op tipo M: 0 18 0 0 17
+Op tipo M: 0 18 0 0 19
+Op tipo R: 0 9 10 0 0 27
 Numero de variaveis = 3
- Numero de valores totais = 310001100000010000000000000001000100011000000100100000000000001001000110100001011000000000000010000000001000010010101000000100000000000000000100010000001010000000000000000001000100100010100001000000000000010001001100101000011
-Numero de linhas computadas = 7
-
-Labels:
-fim = 28
+ Numero de valores totais = 3
+Numero de linhas computadas = 9
 
 Variaveis:
-z (0) = 33865120
-y (12) = 34088352
-x (12) = 34088384
+z (0) = 15834528
+y (12) = 16053856
+x (12) = 16053888
 
 Fim do log de tradução.

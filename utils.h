@@ -101,7 +101,8 @@ typedef struct{
     int er_type;
 } operation;
 
-extern char* ER_nomes[7];
+extern char* ER_nomes[NUM_ER];
+extern char* REG_nomes[NUM_REGS];
 
 
 void pause();
@@ -118,6 +119,7 @@ void printaFila();
 void printaBloco(word w, unsigned int tam);
 
 operation getOp(inst instruction);
+void casosEspeciais(int op, estacao_reserva* er);
 int identificaER(estacao_reserva* er);
 int identificaREG(unsigned int er_id);
 void printaER(estacao_reserva* er, char isFile, FILE* dest);

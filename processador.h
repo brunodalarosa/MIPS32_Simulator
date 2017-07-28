@@ -4,11 +4,13 @@
 #ifndef __PROCESSADOR_H
 #define __PROCESSADOR_H
 
-#define ADD_T 1 //ADD já é o nome de uma OP
-#define MUL_T 2 //MUL já é o nome de uma OP
+#define ADD_T  1 //ADD já é o nome de uma OP
+#define MUL_T  2 //MUL já é o nome de uma OP
 #define BRANCH 3
-#define LOAD  4
-#define STORE 5
+#define LOAD   4
+#define STORE  5
+#define ADDI_T   6
+#define MULTI_T  7
 
 #define ADD_1  1
 #define ADD_2  2
@@ -17,8 +19,11 @@
 #define MUL_2  5
 #define LOAD_1 6
 #define LOAD_2 7
+#define LOAD_3 8
+#define LOAD_4 9
+#define LOAD_5 10
 
-#define NUM_ER 7
+#define NUM_ER 10
 
 #define FLAG_BUFFER_VAZIO -1
 
@@ -86,9 +91,23 @@ extern estacao_reserva* er_mult1;
 extern estacao_reserva* er_mult2;
 extern estacao_reserva* er_load1;
 extern estacao_reserva* er_load2;
+extern estacao_reserva* er_load3;
+extern estacao_reserva* er_load4;
+extern estacao_reserva* er_load5;
+
 
 unsigned int* Qi;
 int* buffer_resultados;
+
+
+typedef struct {
+    int dado;
+    unsigned int er_id;
+} barr_aux;
+
+
+extern barr_aux* barr_Lo;
+extern barr_aux* barr_Hi;
 
 struct node_ti{
     inst instruction;

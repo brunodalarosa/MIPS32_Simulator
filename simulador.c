@@ -109,7 +109,7 @@ void init(){
 	}
 
 	/* Inicializa os registradores */
-	regs = calloc(NUM_REGS, sizeof(unsigned int));
+	regs = calloc(NUM_REGS, sizeof(int));
 
 	/* Inicializa a memoria */
 	mem = calloc(MEM_SIZE, 1); //Malloc + inicia como 0
