@@ -69,6 +69,7 @@ void ulaInit(){
     p[SWL]   = swl;
     p[SW]    = sw;
     p[SWR]   = swr;
+    p[SYSCALL] = sysc;
 }
 
 ulaRet sll(int num, ...){
@@ -404,7 +405,7 @@ ulaRet addu(int num, ...){
 
     unsigned int resultado = operando1 + operando2;
 
-    if(get_flag(FLAG_DEBUG)) printf("Adição (unsigned): %i + %i = %i\n", operando1, operando2, resultado);
+    if(get_flag(FLAG_DEBUG)) printf("Adição (unsigned): %u + %u = %u\n", operando1, operando2, resultado);
 
     ulaRet retorno;
 
@@ -446,7 +447,7 @@ ulaRet subu(int num, ...){
 
     unsigned int resultado = operando1 - operando2;
 
-    if(get_flag(FLAG_DEBUG)) printf("Subtração (unsigned): %i + %i = %i\n", operando1, operando2, resultado);
+    if(get_flag(FLAG_DEBUG)) printf("Subtração (unsigned): %u - %u = %u\n", operando1, operando2, resultado);
 
     ulaRet retorno;
 
@@ -1219,10 +1220,19 @@ ulaRet swl(int num, ...){
 ulaRet sw(int num, ...){
     va_list args;
     va_start(args, num);
-    unsigned int operando1 = va_arg(args, unsigned int);
-    printf("SLL BEM LOUCO\n");
+    unsigned int arg1 = va_arg(args, unsigned int); //address
+    unsigned int arg2 = va_arg(args, unsigned int); //Dado
+
+    endereco addr;
+    addr.i = arg1;
+
+    if(get_flag(FLAG_DEBUG)) printf("Escrita: %d <- %d\n", arg1, arg2);
+    cWrite(CACHE_DADOS, addr, arg2);
+
     va_end(args);
+
     ulaRet retorno;
+    retorno.flag = FLAG_NO_RETURN;
 
     return retorno;
 }
@@ -1235,5 +1245,47 @@ ulaRet swr(int num, ...){
     va_end(args);
     ulaRet retorno;
 
+    return retorno;
+}
+
+ulaRet sysc(int num, ...){
+    va_list args;
+    va_start(args, num);
+    va_end(args); //Não usa parametros
+
+    unsigned int sysfunc = regs[REG_V0];
+    int a0 = regs[REG_A0];
+
+    switch (sysfunc) {
+        case 1: //print int
+            printf("%d\n", a0);
+            break;
+
+        case 5: //read int
+            scanf("%d", &a0);
+            regs[REG_A0] = a0;
+            break;
+
+        case 10: //exit
+            flag_exit = 1;
+            if(get_flag(FLAG_DEBUG)) printf("Syscall exit -> encerrando execução\n");
+            break;
+
+        case 11: //print char
+            printf("%c\n", a0);
+            break;
+
+        case 12: //read char
+            scanf("%c", &a0);
+            regs[REG_A0] = a0;
+            break;
+
+        default:
+            if(get_flag(FLAG_DEBUG)) printf("Código de syscall inválido! (%d)\n", sysfunc);
+            break;
+    }
+
+    ulaRet retorno;
+    retorno.flag = FLAG_NO_RETURN;
     return retorno;
 }

@@ -121,7 +121,7 @@ letter	[a-zA-Z]
 "swr"  {yylval.op.code = 46; return opcodel;}
 "ll"   {yylval.op.code = 48; return opcodel;}
 "sc"   {yylval.op.code = 56; return opcodel;}
-
+"syscall" {return syscallOP;}
 
 {letter}("_"|{letter}|{digit})* { yylval.text = strdup(yytext); return id;}
 

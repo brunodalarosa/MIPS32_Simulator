@@ -3,10 +3,18 @@
 
 #include "utils.h"
 
-char* ER_nomes[NUM_ER] = {"ADD 1","ADD 2","ADD 3","MULT 1","MULT 2","LOAD 1","LOAD 2","LOAD 3","LOAD 4","LOAD 5"};
+char* ER_nomes[NUM_ER] = {"ADD 1","ADD 2","ADD 3","MULT 1","MULT 2","LOAD 1","LOAD 2","LOAD 3","LOAD 4","LOAD 5",
+                          "STORE 1","STORE 2","STORE 3","STORE 4","STORE 5"};
+
 char* REG_nomes[NUM_REGS] = {"$zero", "$at", "$v0", "$v1", "$a0", "$a1", "$a2", "$a3", "$t0", "$t1", "$t2", "$t3",
 						     "$t4", "$t5", "$t6", "$t7", "$s0", "$s1", "$s2", "$s3", "$s4", "$s5", "$s6", "$s7",
 						     "$t8", "$t9", "$k0", "$k1", "$gp", "$sp", "$fp", "$ra", "Lo", "Hi"};
+
+char* OP_nomes[NUM_OPS] = {"SLL","SLL","SRL","SRA","SLLV","SRLV","SRAV","MOVZ","MOVN","TNEI","MFHI","MFLO","MULT","MULTU",
+                      "DIV","DIVU","ADD","ADDU","SUB","SUBU","AND","OR","XOR","NOR","SLT","SLTU","JR","JALR",
+					  "BLTZ","BGEZ","BLTZAL","BGEZAL","BEQ","BNE","BLEZ","BGTZ","ADDI","ADDIU","SLTI","SLTIU",
+					  "ANDI","ORI","XORI","LUI","MADD","MADDU","MUL","MSUB","MSUBU","CLO","CLZ","LB","LH","LWL",
+				      "LW","LBU","LHU","LWR","SB","SH","SWL","SWR","SYSCALL"};
 
 /* Printa a seção de ajuda */
 void ajuda(){
@@ -132,14 +140,51 @@ int identificaER(estacao_reserva* er){
 	if(er == er_load4) return LOAD_4;
 	if(er == er_load5) return LOAD_5;
 
+	if(er == er_store1) return STORE_1;
+	if(er == er_store2) return STORE_2;
+	if(er == er_store3) return STORE_3;
+	if(er == er_store4) return STORE_4;
+	if(er == er_store5) return STORE_5;
 
 	return 0; //Caso de erro?
 }
 
+/* Recebe um identificador de estação de reserva                  */
+/* retorna a estação de reserva ou -1 caso identificador invalido */
+estacao_reserva* getER(int er_id){
+	if(er_id == ADD_1) return er_add1;
+	if(er_id == ADD_2) return er_add2;
+	if(er_id == ADD_3) return er_add3;
+
+	if(er_id == MUL_1) return er_mult1;
+	if(er_id == MUL_2) return er_mult2;
+
+	if(er_id == LOAD_1) return er_load1;
+	if(er_id == LOAD_2) return er_load2;
+	if(er_id == LOAD_3) return er_load3;
+	if(er_id == LOAD_4) return er_load4;
+	if(er_id == LOAD_5) return er_load5;
+
+	if(er_id == STORE_1) return er_store1;
+	if(er_id == STORE_2) return er_store2;
+	if(er_id == STORE_3) return er_store3;
+	if(er_id == STORE_4) return er_store4;
+	if(er_id == STORE_5) return er_store5;
+
+	return NULL; //identificador inválido
+}
+
+/* Executa um flush na estação de reserva */
+void flushEr(estacao_reserva* er){
+	free(er);
+	er = malloc(sizeof(estacao_reserva));
+	er->busy = 0;
+}
+
 operation getOp(inst instruction){
 	unsigned int opcode = 0;
-	unsigned int func;
-	unsigned int rt;
+	unsigned int func = 0;
+	unsigned int rt = 0;
 	opcode = instruction.R.op;
 	operation op;
 
@@ -149,252 +194,186 @@ operation getOp(inst instruction){
 			func = instruction.R.func;
 			switch (func){
 				case 0:
-					printf("sll\n\n");
 					op.op = SLL;
 					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 2:
-					printf("srl\n\n");
 					op.op = SRL;
 					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 3:
-					printf("sra\n\n");
 					op.op = SRA;
 					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 4:
-					printf("sllv\n\n");
 					op.op = SLLV;
 					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 6:
-					printf("srlv\n\n");
 					op.op = SRLV;
 					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 7:
-					printf("srav\n\n");
 					op.op = SRAV;
 					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 8:
-					printf("jr\n\n");
 					op.op = JR;
 					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 9:
-					printf("jalr\n\n");
 					op.op = JALR;
 					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 10:
-					printf("movz\n\n");
 					op.op = MOVZ;
 					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 11:
-					printf("movn\n\n");
 					op.op = MOVN;
 					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
+				case 12:
+					op.op = SYSCALL;
+					op.cycles = 2;
+					op.er_type = ADD_T;
+					break;
+
 				case 14:
-					printf("tnei\n\n");
 					op.op = TNEI;
 					op.cycles = 1; //todo
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 16:
-					printf("mfhi\n\n");
 					op.op = MFHI;
 					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 17:
-					printf("mthi\n\n");
 					op.op = MTHI;
 					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 18:
-					printf("mflo\n\n");
 					op.op = MFLO;
 					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 19:
-					printf("mtlo\n\n");
 					op.op = MTLO;
 					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 24:
-					printf("mult\n\n");
 					op.op = MULT;
 					op.cycles = 5;
 					op.er_type = MUL_T; //verificar
 					break;
 
 				case 25:
-					printf("multu\n\n");
 					op.op = MULTU;
 					op.cycles = 5;
 					op.er_type = MUL_T; //verificar
 					break;
 
 				case 26:
-					printf("div\n\n");
 					op.op = DIV;
 					op.cycles = 5;
 					op.er_type = MUL_T; //verificar
 					break;
 
 				case 27:
-					printf("divu\n\n");
 					op.op = DIVU;
 					op.cycles = 5;
 					op.er_type = MUL_T; //verificar
 					break;
 
 				case 32:
-					printf("add\n\n");
 					op.op = ADD;
 					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 33:
-					printf("addu\n\n");
 					op.op = ADDU;
 					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 34:
-					printf("sub\n\n");
 					op.op = SUB;
 					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 35:
-					printf("subu\n\n");
 					op.op = SUBU;
 					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 36:
-					printf("and\n\n");
 					op.op = AND;
 					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 37:
-					printf("or\n\n");
 					op.op = OR;
 					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 38:
-					printf("xor\n\n");
 					op.op = XOR;
 					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 39:
-					printf("nor\n\n");
 					op.op = NOR;
 					op.cycles = 1;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 42:
-					printf("slt\n\n");
 					op.op = SLT;
 					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 43:
-					printf("sltu\n\n");
 					op.op = SLTU;
 					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
-				case 48:
-					printf("tge\n\n");
-					op.op = TGE;
-					op.cycles = 1; //todo
-					op.er_type = ADD_T; //verificar
-					break;
-
-				case 49:
-					printf("tgeu\n\n");
-					op.op = TGEU;
-					op.cycles = 1; //todo
-					op.er_type = ADD_T; //verificar
-					break;
-
-				case 50:
-					printf("tlt\n\n");
-					op.op = TLT;
-					op.cycles = 1; //todo
-					op.er_type = ADD_T; //verificar
-					break;
-
-				case 51:
-					printf("tltu\n\n");
-					op.op = TLTU;
-					op.cycles = 1; //todo
-					op.er_type = ADD_T; //verificar
-					break;
-
-				case 52:
-					printf("teq\n\n");
-					op.op = TEQ;
-					op.cycles = 1; //todo
-					op.er_type = ADD_T; //verificar
-					break;
-
-				case 54:
-					printf("tne\n\n");
-					op.op = TNE;
-					op.cycles = 1; //todo
-					op.er_type = ADD_T; //verificar
-					break;
-
 				default:
-
 					launchError(0); //especificar
 					break;
 			}
@@ -416,41 +395,6 @@ operation getOp(inst instruction){
 					op.op = BGEZ;
 					op.cycles = 2;
 					op.er_type = BRANCH; //verificar
-					break;
-
-				case 8:
-					//tgei
-					op.op = TGEI;
-					op.cycles = 1; //todo
-					op.er_type = ADD_T; //verificar
-					break;
-
-				case 9:
-					//tgeiu
-					op.op = TGEIU;
-					op.cycles = 1; //todo
-					op.er_type = ADD_T; //verificar
-					break;
-
-				case 10:
-					//tlti
-					op.op = TLTI;
-					op.cycles = 1; //todo
-					op.er_type = ADD_T; //verificar
-					break;
-
-				case 11:
-					//tltiu
-					op.op = TLTIU;
-					op.cycles = 1; //todo
-					op.er_type = ADD_T; //verificar
-					break;
-
-				case 12:
-					//teqi
-					op.op = TEQI;
-					op.cycles = 1; //todo
-					op.er_type = ADD_T; //verificar
 					break;
 
 				case 16:
@@ -701,20 +645,6 @@ operation getOp(inst instruction){
 			op.er_type = STORE;
 			break;
 
-		case 48: //Checar se precisa implementar
-			//ll
-			op.op = LL;
-			op.cycles = 1; //todo
-			op.er_type = LOAD;
-			break;
-
-		case 56: //checar se preicsa implementar
-			//sc
-			op.op = SC;
-			op.cycles = 1; //todo
-			op.er_type = STORE;
-			break;
-
 		default:
 			//erro
 			launchError(0); //especificar
@@ -945,7 +875,7 @@ int prompt(){
 	char r;
 
 	do{
-		printf("(S/N) : ");
+		printf("(s / n): ");
 		r = getchar();
 
 		switch (r) {
@@ -961,7 +891,7 @@ int prompt(){
 			break;
 		}
 		getchar();
-		printf("\nEntrada incorreta! Insira apenas S ou N\n");
+		printf("\nEntrada incorreta! Insira apenas s ou n\n");
 
 	} while(1);
 }
@@ -1014,8 +944,7 @@ void launchError(int e){
 			exit(0);
 	}
 
-	//fclose(log_t_file);
-	//fclose();
+	fclose(log_t_file);
 	exit(0);
 }
 
@@ -1033,6 +962,13 @@ void printaBloco(word w, unsigned int tam){
 	printf("\n");
 }
 
+/* Função auxiliar checa se um syscall pode acontecer */
+int checaSyscall(){
+    if (Qi[REG_V0] != 0) return 1;
+    if (Qi[REG_A0] != 0) return 1;
+
+    return 0;
+}
 
 /**
 * Lê o arquivo binário e carrega o programa para a memoria

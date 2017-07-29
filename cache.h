@@ -32,9 +32,8 @@ typedef union endereco_t endereco;
 
 //ENDEREÇO DO BLOCO =  Linha * (tam_byte) + tag * (tam_byte + tam_linha)
 
-//extern word barr_dados;
-//extern word barr_endereco;
-extern word barr_memoria;
+extern word barr_mem_dados;
+extern word barr_mem_texto;
 
 typedef struct{
     unsigned int byte  : 4; //4; //4

@@ -32,13 +32,17 @@ void stream(unsigned int dado, unsigned int source_id){
     if(identificaER(er_load3) != source_id) check_er(er_load3, dado, source_id);
     if(identificaER(er_load4) != source_id) check_er(er_load4, dado, source_id);
     if(identificaER(er_load5) != source_id) check_er(er_load5, dado, source_id);
-
+    if(identificaER(er_store1) != source_id) check_er(er_store1, dado, source_id);
+    if(identificaER(er_store2) != source_id) check_er(er_store2, dado, source_id);
+    if(identificaER(er_store3) != source_id) check_er(er_store3, dado, source_id);
+    if(identificaER(er_store4) != source_id) check_er(er_store4, dado, source_id);
+    if(identificaER(er_store5) != source_id) check_er(er_store5, dado, source_id);
 
     /* Segundo passo: Enviar dado ao destino */
     int reg = identificaREG(source_id);
     if(reg > NUM_REGS) launchError(8);
     if(reg != -1){
-        if(get_flag(FLAG_DEBUG)) printf("> Destino final registrador %s = %d\n", REG_nomes[reg], dado);
+        if(get_flag(FLAG_DEBUG)) printf("> Destino final registrador %s = %d\n\n", REG_nomes[reg], dado);
         regs[reg] = dado;
     }
 }

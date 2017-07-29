@@ -8,6 +8,7 @@
 #include "processador.h"
 
 extern unsigned int ciclo;
+extern unsigned int flag_exit;
 
 unsigned int run();
 

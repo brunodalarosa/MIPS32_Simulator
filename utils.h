@@ -42,58 +42,48 @@
 #define NOR    25
 #define SLT    26
 #define SLTU   27
-#define TGE    28
-#define TGEU   29
-#define TLT    30
-#define TLTU   31
-#define TEQ    32
-#define TNE    33
-#define JR     34
-#define JALR   35
-#define BLTZ   36
-#define BGEZ   37
-#define TGEI   38
-#define TGEIU  39
-#define TLTI   40
-#define TLTIU  41
-#define TEQI   42
-#define BLTZAL 43
-#define BGEZAL 44
+#define JR     28
+#define JALR   29
+#define BLTZ   30
+#define BGEZ   31
+#define BLTZAL 32
+#define BGEZAL 33
 //#define J     X / Não precisa ser definido por é lidado como uma função de controle
 //#define JAL   X / same as up
-#define BEQ    45
-#define BNE    46
-#define BLEZ   47
-#define BGTZ   48
-#define ADDI   49
-#define ADDIU  50
-#define SLTI   51
-#define SLTIU  52
-#define ANDI   53
-#define ORI    54
-#define XORI   55
-#define LUI    56
-#define MADD   57
-#define MADDU  58
-#define MUL    59
-#define MSUB   60
-#define MSUBU  61
-#define CLO    62
-#define CLZ    63
-#define LB     64
-#define LH     65
-#define LWL    66
-#define LW     67
-#define LBU    68
-#define LHU    69
-#define LWR    70
-#define SB     71
-#define SH     72
-#define SWL    73
-#define SW     74
-#define SWR    75
-#define LL     76
-#define SC     77
+#define BEQ    34
+#define BNE    35
+#define BLEZ   36
+#define BGTZ   37
+#define ADDI   38
+#define ADDIU  39
+#define SLTI   40
+#define SLTIU  41
+#define ANDI   42
+#define ORI    43
+#define XORI   44
+#define LUI    45
+#define MADD   46
+#define MADDU  47
+#define MUL    48
+#define MSUB   49
+#define MSUBU  50
+#define CLO    51
+#define CLZ    52
+#define LB     53
+#define LH     54
+#define LWL    55
+#define LW     56
+#define LBU    57
+#define LHU    58
+#define LWR    59
+#define SB     60
+#define SH     61
+#define SWL    62
+#define SW     63
+#define SWR    64
+#define SYSCALL 65
+
+#define NUM_OPS 65
 
 typedef struct{
     int cycles;
@@ -102,8 +92,10 @@ typedef struct{
 } operation;
 
 extern char* ER_nomes[NUM_ER];
+
 extern char* REG_nomes[NUM_REGS];
 
+extern char* OP_nomes[NUM_OPS];
 
 void pause();
 void launchError(int e);
@@ -117,10 +109,13 @@ void insereFila(inst instruction);
 inst* pegaDaFila(int remover);
 void printaFila();
 void printaBloco(word w, unsigned int tam);
+int checaSyscall();
 
 operation getOp(inst instruction);
 void casosEspeciais(int op, estacao_reserva* er);
 int identificaER(estacao_reserva* er);
+estacao_reserva* getER(int er_id);
+void flushEr(estacao_reserva* er);
 int identificaREG(unsigned int er_id);
 void printaER(estacao_reserva* er, char isFile, FILE* dest);
 void printaRegs(char isFile, FILE* dest);

@@ -3,6 +3,12 @@
 
 #include "tradutor.h"
 
+void checkSizesLocal(var_t* variaveis){
+	if(variaveis->tam > values_tam){
+		variaveis->valores = realloc(variaveis->valores, sizeof(int) * variaveis->tam + 1); //Aumenta em 1 o espaço
+	}
+}
+
 void checkSizes(){
 	if (lbl_count == lbl_tam){
 		lbl_tam = lbl_tam + 5;
@@ -14,8 +20,7 @@ void checkSizes(){
 		if (val_count >= 100) launchError(3); //limite maximo de variaveis
 		var_tam = var_tam + 5;
 		var_names = realloc(var_names, sizeof(char*) * var_tam);
-		var_values = realloc(var_values, sizeof(list) * var_tam);
-		aux_val_count = realloc(aux_val_count, sizeof(int) * var_tam);
+	 	variaveis = realloc(variaveis, sizeof(var_t) * var_tam);
 	}
 }
 
@@ -39,7 +44,7 @@ int varMatch(char* id){
 	int i;
 	for(i = 0; i < var_count; i++){
 		if(strcmp(id, var_names[i]) == 0){
-			return (i * sizeof(unsigned int));
+			return var_adress[i];
 		}
 	}
 	return -1;
@@ -75,6 +80,10 @@ word traduz(node n){
 			n->rt <<= shift;
 
 			*bi = n->op | n->rs | n-> rt | n->aux;
+			break;
+
+		case 3: //Syscall
+			*bi = n->func;
 			break;
 
 		case 4: //J
@@ -148,18 +157,6 @@ void insereLista(node n){
 	ultimo->prox = n;
 }
 
-/* Insere um valor na lista de valores */
-/* Arg| O nó do valor a ser inserido   */
-void insereListaValores(list t){
-	printf("VALOR %d\n", t->valor );
-	list ultimo = valores;
-
-	while(ultimo->prox != NULL) ultimo = ultimo->prox;
-
-	ultimo->prox = t;
-
-}
-
 /* Caminha pela lista de instruções printando uma a uma */
 void printaNos(){
 	int i = 1;
@@ -189,10 +186,10 @@ void fechaLog(){
 	}
 
 	if (var_count > 0) fprintf(log_t_file, "\nVariaveis:\n");
-	for(i = 0; i < var_count; i++){
+	/*for(i = 0; i < var_count; i++){
 		fprintf(log_t_file, "%s (%d) = %d\n",var_names[i],
 						var_adress[i], var_values[i]);
-	}
+	}*/
 
 	fprintf(log_t_file, "\nFim do log de tradução.");
 
@@ -203,27 +200,33 @@ void fechaLog(){
 /* com as variaveis declaradas e o restante dos 400 Bytes com zeros		   */
 void escreveDados(){
 	unsigned int* zeros;
-	int i, size = 100 - val_count;
-	list vars, aux;
+	int i, j, size = 100 - val_count;
+	int aux = 0;
+	char** str_aux;
+	int* address_aux;
 
-	if(get_flag(FLAG_VERBOSE)) fprintf(log_t_file, "Numero de variaveis = %d\n Numero de valores totais = %d", var_count, val_count);
+	str_aux = malloc(sizeof(char*) * var_count);
+	address_aux = malloc(sizeof(int) * var_count);
 
-	/* Escreve na ordem certa SERÁ? */
-	/*for(i = var_count-1; i >= 0; i--){
-	/*	fwrite(&var_values[i], sizeof(unsigned int), 1, bin_file);
-	/*} */
+	if(get_flag(FLAG_VERBOSE)) fprintf(log_t_file, "Numero de variaveis = %d\n Numero de valores totais = %d\n", var_count, val_count);
 
-	aux = vars = var_values[0];
-	vars = vars->prox;
-	while(vars != NULL){
-		printf("Valor = %d\n", vars->valor);
-		fwrite(&vars->valor, sizeof(int), 1, bin_file);
-		vars = vars->prox;
+	for(i = 0; i < var_count ; i++){
+		for(j = variaveis[i].tam-1; j >=0; j--){
+			fwrite(&variaveis[i].valores[j], sizeof(unsigned int), 1, bin_file);
+		}
 	}
 
+	/* Inverte o endereço das variaveis, necessário pois o parsing é na ordem inversa */
+	for(i = var_count -1; i >= 0; i--){
+		str_aux[aux] = var_names[i];
+		aux++;
+	}
 
-	free(aux);
+	for(i = 0; i < var_count; i++){
+		var_names[i] = str_aux[i];
+	}
 
+	/* Preenche com zero o espaço que sobrou */
 	zeros = (unsigned int*) calloc(size, sizeof(unsigned int));
 	fwrite(zeros, sizeof(unsigned int), size, bin_file);
 }
@@ -236,7 +239,10 @@ void escreveTexto(){
 	while(lista != NULL){
 		bi = traduz(lista);
 		fwrite(bi, sizeof(unsigned int), 1, bin_file);
-		if(get_flag(FLAG_DEBUG)) printaBinario(bi, 1, log_t_file);
+		if(get_flag(FLAG_DEBUG)){
+			printaBinario(bi, 1, log_t_file);
+			fprintf(log_t_file, "\n");
+	 	}
 		free(bi);
 		lista = lista->prox;
 	}
@@ -245,6 +251,8 @@ void escreveTexto(){
 
 /* Inicialização do tradutor */
 void tradutorInit(){
+	int i ;
+
 	/* Inicialização da lista de instruções */
 	lista = malloc(sizeof(node_t));
 	lista->prox = NULL;
@@ -252,14 +260,15 @@ void tradutorInit(){
 	/* Definição das declarações externas */
 	line = 0;
 	lbl_count = 0;
-	lbl_tam = 10; //lbl_tamanho inicial do vetor de labels
 	var_count = 0;
-	var_tam = 10; //lbl_tamanho inicial do vetor de labels
-	local_var_count = 0;
+	var_name_count = 0;
+	val_count = 0;
+	lbl_tam = INITIAL_SIZE;
+	var_tam = INITIAL_SIZE;
+	values_tam = INITIAL_SIZE;
 
 
 	/* Inicialização dos Vetores para controle de Labels e variaveis */
-	aux_val_count = malloc(sizeof(int) * var_tam);
 
 	lbl_names  = malloc(sizeof(char*) * lbl_tam);
 	lbl_values = malloc(sizeof(unsigned int) * lbl_tam);
@@ -267,8 +276,11 @@ void tradutorInit(){
 	var_names = malloc(sizeof(char*) * var_tam);
 	var_adress = malloc(sizeof(unsigned int) * var_tam);
 
-	var_values = malloc(sizeof(list) * var_tam);
-	valores = malloc(sizeof(struct list_t));
+	variaveis = malloc(sizeof(var_t) * var_tam);
+
+	for(i = 0; i < var_tam; i++){
+		variaveis[i].valores = malloc(sizeof(int) * values_tam);
+	}
 
 	set_input();
 

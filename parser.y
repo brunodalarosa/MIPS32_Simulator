@@ -21,7 +21,7 @@ void set_input();
 %token number virg EOL END_OF_FILE
 %token opcodeb opcoder opcoders opcoderd opcodel opcodei opcodelui
 %token opcodej opcodet opcodemf opcodemt opcodebeq
-%token abreparents fechaparents colon
+%token abreparents fechaparents colon syscallOP
 %token data text id t_int
 
 %code requires{
@@ -65,6 +65,15 @@ instrucao: linha EOL instrucao {}
 linha: operacao {}
 
 operacao: /* nada */
+| syscallOP {line++;
+		  fprintf(log_t_file, "Op Syscall: 0 0 12\n");
+	  	  node n = malloc(sizeof(node_t));
+	  	  n->tipo = 3;
+	  	  n->op = 0;
+	      n->aux = 0;
+	  	  n->func = 12;
+	  	  insereLista(n); }
+
 | R {line++;
 	fprintf(log_t_file,"Op tipo R: %d %d %d %d %d %d\n",
  						  		$<op.code>1, $<op.rs>1, $<op.rt>1,
@@ -210,8 +219,8 @@ R: opcoder reg virg reg virg reg {
 ;
 
 I: opcodei reg virg reg virg imm{
-	$<op.rs>$  = $<val>2;
-	$<op.rt>$  = $<val>4;
+	$<op.rs>$  = $<val>4;
+	$<op.rt>$  = $<val>2;
 	$<op.aux>$ = $<val>6;} //imm
 
 |  opcodelui reg virg imm{
@@ -301,42 +310,45 @@ labelid: id colon { checkSizes();
 			 }
 ;
 
-var: id colon t_int val var {
-							checkSizes();
-							var_names[var_count] = $<text>1;
-							var_adress[var_count] = val_count * INST_SIZE;
-							var_values[var_count] = valores;
-							valores = malloc(sizeof(list_t));
-							val_count += local_var_count;
-							aux_val_count[var_count] = local_var_count;
-							local_var_count = 0;
-				    		var_count++;}
+var: id colon val var {
+				checkSizes();
+				var_names[var_name_count] = $<text>1;
+				var_adress[var_name_count] = val_count * INST_SIZE;
+				val_count += variaveis[var_name_count].tam;
+				var_name_count++;}
 
-| id colon t_int val {
-						checkSizes();
-						var_names[var_count] = $<text>1;
-						var_adress[var_count] = val_count * INST_SIZE;
-						var_values[var_count] = valores;
-						valores = malloc(sizeof(list_t));
-						val_count += local_var_count;
-						aux_val_count[var_count] = local_var_count;
-						local_var_count = 0;
-						var_count++;}
+| id colon val {
+				checkSizes();
+				var_names[var_name_count] = $<text>1;
+				var_adress[var_name_count] = val_count * INST_SIZE;
+				val_count += variaveis[var_name_count].tam;
+				var_name_count++;}
 ;
 
 val: number EOL {
-		list val = malloc(sizeof(list_t));
-		val->valor = $<val>1;
-		val->prox = NULL;
-		insereListaValores(val);
-		local_var_count++;}
+		checkSizesLocal(&variaveis[var_count]);
+		variaveis[var_count].valores[variaveis[var_count].tam] = $<val>1;
+		variaveis[var_count].tam++;
+		}
 
 | number virg val{
-		list val = malloc(sizeof(list_t));
-		val->valor = $<val>1;
-		val->prox = NULL;
-		insereListaValores(val);
-		local_var_count++;}
+	checkSizesLocal(&variaveis[var_count]);
+	variaveis[var_count].valores[variaveis[var_count].tam] = $<val>1;
+	variaveis[var_count].tam++;
+	}
+
+| t_int number virg val{
+	checkSizesLocal(&variaveis[var_count]);
+	variaveis[var_count].valores[variaveis[var_count].tam] = $<val>2;
+	variaveis[var_count].tam++;
+	var_count++;}
+
+| t_int number EOL{
+	checkSizesLocal(&variaveis[var_count]);
+	variaveis[var_count].valores[variaveis[var_count].tam] = $<val>2;
+	variaveis[var_count].tam++;
+	var_count++;
+}
 ;
 
 address: number;

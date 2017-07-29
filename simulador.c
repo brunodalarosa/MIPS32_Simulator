@@ -89,23 +89,23 @@ void parseargs(int argc, char **argv){
 /* Inicializa o simulador */
 void init(){
 	if ((input_file = fopen(nome_input,"r")) == NULL){
-		launchError(1); //Sem arquivo de entrada
+		launchError(1);
 	}
 
 	if ((output_file = fopen(saida,"w+")) == NULL) {
-		launchError(0); //Muito improvável, especificar erro?
+		launchError(0);
 	}
 
 	if ((bin_file = fopen(t_saida,"w+")) == NULL) {
-		launchError(0); //Muito improvável, especificar erro?
+		launchError(0);
 	}
 
 	if ((log_file = fopen(log_nome,"w+")) == NULL) {
-		launchError(0); //Muito improvável, especificar erro?
+		launchError(0);
 	}
 
 	if ((log_t_file = fopen(t_log_nome,"w+")) == NULL) {
-		launchError(0); //Muito improvável, especificar erro?
+		launchError(0);
 	}
 
 	/* Inicializa os registradores */
@@ -141,7 +141,7 @@ int main(int argc, char **argv){
 
 	init();
 
-	printBanner();
+	if(get_flag(FLAG_VERBOSE)) printBanner();
 
 	tradutor();
 
@@ -155,15 +155,17 @@ int main(int argc, char **argv){
 		getchar();
 	}
 
-	if(get_flag(FLAG_VERBOSE)) printf("\nIniciando a simulação do programa\n");
+	if(get_flag(FLAG_STEP_BY_STEP)){
+		printf("\nPressione ENTER para inicar a simulação do programa\n");
+		getchar();
+	}
 
-	pause();
-	system("clear"); //Deixar? Colocar como parte de pause?
+	if(get_flag(FLAG_VERBOSE)) system("clear");
 
 	while(run());
 
 	fclose(log_file);
 
-	printf("\nFim da execução do simulador\n");
+	printf("\nExecução concluída com sucesso\n");
 	return 0;
 }

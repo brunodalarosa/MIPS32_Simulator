@@ -22,22 +22,16 @@
 #define DATA_OFFSET 400
 #define INST_SIZE 4
 
+#define INITIAL_SIZE 10
+
 int lbl_count;
 char** lbl_names;
 unsigned int* lbl_values;
 int lbl_tam;
 
-int var_count;
-int val_count;
-int local_var_count;
-char** var_names;
-int *aux_val_count;
-unsigned int* var_adress;
-int var_tam; //var_tamanho inicial do vetor de variaveis
 
 int line;
 typedef struct node_t* node;
-typedef struct list_t* list;
 
 struct node_t{
     unsigned int tipo;
@@ -53,17 +47,23 @@ struct node_t{
 
 node lista;
 
-struct list_t{
-    int valor;
-    list prox;
-} list_t;
+typedef struct{
+    int* valores;
+    int tam;
+} var_t;
 
-list valores;
-list* var_values;
+int var_tam; //var_tamanho inicial do vetor de variaveis
+int values_tam;
+char** var_names;
+int var_count;
+int var_name_count;
+unsigned int* var_adress;
+int val_count;
+var_t* variaveis;
 
+void checkSizesLocal(var_t* variaveis);
 void checkSizes(void);
 void insereLista(node n);
-void insereListaValores(list t);
 int labelMatch(char* label);
 void tradutor();
 void tradutorInit();

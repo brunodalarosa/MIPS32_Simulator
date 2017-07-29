@@ -22,8 +22,13 @@
 #define LOAD_3 8
 #define LOAD_4 9
 #define LOAD_5 10
+#define STORE_1 11
+#define STORE_2 12
+#define STORE_3 13
+#define STORE_4 14
+#define STORE_5 15
 
-#define NUM_ER 10
+#define NUM_ER 15
 
 #define FLAG_BUFFER_VAZIO -1
 
@@ -94,11 +99,20 @@ extern estacao_reserva* er_load2;
 extern estacao_reserva* er_load3;
 extern estacao_reserva* er_load4;
 extern estacao_reserva* er_load5;
-
+extern estacao_reserva* er_store1;
+extern estacao_reserva* er_store2;
+extern estacao_reserva* er_store3;
+extern estacao_reserva* er_store4;
+extern estacao_reserva* er_store5;
 
 unsigned int* Qi;
-int* buffer_resultados;
 
+typedef struct{
+    int dado;
+    char validade;
+} ula_output;
+
+ula_output* buffer_resultados;
 
 typedef struct {
     int dado;

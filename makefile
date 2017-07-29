@@ -8,7 +8,7 @@ CFLAGS = -I. -Wall -c
 
 LFLAGS = -I. -Wall -lfl
 
-DEPS = utils.h parser.h
+DEPS = utils.h
 
 OBJ = simulador.o tradutor.o memoria.o utils.o processador.o cdb.o clock.o ula.o cache.o parser.tab.o lex.yy.o
 

@@ -23,11 +23,21 @@ estacao_reserva* er_load2 = NULL;
 estacao_reserva* er_load3 = NULL;
 estacao_reserva* er_load4 = NULL;
 estacao_reserva* er_load5 = NULL;
+estacao_reserva* er_store1 = NULL;
+estacao_reserva* er_store2 = NULL;
+estacao_reserva* er_store3 = NULL;
+estacao_reserva* er_store4 = NULL;
+estacao_reserva* er_store5 = NULL;
 
 
 /* Simula função de controle: Salto inconcidional */
 void inconditionalJump(){
     inst* ptr_instruction = pegaDaFila(1);
+    if(ptr_instruction->J.op == 3){
+        regs[REG_RA] = pc; //(JAL) link
+        if(get_flag(FLAG_VERBOSE)) printf("JAL -> RA = pc\t");
+    }
+
     pc = ptr_instruction->J.target; //TODO função PC_recebe(unsigned int target)
     if(get_flag(FLAG_VERBOSE)) printf("Salto inconcidional para %d\n", pc);
     jump = 0; //Reseta o controle de salto
@@ -168,6 +178,9 @@ void decodifica(){
             break;
 
         default:
+            printf("\n DEBUG \n");
+            printaBinario(&IR, 0 , NULL);
+            return; //Fix
             break;
     }
 
@@ -196,13 +209,19 @@ estacao_reserva* checa_er(int er_type){
             break;
 
         case LOAD:
-        case STORE:
             if (er_load1->busy == 0) return er_load1;
             if (er_load2->busy == 0) return er_load2;
             if (er_load3->busy == 0) return er_load3;
             if (er_load4->busy == 0) return er_load4;
             if (er_load5->busy == 0) return er_load5;
+            break;
 
+        case STORE:
+            if (er_store1->busy == 0) return er_store1;
+            if (er_store2->busy == 0) return er_store2;
+            if (er_store3->busy == 0) return er_store3;
+            if (er_store4->busy == 0) return er_store4;
+            if (er_store5->busy == 0) return er_store5;
             break;
 
         default:
@@ -243,7 +262,6 @@ int emissao(inst instruction){
     switch(op.er_type){
         case ADD_T:
         case MUL_T:
-
             if(Qi[instruction.R.rs] != 0){
                 er->qj = Qi[instruction.R.rs];
             } else{
@@ -266,7 +284,6 @@ int emissao(inst instruction){
             }
 
             casosEspeciais(op.op, er);
-
             break;
 
         case BRANCH:
@@ -327,13 +344,22 @@ int emissao(inst instruction){
     return 1;
 }
 
-/* Ativa uma estação de reserva para processar sua operação        */
-/* Params = estacao_reserva* er : Estação de reserva a ser ativada */
-int ativaER_add(estacao_reserva* er){
+/* Ativa uma estação de reserva Add / Mul para processar sua operação */
+/* Params = estacao_reserva* er : Estação de reserva a ser ativada    */
+int run_add_mul(estacao_reserva* er){
     unsigned int identificador = identificaER(er) - 1;
 
     /* Checa se a operação deve ser realizada */
     if(er->busy == 1){
+
+        /* Checagem de syscall */
+        if(er->op == SYSCALL){
+            if(checaSyscall()){
+                printf("Operação de syscall na %s não pode ser executada:\n  algum registrador ($v0 ou $a0) esta aguardando um resultado.\n", ER_nomes[identificador]);
+                return 1;
+            }
+        }
+
         if(er->qj == 0 && er->qk == 0){
             /* A ULA executára a operação */
             if(get_flag(FLAG_DEBUG)) printf("\n| ER %s executando > ", ER_nomes[identificador]);
@@ -344,7 +370,8 @@ int ativaER_add(estacao_reserva* er){
 
              switch (retorno.flag) {
                  case FLAG_SUCCESS:
-                    buffer_resultados[identificador] = retorno.resultado;
+                    buffer_resultados[identificador].dado = retorno.resultado;
+                    buffer_resultados[identificador].validade = 1;
                     break;
 
                 case FLAG_FAIL:
@@ -353,11 +380,13 @@ int ativaER_add(estacao_reserva* er){
                     break;
 
                 case FLAG_MTHI:
-                    buffer_resultados[identificador] = retorno.resultado;
+                    buffer_resultados[identificador].dado = retorno.resultado;
+                    buffer_resultados[identificador].validade = 1;
                     break;
 
                 case FLAG_MTLO:
-                    buffer_resultados[identificador] = retorno.resultado;
+                    buffer_resultados[identificador].dado = retorno.resultado;
+                    buffer_resultados[identificador].validade = 1;
                     break;
 
                 case FLAG_MUL_OP:
@@ -370,13 +399,12 @@ int ativaER_add(estacao_reserva* er){
                     break;
              }
 
-            er->busy = 0;
+            flushEr(er);
 
         } else {
             /* Operando não estão prontos */
             if(get_flag(FLAG_DEBUG)) printf("Operação na ER %s não pode ser executada: Operandos não estão prontos.\n", ER_nomes[identificador]);
         }
-
 
     } else{
         if(er->busy > 1){
@@ -391,9 +419,9 @@ int ativaER_add(estacao_reserva* er){
     return 1;
 }
 
-/* Ativa uma estação de reserva LS para processar sua operação     */
-/* Params = estacao_reserva* er : Estação de reserva a ser ativada */
-int ativaER_load(estacao_reserva* er){
+/* Ativa uma estação de reserva Load/Store0 para processar sua operação */
+/* Params = estacao_reserva* er : Estação de reserva a ser ativada      */
+int run_load_store(estacao_reserva* er){
     unsigned int identificador = identificaER(er) - 1;
 
     /* Checa se a operação deve ser realizada */
@@ -406,11 +434,13 @@ int ativaER_load(estacao_reserva* er){
 
         ulaRet retorno;
 
-        retorno = (*p[er->op]) (2, er->A);
+        retorno = (*p[er->op]) (2, er->A, er->vk);
 
         switch (retorno.flag) {
             case FLAG_SUCCESS:
-               buffer_resultados[identificador] = retorno.resultado;
+               //if(get_flag(FLAG_DEBUG)) printf("\n\tSUCESS: buffer_resultados[%d] = %d\n", identificador, retorno.resultado);
+               buffer_resultados[identificador].dado = retorno.resultado;
+               buffer_resultados[identificador].validade = 1;
                break;
 
            case FLAG_FAIL:
@@ -422,7 +452,7 @@ int ativaER_load(estacao_reserva* er){
                break;
         }
 
-        er->busy = 0;
+        flushEr(er);
 
     } else{
         if(er->busy > 1){
@@ -442,16 +472,24 @@ int execucao(){
     /* Chamar a execução de cada estacao de reserva */
     int process = 0;
 
-    process += ativaER_add(er_add1);
-    process += ativaER_add(er_add2);
-    process += ativaER_add(er_add3);
-    process += ativaER_add(er_mult1);
-    process += ativaER_add(er_mult2);
-    process += ativaER_load(er_load1);
-    process += ativaER_load(er_load2);
-    process += ativaER_load(er_load3);
-    process += ativaER_load(er_load4);
-    process += ativaER_load(er_load5);
+    process += run_add_mul(er_add1);
+    process += run_add_mul(er_add2);
+    process += run_add_mul(er_add3);
+
+    process += run_add_mul(er_mult1);
+    process += run_add_mul(er_mult2);
+
+    process += run_load_store(er_load1);
+    process += run_load_store(er_load2);
+    process += run_load_store(er_load3);
+    process += run_load_store(er_load4);
+    process += run_load_store(er_load5);
+
+    process += run_load_store(er_store1);
+    process += run_load_store(er_store2);
+    process += run_load_store(er_store3);
+    process += run_load_store(er_store4);
+    process += run_load_store(er_store5);
 
 
     if(get_flag(FLAG_DEBUG)){
@@ -474,29 +512,36 @@ void escrita(){
 
     /* Tratamento para as operações de divisão e multiplicação */
     if(barr_Hi->er_id != -1){
-        if(get_flag(FLAG_VERBOSE)) printf("Stremando o dado %d vindo de %s\n",barr_Hi->dado, ER_nomes[barr_Hi->er_id - 1]);
+        if(get_flag(FLAG_VERBOSE)) printf("Stremando o dado %d vindo de %s (%s)\n",
+                                        barr_Hi->dado, ER_nomes[barr_Hi->er_id - 1],
+                                         OP_nomes[getER(barr_Hi->er_id)->op]);
+
         stream(barr_Hi->dado, barr_Hi->er_id+1);
         barr_Hi->er_id = -1;
         process++;
     }
 
     if(barr_Lo->er_id != -1){
-        if(get_flag(FLAG_VERBOSE)) printf("Stremando o dado %d vindo de %s\n",barr_Lo->dado, ER_nomes[barr_Lo->er_id - 1]);
+        if(get_flag(FLAG_VERBOSE)) printf("Stremando o dado %d vindo de %s (%s)\n",
+                                        barr_Lo->dado, ER_nomes[barr_Lo->er_id - 1],
+                                         OP_nomes[getER(barr_Lo->er_id)->op]);
+
         stream(barr_Lo->dado, barr_Lo->er_id+1);
         barr_Lo->er_id = -1;
         process++;
     }
 
     for(i = 0; i < NUM_ER; i++){
-        if (buffer_resultados[i] != FLAG_BUFFER_VAZIO){
-            dado = buffer_resultados[i];
-            if(get_flag(FLAG_VERBOSE)) printf("Stremando o dado %d vindo da %s...\n", dado, ER_nomes[i]);
+        if (buffer_resultados[i].validade == 1){
+            dado = buffer_resultados[i].dado;
+            if(get_flag(FLAG_VERBOSE)) printf("Stremando o dado %d vindo de %s (%s) :\n",
+                                              dado, ER_nomes[i], OP_nomes[getER(i+1)->op -2]);
             stream(dado, i+1);
             process++;
-        }
 
-    /* No fim do processo limpar o buffer_resultados */
-        buffer_resultados[i] = FLAG_BUFFER_VAZIO;
+            /* No fim do processo limpar o buffer_resultados */
+            buffer_resultados[i].validade = 0;
+        }
     }
 
     /* Caso uma escrita ocorreu printa o banco de registradores se a flag estiver ativa */
@@ -588,6 +633,11 @@ void processadorInit(){
     er_load3 = malloc(sizeof(estacao_reserva));
     er_load4 = malloc(sizeof(estacao_reserva));
     er_load5 = malloc(sizeof(estacao_reserva));
+    er_store1 = malloc(sizeof(estacao_reserva));
+    er_store2 = malloc(sizeof(estacao_reserva));
+    er_store3 = malloc(sizeof(estacao_reserva));
+    er_store4 = malloc(sizeof(estacao_reserva));
+    er_store5 = malloc(sizeof(estacao_reserva));
     er_add1  = malloc(sizeof(estacao_reserva));
     er_add2  = malloc(sizeof(estacao_reserva));
     er_add3  = malloc(sizeof(estacao_reserva));
@@ -599,6 +649,11 @@ void processadorInit(){
     er_load3->busy = 0;
     er_load4->busy = 0;
     er_load5->busy = 0;
+    er_store1->busy = 0;
+    er_store2->busy = 0;
+    er_store3->busy = 0;
+    er_store4->busy = 0;
+    er_store5->busy = 0;
     er_add1->busy  = 0;
     er_add2->busy  = 0;
     er_add3->busy  = 0;
@@ -616,9 +671,10 @@ void processadorInit(){
     barr_Hi->er_id = FLAG_BUFFER_VAZIO;
     barr_Lo->er_id = FLAG_BUFFER_VAZIO;
 
-    buffer_resultados = malloc(sizeof(unsigned int) * NUM_ER);
+    buffer_resultados = malloc(sizeof(ula_output) * NUM_ER);
+
     for(i = 0; i < NUM_ER; i++){
-        buffer_resultados[i] = FLAG_BUFFER_VAZIO;
+        buffer_resultados[i].validade = 0;
     }
 
     jump = 0;
