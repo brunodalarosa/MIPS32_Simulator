@@ -44,8 +44,8 @@ typedef struct er_t estacao_reserva;
 #include "registradores.h"
 #include "ula.h"
 #include "cache.h"
+#include "pcComponent.h"
 
-extern unsigned int pc; // Program counter Criar PC.c e PC.h
 extern int jump;
 
 /* Tipo de instruções Declaradas com bit-fields */
@@ -113,6 +113,7 @@ typedef struct{
 } ula_output;
 
 ula_output* buffer_resultados;
+int* last_op;
 
 typedef struct {
     int dado;

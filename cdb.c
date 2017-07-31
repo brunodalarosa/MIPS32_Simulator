@@ -43,6 +43,6 @@ void stream(unsigned int dado, unsigned int source_id){
     if(reg > NUM_REGS) launchError(8);
     if(reg != -1){
         if(get_flag(FLAG_DEBUG)) printf("> Destino final registrador %s = %d\n\n", REG_nomes[reg], dado);
-        regs[reg] = dado;
+        setReg(dado, reg);
     }
 }

@@ -1,0 +1,4 @@
+
+Numero de linhas computadas = 0
+
+FIM

@@ -10,14 +10,15 @@ char* REG_nomes[NUM_REGS] = {"$zero", "$at", "$v0", "$v1", "$a0", "$a1", "$a2", 
 						     "$t4", "$t5", "$t6", "$t7", "$s0", "$s1", "$s2", "$s3", "$s4", "$s5", "$s6", "$s7",
 						     "$t8", "$t9", "$k0", "$k1", "$gp", "$sp", "$fp", "$ra", "Lo", "Hi"};
 
-char* OP_nomes[NUM_OPS] = {"SLL","SLL","SRL","SRA","SLLV","SRLV","SRAV","MOVZ","MOVN","TNEI","MFHI","MFLO","MULT","MULTU",
-                      "DIV","DIVU","ADD","ADDU","SUB","SUBU","AND","OR","XOR","NOR","SLT","SLTU","JR","JALR",
-					  "BLTZ","BGEZ","BLTZAL","BGEZAL","BEQ","BNE","BLEZ","BGTZ","ADDI","ADDIU","SLTI","SLTIU",
-					  "ANDI","ORI","XORI","LUI","MADD","MADDU","MUL","MSUB","MSUBU","CLO","CLZ","LB","LH","LWL",
-				      "LW","LBU","LHU","LWR","SB","SH","SWL","SWR","SYSCALL"};
+char* OP_nomes[NUM_OPS] = {"SLL","SRL","SRA","SLLV","SRLV","SRAV","MOVZ","MOVN","MFHI","MTHI","MFLO","MTLO","MULT","MULTU",
+                      "DIV","DIVU","ADD","ADDU","SUB","SUBU","AND","OR","XOR","NOR","SLT","SLTU","JR","JALR","BLTZ","BGEZ",
+                      "BLTZAL","BGEZAL","BEQ","BNE","BLEZ","BGTZ","ADDI","ADDIU","SLTI","SLTIU","ANDI","ORI","XORI","LUI",
+                      "MADD","MADDU","MUL","MSUB","MSUBU","CLO","CLZ","LB","LH", "LW","LBU","LHU","SB","SH","SYSCALL","NOP"};
 
 /* Printa a seção de ajuda */
 void ajuda(){
+        printf("\n|            ===== Simulador MIPS-32 ====              |\n");
+        printf("|   Versao 1.0 / Desenvolvido por bcesar.g6@gmail.com  |\n");
 		printf("\nUso: ./simulador [opções] <arquivo de entrada>\n\n");
 		printf("Opções:\n");
 
@@ -67,6 +68,16 @@ void printaRegs(char isFile, FILE* dest){
 	}
 }
 
+/* Função auxiliar printa Qi na tela */
+void printaQi(unsigned int* Qi){
+    int i;
+    printf("Qi=[");
+    for(i = 1; i < NUM_REGS; i++){
+        printf("%u ", Qi[i]);
+    }
+    printf("]\n");
+}
+
 /* Identifica o registrador de destino através de sua posição em Qi. */
 /* Atualiza Qi. Retorna -1 caso não exista 						  	 */
 int identificaREG(unsigned int er_id){
@@ -96,13 +107,13 @@ void printaER(estacao_reserva* er, char isFile, FILE* dest){
 			fprintf(dest, "|       --- Livre ---        |\n");
 		}
 
-		fprintf(dest, "| Op : %d\n", er->op);
+		fprintf(dest, "| Op : %d (%s)\n", er->op, OP_nomes[er->op - 1]);
 		fprintf(dest, "| Vj : %d\n", er->vj);
 		fprintf(dest, "| Vk : %d\n", er->vk);
 		fprintf(dest, "| Qj : %d\n", er->qj);
 		fprintf(dest, "| Qk : %d\n", er->qk);
 		fprintf(dest, "| A  : %d\n", er->A);
-		fprintf(dest, "------------------------------\n\n");
+		fprintf(dest, "------------------------------\n");
 
 	} else{
 		printf("\n|  Estação de reserva %s |\n", ER_nomes[identificaER(er) - 1]);
@@ -114,13 +125,13 @@ void printaER(estacao_reserva* er, char isFile, FILE* dest){
 			printf("|       --- Livre ---        \n");
 		}
 
-		printf("| Op : %d\n", er->op);
+        printf("| Op : %d (%s)\n", er->op, OP_nomes[er->op - 1]);
 		printf("| Vj : %d\n", er->vj);
 		printf("| Vk : %d\n", er->vk);
 		printf("| Qj : %d\n", er->qj);
 		printf("| Qk : %d\n", er->qk);
 		printf("| A  : %d\n", er->A);
-		printf("----------------------------\n\n");
+		printf("----------------------------\n");
 	}
 }
 
@@ -174,11 +185,23 @@ estacao_reserva* getER(int er_id){
 	return NULL; //identificador inválido
 }
 
+
 /* Executa um flush na estação de reserva */
-void flushEr(estacao_reserva* er){
-	free(er);
-	er = malloc(sizeof(estacao_reserva));
-	er->busy = 0;
+void flushEr(estacao_reserva** er){
+	free(*er);
+	*er = malloc(sizeof(estacao_reserva));
+	(*er)->busy = 0;
+}
+
+/* Checa todas as estações de reserva para dar flush */
+void flushes(){
+    int i;
+    estacao_reserva* er = NULL;
+
+    for(i = 1; i <= NUM_ER; i++){
+        er = getER(i);
+        if(er->busy == -1) flushEr(&er);
+    }
 }
 
 operation getOp(inst instruction){
@@ -195,61 +218,61 @@ operation getOp(inst instruction){
 			switch (func){
 				case 0:
 					op.op = SLL;
-					op.cycles = 1;
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 2:
 					op.op = SRL;
-					op.cycles = 1;
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 3:
 					op.op = SRA;
-					op.cycles = 1;
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 4:
 					op.op = SLLV;
-					op.cycles = 1;
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 6:
 					op.op = SRLV;
-					op.cycles = 1;
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 7:
 					op.op = SRAV;
-					op.cycles = 1;
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 8:
 					op.op = JR;
-					op.cycles = 2;
+					op.cycles = 3;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 9:
 					op.op = JALR;
-					op.cycles = 2;
+					op.cycles = 3;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 10:
 					op.op = MOVZ;
-					op.cycles = 2;
+					op.cycles = 3;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 11:
 					op.op = MOVN;
-					op.cycles = 2;
+					op.cycles = 3;
 					op.er_type = ADD_T; //verificar
 					break;
 
@@ -259,117 +282,111 @@ operation getOp(inst instruction){
 					op.er_type = ADD_T;
 					break;
 
-				case 14:
-					op.op = TNEI;
-					op.cycles = 1; //todo
-					op.er_type = ADD_T; //verificar
-					break;
-
 				case 16:
 					op.op = MFHI;
-					op.cycles = 1;
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 17:
 					op.op = MTHI;
-					op.cycles = 1;
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 18:
 					op.op = MFLO;
-					op.cycles = 1;
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 19:
 					op.op = MTLO;
-					op.cycles = 1;
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 24:
 					op.op = MULT;
-					op.cycles = 5;
+					op.cycles = 6;
 					op.er_type = MUL_T; //verificar
 					break;
 
 				case 25:
 					op.op = MULTU;
-					op.cycles = 5;
+					op.cycles = 6;
 					op.er_type = MUL_T; //verificar
 					break;
 
 				case 26:
 					op.op = DIV;
-					op.cycles = 5;
+					op.cycles = 6;
 					op.er_type = MUL_T; //verificar
 					break;
 
 				case 27:
 					op.op = DIVU;
-					op.cycles = 5;
+					op.cycles = 6;
 					op.er_type = MUL_T; //verificar
 					break;
 
 				case 32:
 					op.op = ADD;
-					op.cycles = 2;
+					op.cycles = 3;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 33:
 					op.op = ADDU;
-					op.cycles = 2;
+					op.cycles = 3;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 34:
 					op.op = SUB;
-					op.cycles = 2;
+					op.cycles = 3;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 35:
 					op.op = SUBU;
-					op.cycles = 2;
+					op.cycles = 3;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 36:
 					op.op = AND;
-					op.cycles = 1;
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 37:
 					op.op = OR;
-					op.cycles = 1;
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 38:
 					op.op = XOR;
-					op.cycles = 1;
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 39:
 					op.op = NOR;
-					op.cycles = 1;
+					op.cycles = 2;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 42:
 					op.op = SLT;
-					op.cycles = 2;
+					op.cycles = 3;
 					op.er_type = ADD_T; //verificar
 					break;
 
 				case 43:
 					op.op = SLTU;
-					op.cycles = 2;
+					op.cycles = 3;
 					op.er_type = ADD_T; //verificar
 					break;
 
@@ -386,14 +403,14 @@ operation getOp(inst instruction){
 				case 0:
 					//bltz
 					op.op = BLTZ;
-					op.cycles = 2;
+					op.cycles = 3;
 					op.er_type = BRANCH; //verificar
 					break;
 
 				case 1:
 					//bgez
 					op.op = BGEZ;
-					op.cycles = 2;
+					op.cycles = 3;
 					op.er_type = BRANCH; //verificar
 					break;
 
@@ -401,13 +418,13 @@ operation getOp(inst instruction){
 					//blztal
 					op.op = BLTZAL;
 					break;
-					op.cycles = 2;
+					op.cycles = 3;
 					op.er_type = BRANCH; //verificar
 
 				case 17:
 					//bgezal
 					op.op = BGEZAL;
-					op.cycles = 2;
+					op.cycles = 3;
 					op.er_type = BRANCH; //verificar
 					break;
 
@@ -421,84 +438,84 @@ operation getOp(inst instruction){
 		case 4:
 			//beq
 			op.op = BEQ;
-			op.cycles = 2;
+			op.cycles = 3;
 			op.er_type = BRANCH; //verificar
 			break;
 
 		case 5:
 			//bne
 			op.op = BNE;
-			op.cycles = 2;
+			op.cycles = 3;
 			op.er_type = BRANCH; //verificar
 			break;
 
 		case 6:
 			//blez
 			op.op = BLEZ;
-			op.cycles = 2;
+			op.cycles = 3;
 			op.er_type = BRANCH; //verificar
 			break;
 
 		case 7:
 			//bgtz
 			op.op = BGTZ;
-			op.cycles = 2;
+			op.cycles = 3;
 			op.er_type = BRANCH; //verificar
 			break;
 
 		case 8:
 			//addi
 			op.op = ADDI;
-			op.cycles = 2;
+			op.cycles = 3;
 			op.er_type = ADDI_T;
 			break;
 
 		case 9:
 			//addiu
 			op.op = ADDIU;
-			op.cycles = 2;
+			op.cycles = 3;
 			op.er_type = ADDI_T;
 			break;
 
 		case 10:
 			//slti
 			op.op = SLTI;
-			op.cycles = 2;
+			op.cycles = 3;
 			op.er_type = ADDI_T;
 			break;
 
 		case 11:
 			//sltiu
 			op.op = SLTIU;
-			op.cycles = 2;
+			op.cycles = 3;
 			op.er_type = ADDI_T;
 			break;
 
 		case 12:
 			//andi
 			op.op = ANDI;
-			op.cycles = 1;
+			op.cycles = 3;
 			op.er_type = ADDI_T;
 			break;
 
 		case 13:
 			//ori
 			op.op = ORI;
-			op.cycles = 1;
+			op.cycles = 2;
 			op.er_type = ADDI_T;
 			break;
 
 		case 14:
 			//xori
 			op.op = XORI;
-			op.cycles = 1;
+			op.cycles = 2;
 			op.er_type = ADDI_T;
 			break;
 
 		case 15:
 			//lui
 			op.op = LUI;
-			op.cycles = 2;
+			op.cycles = 5;
 			op.er_type = ADD_T; //verificar
 			break;
 
@@ -508,35 +525,35 @@ operation getOp(inst instruction){
 				case 0:
 					//madd
 					op.op = MADD;
-					op.cycles = 5;
+					op.cycles = 6;
 					op.er_type = MUL_T;
 					break;
 
 				case 1:
 					//maddu
 					op.op = MADDU;
-					op.cycles = 5;
+					op.cycles = 6;
 					op.er_type = MUL_T;
 					break;
 
 				case 2:
 					//mul
 					op.op = MUL;
-					op.cycles = 5;
+					op.cycles = 6;
 					op.er_type = MUL_T;
 					break;
 
 				case 4:
 					//msub
 					op.op = MSUB;
-					op.cycles = 5;
+					op.cycles = 6;
 					op.er_type = MUL_T;
 					break;
 
 				case 5:
 					//msubu
 					op.op = MSUBU;
-					op.cycles = 5;
+					op.cycles = 6;
 					op.er_type = MUL_T;
 					break;
 
@@ -564,86 +581,65 @@ operation getOp(inst instruction){
 		case 32:
 			//lb
 			op.op = LB;
-			op.cycles = 4;
+			op.cycles = 5;
 			op.er_type = LOAD;
 			break;
 
 		case 33:
 			//lh
 			op.op = LH;
-			op.cycles = 4;
-			op.er_type = LOAD;
-			break;
-
-		case 34:
-			//lwl
-			op.op = LWL;
-			op.cycles = 4;
+			op.cycles = 5;
 			op.er_type = LOAD;
 			break;
 
 		case 35:
 			//lw
 			op.op = LW;
-			op.cycles = 4;
+			op.cycles = 5;
 			op.er_type = LOAD;
 			break;
 
 		case 36:
 			//lbu
 			op.op = LBU;
-			op.cycles = 4;
+			op.cycles = 5;
 			op.er_type = LOAD;
 			break;
 
 		case 37:
 			//lhu
 			op.op = LHU;
-			op.cycles = 4;
-			op.er_type = LOAD;
-			break;
-
-		case 38:
-			//lwr
-			op.op = LWR;
-			op.cycles = 4;
+			op.cycles = 5;
 			op.er_type = LOAD;
 			break;
 
 		case 40:
 			//sb
 			op.op = SB;
-			op.cycles = 4;
+			op.cycles = 5;
 			op.er_type = STORE;
 			break;
 
 		case 41:
 			//sh
 			op.op = SH;
-			op.cycles = 4;
-			op.er_type = STORE;
-			break;
-
-		case 42:
-			//swl
-			op.op = SWL;
-			op.cycles = 4;
+			op.cycles = 5;
 			op.er_type = STORE;
 			break;
 
 		case 43:
 			//sw
 			op.op = SW;
-			op.cycles = 4;
+			op.cycles = 5;
 			op.er_type = STORE;
 			break;
 
-		case 46:
-			//swr
-			op.op = SWR;
-			op.cycles = 4;
-			op.er_type = STORE;
-			break;
+        case 60:
+            //NOP
+            op.op = NOPE;
+            op.cycles = 1;
+            op.er_type = ADD_T;
+            break;
 
 		default:
 			//erro
@@ -662,7 +658,7 @@ void casosEspeciais(int op, estacao_reserva* er){
 			if(Qi[REG_LO] != 0){
 				er->qj = Qi[REG_LO];
 			} else{
-				er->vj = regs[REG_LO];
+				er->vj = getReg(REG_LO);
 				er->qj = 0;
 			}
 			break;
@@ -671,7 +667,7 @@ void casosEspeciais(int op, estacao_reserva* er){
 			if(Qi[REG_HI] != 0){
 				er->qj = Qi[REG_HI];
 			} else{
-				er->vj = regs[REG_HI];
+				er->vj = getReg(REG_HI);
 				er->qj = 0;
 			}
 			break;
@@ -902,7 +898,7 @@ int prompt(){
 void launchError(int e){
 	switch (e){
         case 1:
-            printf("ERRO ao abrir o arquivo de entrada!\n O arquivo existe? Abortando...");
+            printf("ERRO ao abrir o arquivo de entrada!\n O arquivo existe?\nUtilize o argumento -h para consultar as instruções de uso.\n");
             exit(0);
 
         case 2:
@@ -931,19 +927,26 @@ void launchError(int e){
 
 		case 7:
 			printf("ERRO na execução: Impossível escrever na area de texto! Abortando...\n");
-			fprintf(log_t_file, "ERRO na execução: Impossível escrever na area de texto! Abortando...\n");
+			fprintf(log_file, "ERRO na execução: Impossível escrever na area de texto! Abortando...\n");
 			break;
 
 		case 8:
 			printf("ERRO na execução: Escrita inválida em registrador! Abortando...\n");
-			fprintf(log_t_file, "ERRO na execução: Escrita inválida em registrador! Abortando...\n");
+			fprintf(log_file, "ERRO na execução: Escrita inválida em registrador! Abortando...\n");
 			break;
+
+        case 9:
+            printf("ERRO na execução: É proibido criar buracos negros!!! (Divisão por 0) Abortando...\n");
+            fprintf(log_file, "ERRO na execução: É proibido criar buracos negros!!! (Divisão por 0) Abortando...\n");
+            exit(0);
 
 		default:
 			printf("Abortando...\n");
 			exit(0);
+            break;
 	}
 
+    fclose(output_file);
 	fclose(log_t_file);
 	exit(0);
 }

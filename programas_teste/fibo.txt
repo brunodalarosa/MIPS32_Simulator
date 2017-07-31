@@ -1,0 +1,37 @@
+.data
+zero : .int 0
+um : .int 1
+
+.text
+# Fibonacci
+# Modo de uso: Insira N, o programa imprime N números da sequencia Fibonacci
+# N <= 47 Para não estourar int.
+main:
+    lw $t0, zero
+    lw $t1, um
+    addi $t7, $0, 0 # T7 é contador = 0
+
+    addi $v0, $0, 5
+    syscall
+    nop
+
+    movz $s0, $v0, $t0 # S0 = Input
+    blez $s0, fim # Se input <= 0 acaba
+
+loop:
+    movz $a0, $t0, $0
+    addi $v0, $0, 1
+    syscall # Printa T0
+    nop
+
+    movz $s1, $t1, $0 # S1 = T1
+    add $t1, $t0, $t1 # T1 = T0 + T1
+    movz $t0, $s1, $0 # T0 = S1
+
+    addi $t7, $t7, 1 # T7++
+    beq $t7, $s0, fim # Se T7 == S0 -> fim
+    j loop
+
+fim:
+    addi $v0, $0, 10
+    syscall # exit

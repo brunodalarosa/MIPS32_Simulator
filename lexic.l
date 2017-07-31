@@ -57,8 +57,8 @@ letter	[a-zA-Z]
 "mthi"  {yylval.op.code = 0;  yylval.op.func = 17;  return opcodemt;}
 "mflo"  {yylval.op.code = 0;  yylval.op.func = 18;  return opcodemf;}
 "mtlo"  {yylval.op.code = 0;  yylval.op.func = 19;  return opcodemt;}
-"mult"  {yylval.op.code = 0;  yylval.op.func = 24;  return opcoder;}
-"multu" {yylval.op.code = 0;  yylval.op.func = 25;  return opcoder;}
+"mult"  {yylval.op.code = 0;  yylval.op.func = 24;  return opcoderd;}
+"multu" {yylval.op.code = 0;  yylval.op.func = 25;  return opcoderd;}
 "div"   {yylval.op.code = 0;  yylval.op.func = 26;  return opcoderd;}/*rs-rt*/
 "divu"  {yylval.op.code = 0;  yylval.op.func = 27;  return opcoderd;}/*rs-rt*/
 "add"   {yylval.op.code = 0;  yylval.op.func = 32;  return opcoder;}
@@ -122,10 +122,11 @@ letter	[a-zA-Z]
 "ll"   {yylval.op.code = 48; return opcodel;}
 "sc"   {yylval.op.code = 56; return opcodel;}
 "syscall" {return syscallOP;}
+"nop"     {return NOP;}
 
 {letter}("_"|{letter}|{digit})* { yylval.text = strdup(yytext); return id;}
 
-".int" {return t_int;}
+".int"|".byte" {return t_int;}
 ":" {return colon;}
 "," {return virg;}
 "(" {return abreparents;}

@@ -3,6 +3,10 @@
 
 #include "tradutor.h"
 
+node lista = NULL;
+label_node labels = NULL;
+int lbl_count = 0;
+
 void checkSizesLocal(var_t* variaveis){
 	if(variaveis->tam > values_tam){
 		variaveis->valores = realloc(variaveis->valores, sizeof(int) * variaveis->tam + 1); //Aumenta em 1 o espaço
@@ -12,7 +16,6 @@ void checkSizesLocal(var_t* variaveis){
 void checkSizes(){
 	if (lbl_count == lbl_tam){
 		lbl_tam = lbl_tam + 5;
-		lbl_names = realloc(lbl_names, sizeof(char*) * lbl_tam);
 		lbl_values = realloc(lbl_values, sizeof(int) * lbl_tam);
 	}
 
@@ -28,11 +31,19 @@ void checkSizes(){
 /* retorna -1 caso a label não esteja na lista				  */
 /* Args| char* label : Uma label a ser identificada 		  */
 int labelMatch(char* label){
-	int i;
-	for(i = 0; i < lbl_count; i++){
-		if(strcmp(label, lbl_names[i]) == 0){
+	int i = 0;
+	char* lbl_name;
+	label_node walker = labels;
+
+	while(walker->prox != NULL){
+		lbl_name = walker->prox->nome;
+		if(strcmp(label, lbl_name) == 0){
 			return i;
 		}
+
+		i++;
+
+		walker = walker->prox;
 	}
 	return -1;
 }
@@ -98,6 +109,10 @@ word traduz(node n){
 			}
 			break;
 
+		case 5: //NOP
+			*bi = n->op | n->func;
+			break;
+
 		case 7: //M
 			shift -= 5; //21
 			n->rs <<= shift;
@@ -148,15 +163,6 @@ word traduz(node n){
 	return bi;
 }
 
-/* Insere um nó na lista de nós */
-/* Arg| O nó a ser inserido     */
-void insereLista(node n){
-	node ultimo = lista;
-	while(ultimo->prox != NULL) ultimo = ultimo->prox;
-
-	ultimo->prox = n;
-}
-
 /* Caminha pela lista de instruções printando uma a uma */
 void printaNos(){
 	int i = 1;
@@ -177,19 +183,18 @@ void printaNos(){
 
 /* Finaliza, salva e fecha o arquivo de log */
 void fechaLog(){
-	int i;
+	int i = 0;
 	fprintf(log_t_file, "\nNumero de linhas computadas = %d\n",line);
 
 	if (lbl_count > 0) fprintf(log_t_file, "\nLabels:\n");
-	for(i = 0; i < lbl_count; i++){
-		fprintf(log_t_file, "%s = %d\n",lbl_names[i], lbl_values[i]);
+
+	label_node walker = labels->prox;
+	while(walker != NULL){
+		fprintf(log_t_file, "%s = %d\n",walker->nome, lbl_values[i]);
+		walker = walker->prox;
+		i++;
 	}
 
-	if (var_count > 0) fprintf(log_t_file, "\nVariaveis:\n");
-	/*for(i = 0; i < var_count; i++){
-		fprintf(log_t_file, "%s (%d) = %d\n",var_names[i],
-						var_adress[i], var_values[i]);
-	}*/
 
 	fprintf(log_t_file, "\nFim do log de tradução.");
 
@@ -202,11 +207,7 @@ void escreveDados(){
 	unsigned int* zeros;
 	int i, j, size = 100 - val_count;
 	int aux = 0;
-	char** str_aux;
-	int* address_aux;
 
-	str_aux = malloc(sizeof(char*) * var_count);
-	address_aux = malloc(sizeof(int) * var_count);
 
 	if(get_flag(FLAG_VERBOSE)) fprintf(log_t_file, "Numero de variaveis = %d\n Numero de valores totais = %d\n", var_count, val_count);
 
@@ -217,13 +218,19 @@ void escreveDados(){
 	}
 
 	/* Inverte o endereço das variaveis, necessário pois o parsing é na ordem inversa */
-	for(i = var_count -1; i >= 0; i--){
-		str_aux[aux] = var_names[i];
-		aux++;
-	}
+	if(var_count > 1){
+		char** str_aux;
+		str_aux = malloc(sizeof(char*) * var_count);
 
-	for(i = 0; i < var_count; i++){
-		var_names[i] = str_aux[i];
+		for(i = var_count -1; i >= 0; i--){
+			str_aux[aux] = var_names[i];
+			aux++;
+		}
+
+		for(i = 0; i < var_count; i++){
+			var_names[i] = str_aux[i];
+		}
+
 	}
 
 	/* Preenche com zero o espaço que sobrou */
@@ -249,17 +256,50 @@ void escreveTexto(){
 }
 
 
+/* Insere um nó na lista de nós */
+/* Arg| O nó a ser inserido     */
+void insereLista(node n){
+	node ultimo = lista;
+	while(ultimo->prox != NULL){
+		ultimo = ultimo->prox;
+	}
+
+	ultimo->prox = n;
+}
+
+
+void insereLabel(char* nome, int pos){
+	//printf("passou do labelMatch: POS = %d len = %d -> %s\n",pos, strlen(nome), nome);
+	label_node ultimo = labels;
+
+	while(ultimo->prox != NULL){
+		ultimo = ultimo->prox;
+	}
+
+	label_node label = malloc(sizeof(label_t));
+	label->nome = nome;
+	label->pos = pos;
+	label->prox = NULL;
+	lbl_values[pos] = line * INST_SIZE;
+
+	ultimo->prox = label;
+}
+
+
 /* Inicialização do tradutor */
 void tradutorInit(){
 	int i ;
 
-	/* Inicialização da lista de instruções */
+	/* Inicialização das listas */
 	lista = malloc(sizeof(node_t));
 	lista->prox = NULL;
 
+	labels = malloc(sizeof(label_t));
+	labels->prox = NULL;
+
 	/* Definição das declarações externas */
 	line = 0;
-	lbl_count = 0;
+	//lbl_count = 0;
 	var_count = 0;
 	var_name_count = 0;
 	val_count = 0;
@@ -267,10 +307,7 @@ void tradutorInit(){
 	var_tam = INITIAL_SIZE;
 	values_tam = INITIAL_SIZE;
 
-
 	/* Inicialização dos Vetores para controle de Labels e variaveis */
-
-	lbl_names  = malloc(sizeof(char*) * lbl_tam);
 	lbl_values = malloc(sizeof(unsigned int) * lbl_tam);
 
 	var_names = malloc(sizeof(char*) * var_tam);
@@ -284,15 +321,11 @@ void tradutorInit(){
 
 	set_input();
 
-	if (get_flag(FLAG_DEBUG)){
-		printf("\nDebugging : Etapa Tradução\n");
-		fprintf(log_t_file, "\t\tLog da tradução da entrada %s\n", nome_input);
-	}
+	if (get_flag(FLAG_DEBUG)) fprintf(log_t_file, "\t\tLog da tradução da entrada %s\n", nome_input);
+
 }
 
 void tradutor(){
-	int i;
-
 	yyparse();
 
 	/*Pós parsing*/

@@ -1,0 +1,82 @@
+.data
+x : .int 10, 20, 30, 40
+y : .int -2 , -4 , -6, -8
+z : .int 0, 2048, 8192
+
+.text
+# Teste de varias operações, loads seguidos e stores seguidos. OK
+main:
+    lw $t0, x
+    lw $t1, y
+    lw $t2, z
+
+    lh $t3, 4($t0)
+    lh $t4, 8($t0)
+    lh $t5, 4($t1)
+
+    lb $t6, 8($t1)
+    lb $t7, 4($t2)
+    lb $t8, 8($t2)
+
+    madd $t3, $t7
+    msub $t4, $t8
+
+    mflo $s1
+    mfhi $s2
+
+    sll $s3, $t0, 4
+    srl $s4, $t1, 4
+
+    srlv $s5, $t0, $t0
+
+    clo $s6, $t8
+    clz $s7, $t8
+
+    or $gp, $t6, $t7
+    and $a2, $t4, $t5
+    xor $a3, $s1, $s2
+
+    sw $s1, x
+    sw $s2, y
+    sw $s3, z
+
+    sh $s4, 4($t0)
+    sh $s5, 4($t1)
+    sh $s6, 4($t2)
+
+    sb $s7, 4($t3)
+    sb $gp, 4($t4)
+
+    addi $v0, $0, 1
+
+    movz $a0, $s1, $0
+    syscall
+    nop
+
+    movz $a0, $s2, $0
+    syscall
+    nop
+
+    movz $a0, $s3, $0
+    syscall
+    nop
+
+    movz $a0, $s4, $0
+    syscall
+    nop
+
+    movz $a0, $s5, $0
+    syscall
+    nop
+
+    movz $a0, $s6, $0
+    syscall
+    nop
+
+    movz $a0, $s7, $0
+    syscall
+    nop
+
+    addi $v0, $0, 10
+    syscall
+    nop

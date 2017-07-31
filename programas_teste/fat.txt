@@ -1,0 +1,27 @@
+.text
+# Fatorial
+# Modo de uso: Insira N, retorna N! (N <= 16)
+main:
+    addi $s0, $0, 1 # Mantem valor 1 para usos
+    addi $v0, $0, 5
+    syscall # input
+    nop
+    movz $t0, $v0, $0 # move input para T0
+    sub $t2, $t0, $s0 # T2 = T0 -1
+
+loop:
+    mult $t0, $t2
+    mflo $s1 # S1 recebe o resultado
+
+    movz $t0, $s1, $0 # T0 = S1
+    sub $t2, $t2, $s0 # T2 = T2 - 1
+
+    blez $t2, fim
+
+    j loop
+
+fim:
+    movz $a0, $s1, $0 # Move o resultado final para A0
+    addi $v0, $0, 1
+    syscall
+    nop

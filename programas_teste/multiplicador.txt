@@ -1,0 +1,37 @@
+.data
+ max : .int 11
+
+.text
+# Multiplicador
+# Modo de uso: Entre X e Y
+# Multiplica Y de 1 até X e printa na tela
+main:
+    addi $t1, $0, 1 # T1 guarda o valor para multiplicar
+
+    addi $v0, $s0, 5
+    syscall # Lê o input
+    nop
+
+    movz $t0, $v0, $0 # move o input para T0
+    addi $t0, $t0, 1 # Ajusta o valor
+
+    addi $v0, $s0, 5
+    syscall # Lê o input
+    nop
+
+    movz $s1, $v0, $0 # move o input para S1
+
+loop:
+    mul $t2, $s1, $t1
+
+    movz $a0, $t2, $0
+    addi $v0, $0, 1
+    syscall # Printa o resultado
+    nop
+
+    addi $t1, $t1, 1 # Aumenta em 1 o multiplicador
+    bne $t1, $t0, loop
+
+fim:
+    addi $v0, $0, 10
+    syscall # exit

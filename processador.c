@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-unsigned int pc = 0;
+
 static unsigned int IR; // instruction Register
 unsigned int process; //Variável de controle do processo
 int jump; // Variável de controle de saltos (Trava a busca e decodificação)
@@ -34,12 +34,13 @@ estacao_reserva* er_store5 = NULL;
 void inconditionalJump(){
     inst* ptr_instruction = pegaDaFila(1);
     if(ptr_instruction->J.op == 3){
-        regs[REG_RA] = pc; //(JAL) link
+        setReg(getPC(), REG_RA); //(JAL) link
         if(get_flag(FLAG_VERBOSE)) printf("JAL -> RA = pc\t");
     }
 
-    pc = ptr_instruction->J.target; //TODO função PC_recebe(unsigned int target)
-    if(get_flag(FLAG_VERBOSE)) printf("Salto inconcidional para %d\n", pc);
+    setPC(ptr_instruction->J.target);
+    if(get_flag(FLAG_VERBOSE)) printf("Salto inconcidional para %d\n", getPC());
+    flushCache(CACHE_TEXTO);
     jump = 0; //Reseta o controle de salto
 }
 
@@ -74,17 +75,16 @@ void checkConditionalJump(inst instruction){
 /* Ela é então copiada para o registrador de instrução IR      */
 void busca(){
     endereco addr;
-    addr.i = pc;
+    addr.i = getPC();
     IR = cRead(CACHE_TEXTO, addr);
 
     if (get_flag(FLAG_VERBOSE)){
-
-    printf("\nPalavra lida da cache: ");
-    printaBinario(&IR, 0, NULL);
-    printf("\n");
+        printf("\nPalavra lida da cache: ");
+        printaBinario(&IR, 0, NULL);
+        printf("\n");
     }
 
-    pc+=4; //Fazer componente PC+4 TODO
+    updatePC();
 }
 
 /* Etapa de decoficação                                       */
@@ -177,6 +177,16 @@ void decodifica(){
             checkConditionalJump(instruction);
             break;
 
+        case 60: //NOP;
+            instruction.R.op  = 60;
+            instruction.R.rs  = 0;
+            instruction.R.rt  = 0;
+            instruction.R.rd  = 0;
+            instruction.R.aux = 0;
+            if(get_flag(FLAG_VERBOSE)) printf("Instrução NOP adicionada a fila\n");
+            break;
+
+
         default:
             printf("\n DEBUG \n");
             printaBinario(&IR, 0 , NULL);
@@ -258,21 +268,20 @@ int emissao(inst instruction){
     er->op = op.op;
     er->busy = op.cycles;
 
-
     switch(op.er_type){
         case ADD_T:
         case MUL_T:
             if(Qi[instruction.R.rs] != 0){
                 er->qj = Qi[instruction.R.rs];
             } else{
-                er->vj = regs[instruction.R.rs];
+                er->vj = getReg(instruction.R.rs);
                 er->qj = 0;
             }
 
             if(Qi[instruction.R.rt] != 0){
                 er->qk = Qi[instruction.R.rt];
             } else{
-                er->vk = regs[instruction.R.rt];
+                er->vk = getReg(instruction.R.rt);
                 er->qk = 0;
             }
 
@@ -291,14 +300,14 @@ int emissao(inst instruction){
             if(Qi[instruction.I.rs] != 0){
                 er->qj = Qi[instruction.I.rs];
             } else{
-                er->vj = regs[instruction.I.rs];
+                er->vj = getReg(instruction.I.rs);
                 er->qj = 0;
             }
 
             if(Qi[instruction.I.rt] != 0){
                 er->qk = Qi[instruction.I.rt];
             } else{
-                er->vk = regs[instruction.I.rt];
+                er->vk = getReg(instruction.I.rt);
                 er->qk = 0;
             }
 
@@ -310,7 +319,7 @@ int emissao(inst instruction){
             if(Qi[instruction.I.rs] != 0){
                 er->qj = Qi[instruction.I.rs];
             } else{
-                er->vj = regs[instruction.I.rs];
+                er->vj = getReg(instruction.I.rs);
                 er->qj = 0;
             }
 
@@ -324,7 +333,7 @@ int emissao(inst instruction){
             if(Qi[instruction.I.rs] != 0){
                 er->qj = Qi[instruction.I.rs];
             } else{
-                er->vj = regs[instruction.I.rs];
+                er->vj = getReg(instruction.I.rs);
                 er->qj = 0;
             }
 
@@ -333,7 +342,7 @@ int emissao(inst instruction){
             if(Qi[instruction.R.rt] != 0){
                 er->qk = Qi[instruction.R.rt];
             } else{
-                er->vk = regs[instruction.R.rt];
+                er->vk = getReg(instruction.R.rt);
                 er->qk = 0;
             }
             break;
@@ -355,7 +364,7 @@ int run_add_mul(estacao_reserva* er){
         /* Checagem de syscall */
         if(er->op == SYSCALL){
             if(checaSyscall()){
-                printf("Operação de syscall na %s não pode ser executada:\n  algum registrador ($v0 ou $a0) esta aguardando um resultado.\n", ER_nomes[identificador]);
+                if(get_flag(FLAG_VERBOSE)) printf("Operação de syscall na %s não pode ser executada:\n  algum registrador ($v0 ou $a0) esta aguardando um resultado.\n", ER_nomes[identificador]);
                 return 1;
             }
         }
@@ -376,7 +385,7 @@ int run_add_mul(estacao_reserva* er){
 
                 case FLAG_FAIL:
                     if(get_flag(FLAG_DEBUG)) printf("Operação retornou FAIL\n");
-                    identificaER(identificador); //Limpa Qi na posição de RD da instrução que falhou.
+                    identificaREG(identificador+1); //Limpa Qi na posição de RD da instrução que falhou.
                     break;
 
                 case FLAG_MTHI:
@@ -399,7 +408,8 @@ int run_add_mul(estacao_reserva* er){
                     break;
              }
 
-            flushEr(er);
+            last_op[identificador] = er->op;
+            er->busy = -1;
 
         } else {
             /* Operando não estão prontos */
@@ -409,7 +419,10 @@ int run_add_mul(estacao_reserva* er){
     } else{
         if(er->busy > 1){
             er->busy = er->busy - 1; //Representa um ciclo gasto na operação
-            if(get_flag(FLAG_DEBUG)) printf("\n| ER %s -> Ciclos restantes = %d |\n", ER_nomes[identificador], er->busy );
+            if(get_flag(FLAG_DEBUG)){
+                printaER(er,0,NULL);
+                printf("\n");
+            }
         } else {
             return 0;
         }
@@ -438,7 +451,7 @@ int run_load_store(estacao_reserva* er){
 
         switch (retorno.flag) {
             case FLAG_SUCCESS:
-               //if(get_flag(FLAG_DEBUG)) printf("\n\tSUCESS: buffer_resultados[%d] = %d\n", identificador, retorno.resultado);
+               if(get_flag(FLAG_DEBUG)) printf("\n\tSUCESS: buffer_resultados[%d] = %d\n", identificador, retorno.resultado);
                buffer_resultados[identificador].dado = retorno.resultado;
                buffer_resultados[identificador].validade = 1;
                break;
@@ -452,12 +465,17 @@ int run_load_store(estacao_reserva* er){
                break;
         }
 
-        flushEr(er);
+        last_op[identificador] = er->op;
+        er->busy = -1;
 
     } else{
         if(er->busy > 1){
             er->busy = er->busy - 1; //Representa um ciclo gasto na operação
-            if(get_flag(FLAG_DEBUG)) printf("\n| ER %s -> Ciclos restantes = %d |\n", ER_nomes[identificador], er->busy );
+            if(get_flag(FLAG_DEBUG)){
+                printaER(er,0,NULL);
+                printf("\n");
+            }
+
         } else {
             return 0;
         }
@@ -510,11 +528,12 @@ void escrita(){
     int i;
     int process = 0;
 
+    if(get_flag(FLAG_DEBUG)) printaQi(Qi);
+
     /* Tratamento para as operações de divisão e multiplicação */
     if(barr_Hi->er_id != -1){
-        if(get_flag(FLAG_VERBOSE)) printf("Stremando o dado %d vindo de %s (%s)\n",
-                                        barr_Hi->dado, ER_nomes[barr_Hi->er_id - 1],
-                                         OP_nomes[getER(barr_Hi->er_id)->op]);
+        if(get_flag(FLAG_VERBOSE)) printf("Stremando o dado %d vindo de %s (HI)\n",
+                                        barr_Hi->dado, ER_nomes[barr_Hi->er_id - 1]);
 
         stream(barr_Hi->dado, barr_Hi->er_id+1);
         barr_Hi->er_id = -1;
@@ -522,9 +541,8 @@ void escrita(){
     }
 
     if(barr_Lo->er_id != -1){
-        if(get_flag(FLAG_VERBOSE)) printf("Stremando o dado %d vindo de %s (%s)\n",
-                                        barr_Lo->dado, ER_nomes[barr_Lo->er_id - 1],
-                                         OP_nomes[getER(barr_Lo->er_id)->op]);
+        if(get_flag(FLAG_VERBOSE)) printf("Stremando o dado %d vindo de %s (LO)\n",
+                                        barr_Lo->dado, ER_nomes[barr_Lo->er_id - 1]);
 
         stream(barr_Lo->dado, barr_Lo->er_id+1);
         barr_Lo->er_id = -1;
@@ -535,7 +553,7 @@ void escrita(){
         if (buffer_resultados[i].validade == 1){
             dado = buffer_resultados[i].dado;
             if(get_flag(FLAG_VERBOSE)) printf("Stremando o dado %d vindo de %s (%s) :\n",
-                                              dado, ER_nomes[i], OP_nomes[getER(i+1)->op -2]);
+                                              dado, ER_nomes[i], OP_nomes[last_op[i] - 1 ]);
             stream(dado, i+1);
             process++;
 
@@ -609,8 +627,8 @@ unsigned int pipeline(int ciclo){ //pipeline reverso
 
     }else{
 
-        if(get_flag(FLAG_DEBUG)) printf("(PC = %d)\n", pc);
-        if (&mem[pc] < mem_text_end){
+        if(get_flag(FLAG_DEBUG)) printf("(PC = %d)\n", getPC());
+        if (&mem[getPC()] < mem_text_end){
             process = 1;
             busca();
         } else {
@@ -620,6 +638,8 @@ unsigned int pipeline(int ciclo){ //pipeline reverso
     }
 
     if(get_flag(FLAG_VERBOSE))      printf("\n======== Fim do ciclo %d ========\n", ciclo);
+
+    flushes();
 
     return process;
 }
@@ -672,9 +692,11 @@ void processadorInit(){
     barr_Lo->er_id = FLAG_BUFFER_VAZIO;
 
     buffer_resultados = malloc(sizeof(ula_output) * NUM_ER);
+    last_op = malloc(sizeof(int) * NUM_ER);
 
     for(i = 0; i < NUM_ER; i++){
         buffer_resultados[i].validade = 0;
+        last_op[i] = -1;
     }
 
     jump = 0;

@@ -1,0 +1,35 @@
+.data
+x : .int 2
+y : .byte 8
+z : .byte 16
+
+.text
+# testes básicos
+main:
+    lw $t0, x
+    lh $t1, y
+    lb $t2, z
+    addi $s3, $0, 1
+
+loop:
+    addi $v0, $0, 1
+    syscall
+    nop
+    addi $s3, $s3, 1
+    addi $s0, $s0, 2
+    beq $s0, $t0, loop
+
+    slt $t0, $0, $s3
+    addi $t0, $0, 1
+    sub $t1, $t1, $t1
+
+func:
+    addi $t1, $0, 1
+    beq $t0, $t1, fim
+    jal func
+
+fim:
+    addi $v0, $0, 1
+    lw $a0, z
+    syscall
+    nop

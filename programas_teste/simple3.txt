@@ -5,6 +5,7 @@ z : .int -1
 w : .int -2, -3
 
 .text
+# Testes simples
     addi $t0, $zero, 8 # t0 = 8
     sw $t0, z # z = 8
 

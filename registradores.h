@@ -1,5 +1,5 @@
-/* Definição dos registradores do simulador MIPS 32 */
-/* Autor Bruno Cesar, bcesar.g6@gmail.com           */
+/* Header do banco de registradores | simulador MIPS 32 */
+/* Autor Bruno Cesar, bcesar.g6@gmail.com               */
 
 #ifndef __REGISTRADORES_H
 #define __REGISTRADORES_H
@@ -13,9 +13,15 @@
 #define REG_LO 32
 #define REG_HI 33
 
-
 #define NUM_REGS 34
 
-int* regs;
+#include <stdio.h>
+#include "memoria.h"
+
+extern int* regs;
+
+void setReg(int dado, int reg_id);
+void registradoresInit();
+int getReg(int reg_id);
 
 #endif /* __REGISTRADORES_H */

@@ -1,0 +1,1351 @@
+State 1 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: saida $end
+
+    1 saida: secao_data secao_text END_OF_FILE
+    2      | secao_data EOL secao_text END_OF_FILE
+    3      | secao_text END_OF_FILE
+
+    4 secao_data: data EOL var
+    5           | data
+
+    6 secao_text: text EOL instrucao
+
+    7 instrucao: linha EOL instrucao
+    8          | labelid linha EOL instrucao
+    9          | %empty
+
+   10 linha: operacao
+
+   11 operacao: %empty
+   12         | syscallOP
+   13         | NOP
+   14         | R
+   15         | I
+   16         | LS
+   17         | J
+   18         | M
+
+   19 R: opcoder reg virg reg virg reg
+   20  | opcoder reg virg reg
+   21  | opcoders reg virg reg virg reg
+   22  | opcoders reg virg reg virg shamt
+   23  | opcodej reg virg reg
+   24  | opcodej reg
+   25  | opcoderd reg virg reg
+
+   26 I: opcodei reg virg reg virg imm
+   27  | opcodelui reg virg imm
+   28  | opcodet reg virg imm
+   29  | opcodet reg virg reg
+   30  | opcodeb reg virg id
+   31  | opcodebeq reg virg reg virg id
+
+   32 LS: opcodel reg virg offset abreparents reg fechaparents
+   33   | opcodel reg virg id
+
+   34 J: opcodej address
+   35  | opcodej id
+
+   36 M: opcodemf reg virg reg
+   37  | opcodemt reg virg reg
+   38  | opcodemt reg
+   39  | opcodemf reg
+   40  | opcodemf reg virg reg virg reg
+
+   41 labelid: id colon
+   42        | id EOL colon
+
+   43 var: id colon val var
+   44    | id colon val
+
+   45 val: number EOL
+   46    | number virg val
+   47    | t_int number virg val
+   48    | t_int number EOL
+
+   49 address: number
+
+   50 shamt: number
+
+   51 offset: number
+
+   52 imm: number
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+reg (258) 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 36 37 38 39
+    40
+number (259) 45 46 47 48 49 50 51 52
+virg (260) 19 20 21 22 23 25 26 27 28 29 30 31 32 33 36 37 40 46 47
+EOL (261) 2 4 6 7 8 42 45 48
+END_OF_FILE (262) 1 2 3
+opcodeb (263) 30
+opcoder (264) 19 20
+opcoders (265) 21 22
+opcoderd (266) 25
+opcodel (267) 32 33
+opcodei (268) 26
+opcodelui (269) 27
+opcodej (270) 23 24 34 35
+opcodet (271) 28 29
+opcodemf (272) 36 39 40
+opcodemt (273) 37 38
+opcodebeq (274) 31
+abreparents (275) 32
+fechaparents (276) 32
+colon (277) 41 42 43 44
+syscallOP (278) 12
+NOP (279) 13
+data (280) 4 5
+text (281) 6
+id (282) 30 31 33 35 41 42 43 44
+t_int (283) 47 48
+
+
+Nonterminals, with rules where they appear
+
+$accept (29)
+    on left: 0
+saida (30)
+    on left: 1 2 3, on right: 0
+secao_data (31)
+    on left: 4 5, on right: 1 2
+secao_text (32)
+    on left: 6, on right: 1 2 3
+instrucao (33)
+    on left: 7 8 9, on right: 6 7 8
+linha (34)
+    on left: 10, on right: 7 8
+operacao (35)
+    on left: 11 12 13 14 15 16 17 18, on right: 10
+R (36)
+    on left: 19 20 21 22 23 24 25, on right: 14
+I (37)
+    on left: 26 27 28 29 30 31, on right: 15
+LS (38)
+    on left: 32 33, on right: 16
+J (39)
+    on left: 34 35, on right: 17
+M (40)
+    on left: 36 37 38 39 40, on right: 18
+labelid (41)
+    on left: 41 42, on right: 8
+var (42)
+    on left: 43 44, on right: 4 43
+val (43)
+    on left: 45 46 47 48, on right: 43 44 46 47
+address (44)
+    on left: 49, on right: 34
+shamt (45)
+    on left: 50, on right: 22
+offset (46)
+    on left: 51, on right: 32
+imm (47)
+    on left: 52, on right: 26 27 28
+
+
+State 0
+
+    0 $accept: . saida $end
+    1 saida: . secao_data secao_text END_OF_FILE
+    2      | . secao_data EOL secao_text END_OF_FILE
+    3      | . secao_text END_OF_FILE
+    4 secao_data: . data EOL var
+    5           | . data
+    6 secao_text: . text EOL instrucao
+
+    data  shift, and go to state 1
+    text  shift, and go to state 2
+
+    saida       go to state 3
+    secao_data  go to state 4
+    secao_text  go to state 5
+
+
+State 1
+
+    4 secao_data: data . EOL var
+    5           | data .  [EOL, text]
+
+    EOL  shift, and go to state 6
+
+    EOL       [reduce using rule 5 (secao_data)]
+    $default  reduce using rule 5 (secao_data)
+
+
+State 2
+
+    6 secao_text: text . EOL instrucao
+
+    EOL  shift, and go to state 7
+
+
+State 3
+
+    0 $accept: saida . $end
+
+    $end  shift, and go to state 8
+
+
+State 4
+
+    1 saida: secao_data . secao_text END_OF_FILE
+    2      | secao_data . EOL secao_text END_OF_FILE
+    6 secao_text: . text EOL instrucao
+
+    EOL   shift, and go to state 9
+    text  shift, and go to state 2
+
+    secao_text  go to state 10
+
+
+State 5
+
+    3 saida: secao_text . END_OF_FILE
+
+    END_OF_FILE  shift, and go to state 11
+
+
+State 6
+
+    4 secao_data: data EOL . var
+   43 var: . id colon val var
+   44    | . id colon val
+
+    id  shift, and go to state 12
+
+    var  go to state 13
+
+
+State 7
+
+    6 secao_text: text EOL . instrucao
+    7 instrucao: . linha EOL instrucao
+    8          | . labelid linha EOL instrucao
+    9          | . %empty  [END_OF_FILE]
+   10 linha: . operacao
+   11 operacao: . %empty  [EOL]
+   12         | . syscallOP
+   13         | . NOP
+   14         | . R
+   15         | . I
+   16         | . LS
+   17         | . J
+   18         | . M
+   19 R: . opcoder reg virg reg virg reg
+   20  | . opcoder reg virg reg
+   21  | . opcoders reg virg reg virg reg
+   22  | . opcoders reg virg reg virg shamt
+   23  | . opcodej reg virg reg
+   24  | . opcodej reg
+   25  | . opcoderd reg virg reg
+   26 I: . opcodei reg virg reg virg imm
+   27  | . opcodelui reg virg imm
+   28  | . opcodet reg virg imm
+   29  | . opcodet reg virg reg
+   30  | . opcodeb reg virg id
+   31  | . opcodebeq reg virg reg virg id
+   32 LS: . opcodel reg virg offset abreparents reg fechaparents
+   33   | . opcodel reg virg id
+   34 J: . opcodej address
+   35  | . opcodej id
+   36 M: . opcodemf reg virg reg
+   37  | . opcodemt reg virg reg
+   38  | . opcodemt reg
+   39  | . opcodemf reg
+   40  | . opcodemf reg virg reg virg reg
+   41 labelid: . id colon
+   42        | . id EOL colon
+
+    opcodeb    shift, and go to state 14
+    opcoder    shift, and go to state 15
+    opcoders   shift, and go to state 16
+    opcoderd   shift, and go to state 17
+    opcodel    shift, and go to state 18
+    opcodei    shift, and go to state 19
+    opcodelui  shift, and go to state 20
+    opcodej    shift, and go to state 21
+    opcodet    shift, and go to state 22
+    opcodemf   shift, and go to state 23
+    opcodemt   shift, and go to state 24
+    opcodebeq  shift, and go to state 25
+    syscallOP  shift, and go to state 26
+    NOP        shift, and go to state 27
+    id         shift, and go to state 28
+
+    EOL       reduce using rule 11 (operacao)
+    $default  reduce using rule 9 (instrucao)
+
+    instrucao  go to state 29
+    linha      go to state 30
+    operacao   go to state 31
+    R          go to state 32
+    I          go to state 33
+    LS         go to state 34
+    J          go to state 35
+    M          go to state 36
+    labelid    go to state 37
+
+
+State 8
+
+    0 $accept: saida $end .
+
+    $default  accept
+
+
+State 9
+
+    2 saida: secao_data EOL . secao_text END_OF_FILE
+    6 secao_text: . text EOL instrucao
+
+    text  shift, and go to state 2
+
+    secao_text  go to state 38
+
+
+State 10
+
+    1 saida: secao_data secao_text . END_OF_FILE
+
+    END_OF_FILE  shift, and go to state 39
+
+
+State 11
+
+    3 saida: secao_text END_OF_FILE .
+
+    $default  reduce using rule 3 (saida)
+
+
+State 12
+
+   43 var: id . colon val var
+   44    | id . colon val
+
+    colon  shift, and go to state 40
+
+
+State 13
+
+    4 secao_data: data EOL var .
+
+    $default  reduce using rule 4 (secao_data)
+
+
+State 14
+
+   30 I: opcodeb . reg virg id
+
+    reg  shift, and go to state 41
+
+
+State 15
+
+   19 R: opcoder . reg virg reg virg reg
+   20  | opcoder . reg virg reg
+
+    reg  shift, and go to state 42
+
+
+State 16
+
+   21 R: opcoders . reg virg reg virg reg
+   22  | opcoders . reg virg reg virg shamt
+
+    reg  shift, and go to state 43
+
+
+State 17
+
+   25 R: opcoderd . reg virg reg
+
+    reg  shift, and go to state 44
+
+
+State 18
+
+   32 LS: opcodel . reg virg offset abreparents reg fechaparents
+   33   | opcodel . reg virg id
+
+    reg  shift, and go to state 45
+
+
+State 19
+
+   26 I: opcodei . reg virg reg virg imm
+
+    reg  shift, and go to state 46
+
+
+State 20
+
+   27 I: opcodelui . reg virg imm
+
+    reg  shift, and go to state 47
+
+
+State 21
+
+   23 R: opcodej . reg virg reg
+   24  | opcodej . reg
+   34 J: opcodej . address
+   35  | opcodej . id
+   49 address: . number
+
+    reg     shift, and go to state 48
+    number  shift, and go to state 49
+    id      shift, and go to state 50
+
+    address  go to state 51
+
+
+State 22
+
+   28 I: opcodet . reg virg imm
+   29  | opcodet . reg virg reg
+
+    reg  shift, and go to state 52
+
+
+State 23
+
+   36 M: opcodemf . reg virg reg
+   39  | opcodemf . reg
+   40  | opcodemf . reg virg reg virg reg
+
+    reg  shift, and go to state 53
+
+
+State 24
+
+   37 M: opcodemt . reg virg reg
+   38  | opcodemt . reg
+
+    reg  shift, and go to state 54
+
+
+State 25
+
+   31 I: opcodebeq . reg virg reg virg id
+
+    reg  shift, and go to state 55
+
+
+State 26
+
+   12 operacao: syscallOP .
+
+    $default  reduce using rule 12 (operacao)
+
+
+State 27
+
+   13 operacao: NOP .
+
+    $default  reduce using rule 13 (operacao)
+
+
+State 28
+
+   41 labelid: id . colon
+   42        | id . EOL colon
+
+    EOL    shift, and go to state 56
+    colon  shift, and go to state 57
+
+
+State 29
+
+    6 secao_text: text EOL instrucao .
+
+    $default  reduce using rule 6 (secao_text)
+
+
+State 30
+
+    7 instrucao: linha . EOL instrucao
+
+    EOL  shift, and go to state 58
+
+
+State 31
+
+   10 linha: operacao .
+
+    $default  reduce using rule 10 (linha)
+
+
+State 32
+
+   14 operacao: R .
+
+    $default  reduce using rule 14 (operacao)
+
+
+State 33
+
+   15 operacao: I .
+
+    $default  reduce using rule 15 (operacao)
+
+
+State 34
+
+   16 operacao: LS .
+
+    $default  reduce using rule 16 (operacao)
+
+
+State 35
+
+   17 operacao: J .
+
+    $default  reduce using rule 17 (operacao)
+
+
+State 36
+
+   18 operacao: M .
+
+    $default  reduce using rule 18 (operacao)
+
+
+State 37
+
+    8 instrucao: labelid . linha EOL instrucao
+   10 linha: . operacao
+   11 operacao: . %empty  [EOL]
+   12         | . syscallOP
+   13         | . NOP
+   14         | . R
+   15         | . I
+   16         | . LS
+   17         | . J
+   18         | . M
+   19 R: . opcoder reg virg reg virg reg
+   20  | . opcoder reg virg reg
+   21  | . opcoders reg virg reg virg reg
+   22  | . opcoders reg virg reg virg shamt
+   23  | . opcodej reg virg reg
+   24  | . opcodej reg
+   25  | . opcoderd reg virg reg
+   26 I: . opcodei reg virg reg virg imm
+   27  | . opcodelui reg virg imm
+   28  | . opcodet reg virg imm
+   29  | . opcodet reg virg reg
+   30  | . opcodeb reg virg id
+   31  | . opcodebeq reg virg reg virg id
+   32 LS: . opcodel reg virg offset abreparents reg fechaparents
+   33   | . opcodel reg virg id
+   34 J: . opcodej address
+   35  | . opcodej id
+   36 M: . opcodemf reg virg reg
+   37  | . opcodemt reg virg reg
+   38  | . opcodemt reg
+   39  | . opcodemf reg
+   40  | . opcodemf reg virg reg virg reg
+
+    opcodeb    shift, and go to state 14
+    opcoder    shift, and go to state 15
+    opcoders   shift, and go to state 16
+    opcoderd   shift, and go to state 17
+    opcodel    shift, and go to state 18
+    opcodei    shift, and go to state 19
+    opcodelui  shift, and go to state 20
+    opcodej    shift, and go to state 21
+    opcodet    shift, and go to state 22
+    opcodemf   shift, and go to state 23
+    opcodemt   shift, and go to state 24
+    opcodebeq  shift, and go to state 25
+    syscallOP  shift, and go to state 26
+    NOP        shift, and go to state 27
+
+    $default  reduce using rule 11 (operacao)
+
+    linha     go to state 59
+    operacao  go to state 31
+    R         go to state 32
+    I         go to state 33
+    LS        go to state 34
+    J         go to state 35
+    M         go to state 36
+
+
+State 38
+
+    2 saida: secao_data EOL secao_text . END_OF_FILE
+
+    END_OF_FILE  shift, and go to state 60
+
+
+State 39
+
+    1 saida: secao_data secao_text END_OF_FILE .
+
+    $default  reduce using rule 1 (saida)
+
+
+State 40
+
+   43 var: id colon . val var
+   44    | id colon . val
+   45 val: . number EOL
+   46    | . number virg val
+   47    | . t_int number virg val
+   48    | . t_int number EOL
+
+    number  shift, and go to state 61
+    t_int   shift, and go to state 62
+
+    val  go to state 63
+
+
+State 41
+
+   30 I: opcodeb reg . virg id
+
+    virg  shift, and go to state 64
+
+
+State 42
+
+   19 R: opcoder reg . virg reg virg reg
+   20  | opcoder reg . virg reg
+
+    virg  shift, and go to state 65
+
+
+State 43
+
+   21 R: opcoders reg . virg reg virg reg
+   22  | opcoders reg . virg reg virg shamt
+
+    virg  shift, and go to state 66
+
+
+State 44
+
+   25 R: opcoderd reg . virg reg
+
+    virg  shift, and go to state 67
+
+
+State 45
+
+   32 LS: opcodel reg . virg offset abreparents reg fechaparents
+   33   | opcodel reg . virg id
+
+    virg  shift, and go to state 68
+
+
+State 46
+
+   26 I: opcodei reg . virg reg virg imm
+
+    virg  shift, and go to state 69
+
+
+State 47
+
+   27 I: opcodelui reg . virg imm
+
+    virg  shift, and go to state 70
+
+
+State 48
+
+   23 R: opcodej reg . virg reg
+   24  | opcodej reg .  [EOL]
+
+    virg  shift, and go to state 71
+
+    $default  reduce using rule 24 (R)
+
+
+State 49
+
+   49 address: number .
+
+    $default  reduce using rule 49 (address)
+
+
+State 50
+
+   35 J: opcodej id .
+
+    $default  reduce using rule 35 (J)
+
+
+State 51
+
+   34 J: opcodej address .
+
+    $default  reduce using rule 34 (J)
+
+
+State 52
+
+   28 I: opcodet reg . virg imm
+   29  | opcodet reg . virg reg
+
+    virg  shift, and go to state 72
+
+
+State 53
+
+   36 M: opcodemf reg . virg reg
+   39  | opcodemf reg .  [EOL]
+   40  | opcodemf reg . virg reg virg reg
+
+    virg  shift, and go to state 73
+
+    $default  reduce using rule 39 (M)
+
+
+State 54
+
+   37 M: opcodemt reg . virg reg
+   38  | opcodemt reg .  [EOL]
+
+    virg  shift, and go to state 74
+
+    $default  reduce using rule 38 (M)
+
+
+State 55
+
+   31 I: opcodebeq reg . virg reg virg id
+
+    virg  shift, and go to state 75
+
+
+State 56
+
+   42 labelid: id EOL . colon
+
+    colon  shift, and go to state 76
+
+
+State 57
+
+   41 labelid: id colon .
+
+    $default  reduce using rule 41 (labelid)
+
+
+State 58
+
+    7 instrucao: . linha EOL instrucao
+    7          | linha EOL . instrucao
+    8          | . labelid linha EOL instrucao
+    9          | . %empty  [END_OF_FILE]
+   10 linha: . operacao
+   11 operacao: . %empty  [EOL]
+   12         | . syscallOP
+   13         | . NOP
+   14         | . R
+   15         | . I
+   16         | . LS
+   17         | . J
+   18         | . M
+   19 R: . opcoder reg virg reg virg reg
+   20  | . opcoder reg virg reg
+   21  | . opcoders reg virg reg virg reg
+   22  | . opcoders reg virg reg virg shamt
+   23  | . opcodej reg virg reg
+   24  | . opcodej reg
+   25  | . opcoderd reg virg reg
+   26 I: . opcodei reg virg reg virg imm
+   27  | . opcodelui reg virg imm
+   28  | . opcodet reg virg imm
+   29  | . opcodet reg virg reg
+   30  | . opcodeb reg virg id
+   31  | . opcodebeq reg virg reg virg id
+   32 LS: . opcodel reg virg offset abreparents reg fechaparents
+   33   | . opcodel reg virg id
+   34 J: . opcodej address
+   35  | . opcodej id
+   36 M: . opcodemf reg virg reg
+   37  | . opcodemt reg virg reg
+   38  | . opcodemt reg
+   39  | . opcodemf reg
+   40  | . opcodemf reg virg reg virg reg
+   41 labelid: . id colon
+   42        | . id EOL colon
+
+    opcodeb    shift, and go to state 14
+    opcoder    shift, and go to state 15
+    opcoders   shift, and go to state 16
+    opcoderd   shift, and go to state 17
+    opcodel    shift, and go to state 18
+    opcodei    shift, and go to state 19
+    opcodelui  shift, and go to state 20
+    opcodej    shift, and go to state 21
+    opcodet    shift, and go to state 22
+    opcodemf   shift, and go to state 23
+    opcodemt   shift, and go to state 24
+    opcodebeq  shift, and go to state 25
+    syscallOP  shift, and go to state 26
+    NOP        shift, and go to state 27
+    id         shift, and go to state 28
+
+    EOL       reduce using rule 11 (operacao)
+    $default  reduce using rule 9 (instrucao)
+
+    instrucao  go to state 77
+    linha      go to state 30
+    operacao   go to state 31
+    R          go to state 32
+    I          go to state 33
+    LS         go to state 34
+    J          go to state 35
+    M          go to state 36
+    labelid    go to state 37
+
+
+State 59
+
+    8 instrucao: labelid linha . EOL instrucao
+
+    EOL  shift, and go to state 78
+
+
+State 60
+
+    2 saida: secao_data EOL secao_text END_OF_FILE .
+
+    $default  reduce using rule 2 (saida)
+
+
+State 61
+
+   45 val: number . EOL
+   46    | number . virg val
+
+    virg  shift, and go to state 79
+    EOL   shift, and go to state 80
+
+
+State 62
+
+   47 val: t_int . number virg val
+   48    | t_int . number EOL
+
+    number  shift, and go to state 81
+
+
+State 63
+
+   43 var: . id colon val var
+   43    | id colon val . var
+   44    | . id colon val
+   44    | id colon val .  [EOL, text]
+
+    id  shift, and go to state 12
+
+    $default  reduce using rule 44 (var)
+
+    var  go to state 82
+
+
+State 64
+
+   30 I: opcodeb reg virg . id
+
+    id  shift, and go to state 83
+
+
+State 65
+
+   19 R: opcoder reg virg . reg virg reg
+   20  | opcoder reg virg . reg
+
+    reg  shift, and go to state 84
+
+
+State 66
+
+   21 R: opcoders reg virg . reg virg reg
+   22  | opcoders reg virg . reg virg shamt
+
+    reg  shift, and go to state 85
+
+
+State 67
+
+   25 R: opcoderd reg virg . reg
+
+    reg  shift, and go to state 86
+
+
+State 68
+
+   32 LS: opcodel reg virg . offset abreparents reg fechaparents
+   33   | opcodel reg virg . id
+   51 offset: . number
+
+    number  shift, and go to state 87
+    id      shift, and go to state 88
+
+    offset  go to state 89
+
+
+State 69
+
+   26 I: opcodei reg virg . reg virg imm
+
+    reg  shift, and go to state 90
+
+
+State 70
+
+   27 I: opcodelui reg virg . imm
+   52 imm: . number
+
+    number  shift, and go to state 91
+
+    imm  go to state 92
+
+
+State 71
+
+   23 R: opcodej reg virg . reg
+
+    reg  shift, and go to state 93
+
+
+State 72
+
+   28 I: opcodet reg virg . imm
+   29  | opcodet reg virg . reg
+   52 imm: . number
+
+    reg     shift, and go to state 94
+    number  shift, and go to state 91
+
+    imm  go to state 95
+
+
+State 73
+
+   36 M: opcodemf reg virg . reg
+   40  | opcodemf reg virg . reg virg reg
+
+    reg  shift, and go to state 96
+
+
+State 74
+
+   37 M: opcodemt reg virg . reg
+
+    reg  shift, and go to state 97
+
+
+State 75
+
+   31 I: opcodebeq reg virg . reg virg id
+
+    reg  shift, and go to state 98
+
+
+State 76
+
+   42 labelid: id EOL colon .
+
+    $default  reduce using rule 42 (labelid)
+
+
+State 77
+
+    7 instrucao: linha EOL instrucao .
+
+    $default  reduce using rule 7 (instrucao)
+
+
+State 78
+
+    7 instrucao: . linha EOL instrucao
+    8          | . labelid linha EOL instrucao
+    8          | labelid linha EOL . instrucao
+    9          | . %empty  [END_OF_FILE]
+   10 linha: . operacao
+   11 operacao: . %empty  [EOL]
+   12         | . syscallOP
+   13         | . NOP
+   14         | . R
+   15         | . I
+   16         | . LS
+   17         | . J
+   18         | . M
+   19 R: . opcoder reg virg reg virg reg
+   20  | . opcoder reg virg reg
+   21  | . opcoders reg virg reg virg reg
+   22  | . opcoders reg virg reg virg shamt
+   23  | . opcodej reg virg reg
+   24  | . opcodej reg
+   25  | . opcoderd reg virg reg
+   26 I: . opcodei reg virg reg virg imm
+   27  | . opcodelui reg virg imm
+   28  | . opcodet reg virg imm
+   29  | . opcodet reg virg reg
+   30  | . opcodeb reg virg id
+   31  | . opcodebeq reg virg reg virg id
+   32 LS: . opcodel reg virg offset abreparents reg fechaparents
+   33   | . opcodel reg virg id
+   34 J: . opcodej address
+   35  | . opcodej id
+   36 M: . opcodemf reg virg reg
+   37  | . opcodemt reg virg reg
+   38  | . opcodemt reg
+   39  | . opcodemf reg
+   40  | . opcodemf reg virg reg virg reg
+   41 labelid: . id colon
+   42        | . id EOL colon
+
+    opcodeb    shift, and go to state 14
+    opcoder    shift, and go to state 15
+    opcoders   shift, and go to state 16
+    opcoderd   shift, and go to state 17
+    opcodel    shift, and go to state 18
+    opcodei    shift, and go to state 19
+    opcodelui  shift, and go to state 20
+    opcodej    shift, and go to state 21
+    opcodet    shift, and go to state 22
+    opcodemf   shift, and go to state 23
+    opcodemt   shift, and go to state 24
+    opcodebeq  shift, and go to state 25
+    syscallOP  shift, and go to state 26
+    NOP        shift, and go to state 27
+    id         shift, and go to state 28
+
+    EOL       reduce using rule 11 (operacao)
+    $default  reduce using rule 9 (instrucao)
+
+    instrucao  go to state 99
+    linha      go to state 30
+    operacao   go to state 31
+    R          go to state 32
+    I          go to state 33
+    LS         go to state 34
+    J          go to state 35
+    M          go to state 36
+    labelid    go to state 37
+
+
+State 79
+
+   45 val: . number EOL
+   46    | . number virg val
+   46    | number virg . val
+   47    | . t_int number virg val
+   48    | . t_int number EOL
+
+    number  shift, and go to state 61
+    t_int   shift, and go to state 62
+
+    val  go to state 100
+
+
+State 80
+
+   45 val: number EOL .
+
+    $default  reduce using rule 45 (val)
+
+
+State 81
+
+   47 val: t_int number . virg val
+   48    | t_int number . EOL
+
+    virg  shift, and go to state 101
+    EOL   shift, and go to state 102
+
+
+State 82
+
+   43 var: id colon val var .
+
+    $default  reduce using rule 43 (var)
+
+
+State 83
+
+   30 I: opcodeb reg virg id .
+
+    $default  reduce using rule 30 (I)
+
+
+State 84
+
+   19 R: opcoder reg virg reg . virg reg
+   20  | opcoder reg virg reg .  [EOL]
+
+    virg  shift, and go to state 103
+
+    $default  reduce using rule 20 (R)
+
+
+State 85
+
+   21 R: opcoders reg virg reg . virg reg
+   22  | opcoders reg virg reg . virg shamt
+
+    virg  shift, and go to state 104
+
+
+State 86
+
+   25 R: opcoderd reg virg reg .
+
+    $default  reduce using rule 25 (R)
+
+
+State 87
+
+   51 offset: number .
+
+    $default  reduce using rule 51 (offset)
+
+
+State 88
+
+   33 LS: opcodel reg virg id .
+
+    $default  reduce using rule 33 (LS)
+
+
+State 89
+
+   32 LS: opcodel reg virg offset . abreparents reg fechaparents
+
+    abreparents  shift, and go to state 105
+
+
+State 90
+
+   26 I: opcodei reg virg reg . virg imm
+
+    virg  shift, and go to state 106
+
+
+State 91
+
+   52 imm: number .
+
+    $default  reduce using rule 52 (imm)
+
+
+State 92
+
+   27 I: opcodelui reg virg imm .
+
+    $default  reduce using rule 27 (I)
+
+
+State 93
+
+   23 R: opcodej reg virg reg .
+
+    $default  reduce using rule 23 (R)
+
+
+State 94
+
+   29 I: opcodet reg virg reg .
+
+    $default  reduce using rule 29 (I)
+
+
+State 95
+
+   28 I: opcodet reg virg imm .
+
+    $default  reduce using rule 28 (I)
+
+
+State 96
+
+   36 M: opcodemf reg virg reg .  [EOL]
+   40  | opcodemf reg virg reg . virg reg
+
+    virg  shift, and go to state 107
+
+    $default  reduce using rule 36 (M)
+
+
+State 97
+
+   37 M: opcodemt reg virg reg .
+
+    $default  reduce using rule 37 (M)
+
+
+State 98
+
+   31 I: opcodebeq reg virg reg . virg id
+
+    virg  shift, and go to state 108
+
+
+State 99
+
+    8 instrucao: labelid linha EOL instrucao .
+
+    $default  reduce using rule 8 (instrucao)
+
+
+State 100
+
+   46 val: number virg val .
+
+    $default  reduce using rule 46 (val)
+
+
+State 101
+
+   45 val: . number EOL
+   46    | . number virg val
+   47    | . t_int number virg val
+   47    | t_int number virg . val
+   48    | . t_int number EOL
+
+    number  shift, and go to state 61
+    t_int   shift, and go to state 62
+
+    val  go to state 109
+
+
+State 102
+
+   48 val: t_int number EOL .
+
+    $default  reduce using rule 48 (val)
+
+
+State 103
+
+   19 R: opcoder reg virg reg virg . reg
+
+    reg  shift, and go to state 110
+
+
+State 104
+
+   21 R: opcoders reg virg reg virg . reg
+   22  | opcoders reg virg reg virg . shamt
+   50 shamt: . number
+
+    reg     shift, and go to state 111
+    number  shift, and go to state 112
+
+    shamt  go to state 113
+
+
+State 105
+
+   32 LS: opcodel reg virg offset abreparents . reg fechaparents
+
+    reg  shift, and go to state 114
+
+
+State 106
+
+   26 I: opcodei reg virg reg virg . imm
+   52 imm: . number
+
+    number  shift, and go to state 91
+
+    imm  go to state 115
+
+
+State 107
+
+   40 M: opcodemf reg virg reg virg . reg
+
+    reg  shift, and go to state 116
+
+
+State 108
+
+   31 I: opcodebeq reg virg reg virg . id
+
+    id  shift, and go to state 117
+
+
+State 109
+
+   47 val: t_int number virg val .
+
+    $default  reduce using rule 47 (val)
+
+
+State 110
+
+   19 R: opcoder reg virg reg virg reg .
+
+    $default  reduce using rule 19 (R)
+
+
+State 111
+
+   21 R: opcoders reg virg reg virg reg .
+
+    $default  reduce using rule 21 (R)
+
+
+State 112
+
+   50 shamt: number .
+
+    $default  reduce using rule 50 (shamt)
+
+
+State 113
+
+   22 R: opcoders reg virg reg virg shamt .
+
+    $default  reduce using rule 22 (R)
+
+
+State 114
+
+   32 LS: opcodel reg virg offset abreparents reg . fechaparents
+
+    fechaparents  shift, and go to state 118
+
+
+State 115
+
+   26 I: opcodei reg virg reg virg imm .
+
+    $default  reduce using rule 26 (I)
+
+
+State 116
+
+   40 M: opcodemf reg virg reg virg reg .
+
+    $default  reduce using rule 40 (M)
+
+
+State 117
+
+   31 I: opcodebeq reg virg reg virg id .
+
+    $default  reduce using rule 31 (I)
+
+
+State 118
+
+   32 LS: opcodel reg virg offset abreparents reg fechaparents .
+
+    $default  reduce using rule 32 (LS)

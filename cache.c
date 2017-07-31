@@ -106,6 +106,20 @@ unsigned int cRead(unsigned int cache_id, endereco addr){
     }
 }
 
+void flushCache(unsigned int cache_id){
+    int i;
+    for(i = 0; i < NUM_LINHA; i++){
+        if(cache_id == CACHE_TEXTO)  cache_texto[i].v = 0;
+        if(cache_id == CACHE_DADOS)  cache_dados[i].v = 0;
+
+        if(cache_id == CACHE_TEXTO)  cache_texto[i].tag = FLAG_BLANK;
+        if(cache_id == CACHE_DADOS)  cache_dados[i].tag = FLAG_BLANK;
+
+    //    cache_dados[i].dados = malloc(TAM_LINHA * sizeof(unsigned int));
+        //cache_texto[i].dados = malloc(TAM_LINHA * sizeof(unsigned int));
+    }
+}
+
 /* Função auxiliar: Inicializa o componente Cache */
 void cacheInit(){
     int i;

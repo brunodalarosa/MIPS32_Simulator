@@ -11,6 +11,7 @@
 #include "cache.h"
 #include "registradores.h"
 #include "clock.h"
+#include "pcComponent.h"
 
 #define FLAG_FAIL       0
 #define FLAG_SUCCESS    1
@@ -77,21 +78,16 @@ ulaRet clo(int num, ...);
 ulaRet clz(int num, ...);
 ulaRet lb(int num, ...);
 ulaRet lh(int num, ...);
-ulaRet lwl(int num, ...);
 ulaRet lw(int num, ...);
 ulaRet lbu(int num, ...);
 ulaRet lhu(int num, ...);
-ulaRet lwr(int num, ...);
 ulaRet sb(int num, ...);
 ulaRet sh(int num, ...);
-ulaRet swl(int num, ...);
 ulaRet sw(int num, ...);
-ulaRet swr(int num, ...);
-ulaRet ll(int num, ...);
-ulaRet sc(int num, ...);
 ulaRet sysc(int num, ...);
+ulaRet nop(int num, ...);
 
-ulaRet (*p[81]) (int num, ...); //Vetor de ponteiros para funções
+ulaRet (*p[61]) (int num, ...); //Vetor de ponteiros para funções
 
 void ulaInit();
 

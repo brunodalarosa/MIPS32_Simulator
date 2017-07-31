@@ -4,8 +4,8 @@
 #ifndef __CACHE_H
 #define __CACHE_H
 
-#define C_TEXTO_SIZE 64 //8192 * sizeof(word) = 32K
-#define C_DADOS_SIZE 64 //8192 * sizeof(word) = 32K
+#define C_TEXTO_SIZE 8192 //8192 * sizeof(word) = 32K
+#define C_DADOS_SIZE 8192 //8192 * sizeof(word) = 32K
 
 #define CACHE_TEXTO 1
 #define CACHE_DADOS 0
@@ -58,5 +58,6 @@ c_linha* cache_dados;
 void cWrite(unsigned int cache_id, endereco addr, unsigned int dado);
 unsigned int cRead(unsigned int cache_id, endereco end);
 void cacheInit();
+void flushCache(unsigned int cache_id);
 
 #endif /* __CACHE_H */

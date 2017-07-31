@@ -24,14 +24,14 @@
 
 #define INITIAL_SIZE 10
 
-int lbl_count;
-char** lbl_names;
+extern int lbl_count;
 unsigned int* lbl_values;
 int lbl_tam;
 
 
 int line;
 typedef struct node_t* node;
+typedef struct label_t* label_node;
 
 struct node_t{
     unsigned int tipo;
@@ -45,12 +45,16 @@ struct node_t{
     node prox;
 } node_t;
 
-node lista;
-
 typedef struct{
     int* valores;
     int tam;
 } var_t;
+
+struct label_t{
+    char* nome;
+    int   pos;
+    label_node prox;
+} label_t;
 
 int var_tam; //var_tamanho inicial do vetor de variaveis
 int values_tam;
@@ -65,6 +69,7 @@ void checkSizesLocal(var_t* variaveis);
 void checkSizes(void);
 void insereLista(node n);
 int labelMatch(char* label);
+void insereLabel(char* nome, int pos);
 void tradutor();
 void tradutorInit();
 

@@ -1,26 +1,28 @@
-Op tipo I: 8 0 8 8
-Op tipo LS var: 43 0 8 z
-Op tipo LS var: 35 0 9 z
-Op tipo LS var: 35 0 10 y
-Op tipo LS var: 35 0 11 w
-Op tipo R: 0 9 8 17 0 32
-Op tipo R: 0 0 8 24 0 42
-Op tipo I: 8 17 18 5
-Op tipo M: 0 17 24 5 11
+Op tipo I: 8 0 9 1
+Op tipo I: 8 16 2 5
+Op Syscall: 0 0 12
+OP NOP: 60 0 0
+Op tipo M: 0 2 0 8 10
+Op tipo I: 8 8 8 1
+Op tipo I: 8 16 2 5
+Op Syscall: 0 0 12
+OP NOP: 60 0 0
+Op tipo M: 0 2 0 17 10
+Op tipo R: 28 17 9 10 0 2
+Op tipo M: 0 10 0 4 10
 Op tipo I: 8 0 2 1
 Op Syscall: 0 0 12
-Op tipo R: 0 17 10 0 0 26
-Op tipo M: 0 0 0 19 16
-Op tipo M: 0 0 0 20 18
-Op tipo M: 0 19 24 4 11
-Op Syscall: 0 0 12
-Op tipo M: 0 20 0 4 10
-Op Syscall: 0 0 12
+OP NOP: 60 0 0
+Op tipo I: 8 9 9 1
+Op tipo B: 5 9 8 loop
 Op tipo I: 8 0 2 10
 Op Syscall: 0 0 12
 
-Numero de linhas computadas = 20
+Numero de linhas computadas = 19
 
-Variaveis:
+Labels:
+main = 0
+loop = 40
+fim = 68
 
 Fim do log de tradução.

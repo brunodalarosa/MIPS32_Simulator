@@ -108,9 +108,6 @@ void init(){
 		launchError(0);
 	}
 
-	/* Inicializa os registradores */
-	regs = calloc(NUM_REGS, sizeof(int));
-
 	/* Inicializa a memoria */
 	mem = calloc(MEM_SIZE, 1); //Malloc + inicia como 0
 
@@ -118,12 +115,13 @@ void init(){
 	processadorInit();
 	ulaInit();
 	cacheInit();
+	registradoresInit();
 }
 
 
 void printBanner(){
 							       printf("\n|               ===== Simulador MIPS-32 ====              |\n");
-								     printf("|     Versao Beta / Desenvolvido por bcesar.g6@gmail.com  |\n");
+								     printf("|     Versao 1.0  / Desenvolvido por bcesar.g6@gmail.com  |\n");
 									 printf("-----------------------------------------------------------\n");
 									 printf("| Tamanho da memoria = %d bytes ( %d MB)          |\n", MEM_SIZE, (MEM_SIZE/ 1024 / 1024));
 
@@ -162,10 +160,12 @@ int main(int argc, char **argv){
 
 	if(get_flag(FLAG_VERBOSE)) system("clear");
 
-	while(run());
-
-	fclose(log_file);
+	while(run()); //Loop do clock
 
 	printf("\nExecução concluída com sucesso\n");
+	fprintf(output_file, "\nExecução concluída com sucesso\n");
+
+	fclose(output_file);
+	fclose(log_file);
 	return 0;
 }

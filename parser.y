@@ -21,7 +21,7 @@ void set_input();
 %token number virg EOL END_OF_FILE
 %token opcodeb opcoder opcoders opcoderd opcodel opcodei opcodelui
 %token opcodej opcodet opcodemf opcodemt opcodebeq
-%token abreparents fechaparents colon syscallOP
+%token abreparents fechaparents colon syscallOP NOP
 %token data text id t_int
 
 %code requires{
@@ -73,6 +73,15 @@ operacao: /* nada */
 	      n->aux = 0;
 	  	  n->func = 12;
 	  	  insereLista(n); }
+
+| NOP {line++;
+		fprintf(log_t_file, "OP NOP: 60 0 0\n");
+		node n = malloc(sizeof(node_t));
+	    n->tipo = 5;
+		n->op = 60;
+		n-> aux = 0;
+		n->func = 0;
+		insereLista(n); }
 
 | R {line++;
 	fprintf(log_t_file,"Op tipo R: %d %d %d %d %d %d\n",
@@ -270,7 +279,7 @@ M: opcodemf reg virg reg { //mfc0 & mfc1
 	$<op.rt>$ = $<val>2;
 	$<op.rd>$ = $<val>4;}
 
-| opcodemt reg virg reg { //mtc0 & mtc1
+| opcodemt reg virg reg {
 	$<op.rs>$ = 4;
 	$<op.rt>$ = $<val>2;
 	$<op.rd>$ = $<val>4;}
@@ -295,16 +304,14 @@ M: opcodemf reg virg reg { //mfc0 & mfc1
 
 labelid: id colon { checkSizes();
 			if ( labelMatch($<text>1) == -1){
-				  lbl_names[lbl_count] = $<text>1;
-				  lbl_values[lbl_count] = line * INST_SIZE;
-		    	  lbl_count++;
+				  insereLabel($<text>1, lbl_count);
+				  lbl_count++;
 			 } else { launchError(1);}
 		 }
 
-| id EOL colon { checkSizes();
+| id colon EOL { checkSizes();
 		if ( labelMatch($<text>1) == -1){
-				 lbl_names[lbl_count] = $<text>1;
-		   		 lbl_values[lbl_count] = line * INST_SIZE;
+				 insereLabel($<text>1, lbl_count);
 		   		 lbl_count++;
 				 } else { launchError(1);}
 			 }
